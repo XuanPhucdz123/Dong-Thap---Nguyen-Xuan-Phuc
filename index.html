@@ -19,6 +19,7 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: { primary: "#006e1c" },
+                    /* Khôi phục hiệu ứng nảy to nhỏ */
                     keyframes: {
                         'pop-bounce': {
                             '0%, 100%': { transform: 'translateY(0) scale(1)', color: '#4ade80' },
@@ -33,9 +34,10 @@
     <style>
         :root { --primary-green: #1b5e20; }
         body { background-color: #f4f7f4; font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
+        /* Hiệu ứng hover cho thẻ card */
         .data-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid rgba(0, 110, 28, 0.1); }
         .data-card:hover { transform: translateY(-10px); box-shadow: 0 20px 25px -5px rgba(0, 110, 28, 0.15); border-color: rgba(0, 110, 28, 0.3); }
-        /* Cố định vị trí an toàn cho điện thoại */
+        /* Fix lỗi hiển thị trên điện thoại */
         .safe-padding { padding-top: 120px !important; }
         @media (min-width: 768px) { .safe-padding { padding-top: 40px !important; } }
     </style>
@@ -62,29 +64,29 @@
 </header>
 
 <main>
-    <section class="safe-padding relative min-h-[500px] md:h-[600px] w-full px-4 max-w-7xl mx-auto" data-aos="fade-in">
+    <section class="safe-padding relative min-h-[500px] md:h-[600px] w-full px-4 max-w-7xl mx-auto" data-aos="fade-in" data-aos-duration="1500">
         <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl mx-4">
             <img alt="Sen" class="w-full h-full object-cover brightness-50" src="Sen-27.jpg"/>
             <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
         </div>
         <div class="relative h-full flex flex-col justify-center p-8 md:p-12 z-10 text-white w-full md:w-2/3">
-            <h1 class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 uppercase leading-tight tracking-tight">Tìm Hiểu Về <br> <span class="text-green-400">Đồng Tháp</span></h1>
-            <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl">Hành trình về miền Đất Sen Hồng, nơi hội tụ vẻ đẹp thiên nhiên hoang sơ và di sản văn hóa độc đáo.</p>
-            <a href="#explore" class="w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs">
+            <h1 class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 uppercase leading-tight tracking-tight" data-aos="fade-right" data-aos-delay="200">Tìm Hiểu Về <br> <span class="text-green-400">Đồng Tháp</span></h1>
+            <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl" data-aos="fade-up" data-aos-delay="400">Hành trình về miền Đất Sen Hồng, nơi hội tụ vẻ đẹp thiên nhiên hoang sơ và di sản văn hóa độc đáo.</p>
+            <a href="#explore" class="w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs" data-aos="fade-up" data-aos-delay="600">
                 <span class="material-symbols-outlined">explore</span> Bắt đầu hành trình
             </a>
         </div>
     </section>
 
     <section id="explore" class="max-w-7xl mx-auto px-6 py-12 md:py-24">
-        <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12">
+        <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12" data-aos="fade-right">
             <div>
                 <h3 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Hành trình Di sản & Thiên nhiên</h3>
                 <div class="w-16 md:w-24 h-1 md:h-1.5 bg-green-600 mt-3"></div>
             </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            <article onclick="window.location.href='tramchim'" class="data-card bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col relative group">
+            <article data-aos="fade-up" data-aos-delay="100" onclick="window.location.href='tramchim'" class="data-card bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col relative group">
                 <div class="h-48 md:h-64 overflow-hidden"><img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg"/></div>
                 <div class="p-6 md:p-8 flex-grow flex flex-col">
                     <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-widest mb-2 uppercase">Sinh thái ngập nước</div>
@@ -96,7 +98,7 @@
                     </div>
                 </div>
             </article>
-            <article onclick="window.location.href='ditichlichsu'" class="data-card bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col relative group">
+            <article data-aos="fade-up" data-aos-delay="200" onclick="window.location.href='ditichlichsu'" class="data-card bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col relative group">
                 <div class="h-48 md:h-64 overflow-hidden"><img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg"/></div>
                 <div class="p-6 md:p-8 flex-grow flex flex-col">
                     <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-widest mb-2 uppercase">Dấu ấn thời gian</div>
@@ -108,7 +110,7 @@
                     </div>
                 </div>
             </article>
-            <article onclick="window.location.href='danhlam'" class="data-card bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col relative group">
+            <article data-aos="fade-up" data-aos-delay="300" onclick="window.location.href='danhlam'" class="data-card bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col relative group">
                 <div class="h-48 md:h-64 overflow-hidden"><img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg"/></div>
                 <div class="p-6 md:p-8 flex-grow flex flex-col">
                     <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-widest mb-2 uppercase">Sắc màu xứ sở</div>
@@ -144,6 +146,6 @@
 </footer>
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>AOS.init({ duration: 800, once: true });</script>
+<script>AOS.init({ duration: 800, offset: 50, once: true });</script>
 </body>
 </html>

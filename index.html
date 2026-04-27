@@ -17,21 +17,15 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: "#006e1c",
-                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { primary: "#006e1c" },
                     keyframes: {
                         'pop-bounce': {
                             '0%, 100%': { transform: 'translateY(0) scale(1)', color: '#4ade80' },
                             '50%': { transform: 'translateY(-6px) scale(1.08)', color: '#86efac' },
                         }
                     },
-                    animation: {
-                        'pop-bounce': 'pop-bounce 1.5s ease-in-out infinite',
-                    }
+                    animation: { 'pop-bounce': 'pop-bounce 1.5s ease-in-out infinite' }
                 }
             }
         }
@@ -39,112 +33,89 @@
     <style>
         :root { --primary-green: #1b5e20; }
         body { background-color: #f4f7f4; font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
-        
-        .data-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(0, 110, 28, 0.1);
-        }
-        .data-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 25px -5px rgba(0, 110, 28, 0.15), 0 10px 10px -5px rgba(0, 110, 28, 0.04);
-            border-color: rgba(0, 110, 28, 0.3);
-        }
-        /* Fix lỗi chữ bị dính vào Header trên Mobile */
-        .hero-section { padding-top: 100px; }
-        @media (min-width: 768px) { .hero-section { padding-top: 20px; } }
+        .data-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid rgba(0, 110, 28, 0.1); }
+        .data-card:hover { transform: translateY(-10px); box-shadow: 0 20px 25px -5px rgba(0, 110, 28, 0.15); border-color: rgba(0, 110, 28, 0.3); }
+        /* Cố định vị trí an toàn cho điện thoại */
+        .safe-padding { padding-top: 120px !important; }
+        @media (min-width: 768px) { .safe-padding { padding-top: 40px !important; } }
     </style>
+    <script>
+      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body class="pt-16 md:pt-20">
 
-<header class="bg-white/95 backdrop-blur-md fixed top-0 w-full z-50 border-b border-gray-200 shadow-sm transition-all duration-300">
+<header class="bg-white/95 backdrop-blur-md fixed top-0 w-full z-50 border-b border-gray-200 shadow-sm">
     <div class="flex justify-between items-center px-4 md:px-6 py-3 md:py-4 max-w-7xl mx-auto">
-        <div class="flex items-center gap-2 md:gap-3">
+        <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-green-700 text-2xl md:text-3xl">landscape</span>
-            <div>
-                <div class="text-lg md:text-2xl font-black text-green-900 tracking-tight uppercase leading-none">Đồng Tháp</div>
-                <div class="hidden xs:block text-[8px] md:text-[10px] font-mono text-green-600 tracking-widest uppercase mt-1">Hệ thống số hóa địa phương</div>
-            </div>
+            <div class="text-lg md:text-2xl font-black text-green-900 tracking-tight uppercase leading-none">Đồng Tháp</div>
         </div>
-        <nav class="flex gap-3 md:gap-8 text-[10px] md:text-xs font-black uppercase tracking-tighter md:tracking-widest">
-            <a class="text-green-700 border-b-2 border-green-700 pb-1" href="index.html"><span class="hidden sm:inline">01. </span>Trang chủ</a>
-            <a class="text-gray-400 hover:text-green-700 transition-colors" href="tramchim.html"><span class="hidden sm:inline">02. </span>Sinh thái</a>
-            <a class="text-gray-400 hover:text-green-700 transition-colors" href="ditichlichsu.html"><span class="hidden sm:inline">03. </span>Lịch sử</a>
-            <a class="text-gray-400 hover:text-green-700 transition-colors" href="danhlam.html"><span class="hidden sm:inline">04. </span>Danh Lam</a>
+        <nav class="flex gap-3 md:gap-8 text-[10px] md:text-xs font-black uppercase">
+            <a class="text-green-700 border-b-2 border-green-700" href="/">Trang chủ</a>
+            <a class="text-gray-400 hover:text-green-700" href="tramchim">Sinh thái</a>
+            <a class="text-gray-400 hover:text-green-700" href="ditichlichsu">Lịch sử</a>
+            <a class="text-gray-400 hover:text-green-700" href="danhlam">Danh Lam</a>
         </nav>
     </div>
 </header>
 
 <main>
-    <section class="hero-section relative min-h-[500px] md:h-[600px] w-full mt-2 md:mt-4 px-4 max-w-7xl mx-auto" data-aos="fade-in" data-aos-duration="1500">
+    <section class="safe-padding relative min-h-[500px] md:h-[600px] w-full px-4 max-w-7xl mx-auto" data-aos="fade-in">
         <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl mx-4">
-            <img alt="Đồng sen Đồng Tháp" class="w-full h-full object-cover brightness-50" src="Sen-27.jpg"/>
+            <img alt="Sen" class="w-full h-full object-cover brightness-50" src="Sen-27.jpg"/>
             <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
         </div>
         <div class="relative h-full flex flex-col justify-center p-8 md:p-12 z-10 text-white w-full md:w-2/3">
-            <h1 class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 md:mb-6 uppercase leading-tight tracking-tight" data-aos="fade-right" data-aos-delay="200">
-                Tìm Hiểu Về <br> <span class="text-green-400">Đồng Tháp</span>
-            </h1>
-            <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl" data-aos="fade-up" data-aos-delay="400">
-                Hành trình về miền Đất Sen Hồng, nơi hội tụ vẻ đẹp thiên nhiên hoang sơ và di sản văn hóa độc đáo.
-            </p>
-            <div data-aos="fade-up" data-aos-delay="600">
-                <a href="#explore-sections" class="inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 md:px-10 py-3 md:py-4 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs md:text-sm tracking-wider">
-                    <span class="material-symbols-outlined">explore</span> Bắt đầu hành trình
-                </a>
-            </div>
+            <h1 class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 uppercase leading-tight tracking-tight">Tìm Hiểu Về <br> <span class="text-green-400">Đồng Tháp</span></h1>
+            <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl">Hành trình về miền Đất Sen Hồng, nơi hội tụ vẻ đẹp thiên nhiên hoang sơ và di sản văn hóa độc đáo.</p>
+            <a href="#explore" class="w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs">
+                <span class="material-symbols-outlined">explore</span> Bắt đầu hành trình
+            </a>
         </div>
     </section>
 
-    <section id="explore-sections" class="max-w-7xl mx-auto px-6 py-12 md:py-24">
-        <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12" data-aos="fade-right">
+    <section id="explore" class="max-w-7xl mx-auto px-6 py-12 md:py-24">
+        <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12">
             <div>
-                <h3 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight leading-none">Hành trình Di sản & Thiên nhiên</h3>
-                <div class="w-16 md:w-24 h-1 md:h-1.5 bg-green-600 mt-3 md:mt-4"></div>
+                <h3 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Hành trình Di sản & Thiên nhiên</h3>
+                <div class="w-16 md:w-24 h-1 md:h-1.5 bg-green-600 mt-3"></div>
             </div>
-            <p class="hidden md:block text-gray-500 font-medium italic">Khám phá chiều sâu văn hóa và sinh thái miền Đất Sen Hồng</p>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            <article data-aos="fade-up" data-aos-delay="100" onclick="window.location.href='tramchim.html'" class="data-card bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col relative group">
-                <div class="h-48 md:h-64 overflow-hidden bg-gray-200">
-                    <img alt="Hệ sinh thái Tràm Chim" class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg"/>
-                </div>
+            <article onclick="window.location.href='tramchim'" class="data-card bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col relative group">
+                <div class="h-48 md:h-64 overflow-hidden"><img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg"/></div>
                 <div class="p-6 md:p-8 flex-grow flex flex-col">
-                    <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-[0.2em] mb-2 uppercase">Sinh thái ngập nước</div>
-                    <h4 class="text-xl md:text-2xl font-black text-gray-900 mb-2 md:mb-3 tracking-tight">Vườn Quốc gia Tràm Chim</h4>
-                    <p class="text-gray-600 mb-4 md:mb-6 text-xs md:text-sm flex-grow">Khám phá khu Ramsar thứ 2000 của thế giới với hệ sinh thái đặc thù và loài Sếu đầu đỏ quý hiếm.</p>
-                    <div class="mt-auto flex items-center justify-between border-t border-gray-100 pt-4">
-                        <span class="text-[10px] md:text-xs font-bold text-green-800 uppercase tracking-widest">Khám phá ngay</span>
+                    <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-widest mb-2 uppercase">Sinh thái ngập nước</div>
+                    <h4 class="text-xl md:text-2xl font-black text-gray-900 mb-3">Vườn Quốc gia Tràm Chim</h4>
+                    <p class="text-gray-600 mb-6 text-xs md:text-sm flex-grow">Khám phá khu Ramsar thứ 2000 của thế giới với loài Sếu đầu đỏ quý hiếm.</p>
+                    <div class="mt-auto flex items-center justify-between border-t pt-4">
+                        <span class="text-[10px] font-bold text-green-800 uppercase">Khám phá ngay</span>
                         <span class="material-symbols-outlined text-green-700 group-hover:translate-x-2 transition-transform">east</span>
                     </div>
                 </div>
             </article>
-
-            <article data-aos="fade-up" data-aos-delay="200" onclick="window.location.href='ditichlichsu.html'" class="data-card bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col relative group">
-                <div class="h-48 md:h-64 overflow-hidden bg-gray-200">
-                    <img alt="Di sản Văn hóa" class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg"/>
-                </div>
+            <article onclick="window.location.href='ditichlichsu'" class="data-card bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col relative group">
+                <div class="h-48 md:h-64 overflow-hidden"><img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg"/></div>
                 <div class="p-6 md:p-8 flex-grow flex flex-col">
-                    <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-[0.2em] mb-2 uppercase">Dấu ấn thời gian</div>
-                    <h4 class="text-xl md:text-2xl font-black text-gray-900 mb-2 md:mb-3 tracking-tight">Di tích Lịch sử & Văn hóa</h4>
-                    <p class="text-gray-600 mb-4 md:mb-6 text-xs md:text-sm flex-grow">Ngược dòng lịch sử tìm về các giá trị văn hóa tại Xẻo Quýt, Gò Tháp và Lăng Cụ Phó bảng.</p>
-                    <div class="mt-auto flex items-center justify-between border-t border-gray-100 pt-4">
-                        <span class="text-[10px] md:text-xs font-bold text-green-800 uppercase tracking-widest">Khám phá ngay</span>
+                    <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-widest mb-2 uppercase">Dấu ấn thời gian</div>
+                    <h4 class="text-xl md:text-2xl font-black text-gray-900 mb-3">Di tích Lịch sử & Văn hóa</h4>
+                    <p class="text-gray-600 mb-6 text-xs md:text-sm flex-grow">Ngược dòng lịch sử tìm về các giá trị văn hóa tại Xẻo Quýt, Gò Tháp và Lăng Cụ Phó bảng.</p>
+                    <div class="mt-auto flex items-center justify-between border-t pt-4">
+                        <span class="text-[10px] font-bold text-green-800 uppercase">Khám phá ngay</span>
                         <span class="material-symbols-outlined text-green-700 group-hover:translate-x-2 transition-transform">east</span>
                     </div>
                 </div>
             </article>
-
-            <article data-aos="fade-up" data-aos-delay="300" onclick="window.location.href='danhlam.html'" class="data-card bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col relative group">
-                <div class="h-48 md:h-64 overflow-hidden bg-gray-200">
-                    <img alt="Danh Lam Thắng Cảnh" class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg"/>
-                </div>
+            <article onclick="window.location.href='danhlam'" class="data-card bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col relative group">
+                <div class="h-48 md:h-64 overflow-hidden"><img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg"/></div>
                 <div class="p-6 md:p-8 flex-grow flex flex-col">
-                    <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-[0.2em] mb-2 uppercase">Sắc màu xứ sở</div>
-                    <h4 class="text-xl md:text-2xl font-black text-gray-900 mb-2 md:mb-3 tracking-tight">Danh Lam Thắng Cảnh</h4>
-                    <p class="text-gray-600 mb-4 md:mb-6 text-xs md:text-sm flex-grow">Trải nghiệm nét độc đáo của Làng hoa Sa Đéc và vẻ đẹp thanh bình của vùng Đồng Tháp Mười.</p>
-                    <div class="mt-auto flex items-center justify-between border-t border-gray-100 pt-4">
-                        <span class="text-[10px] md:text-xs font-bold text-green-800 uppercase tracking-widest">Khám phá ngay</span>
+                    <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-widest mb-2 uppercase">Sắc màu xứ sở</div>
+                    <h4 class="text-xl md:text-2xl font-black text-gray-900 mb-3">Danh Lam Thắng Cảnh</h4>
+                    <p class="text-gray-600 mb-6 text-xs md:text-sm flex-grow">Trải nghiệm nét độc đáo của Làng hoa Sa Đéc và vẻ đẹp thanh bình của Đồng Tháp Mười.</p>
+                    <div class="mt-auto flex items-center justify-between border-t pt-4">
+                        <span class="text-[10px] font-bold text-green-800 uppercase">Khám phá ngay</span>
                         <span class="material-symbols-outlined text-green-700 group-hover:translate-x-2 transition-transform">east</span>
                     </div>
                 </div>
@@ -153,33 +124,26 @@
     </section>
 </main>
 
-<footer class="bg-[#111811] text-white py-12 md:py-16 px-6 md:px-8 border-t-[6px] border-green-800">
-    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-8 md:gap-10">
+<footer class="bg-[#111811] text-white py-12 md:py-16 px-6">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-8">
         <div class="text-center lg:text-left">
-            <div class="text-2xl md:text-3xl font-black text-green-500 mb-2 tracking-tighter uppercase">Đồng Tháp</div>
+            <div class="text-2xl md:text-3xl font-black text-green-500 uppercase">Đồng Tháp</div>
             <p class="text-gray-400 text-xs md:text-sm max-w-md italic">Số hóa vẻ đẹp miền Đất Sen Hồng qua lăng kính công nghệ.</p>
         </div>
-        
-        <nav class="flex flex-wrap justify-center gap-4 md:gap-10 text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-500">
-            <a class="hover:text-green-400 transition-colors" href="index.html">Trang chủ</a>
-            <a class="hover:text-green-400 transition-colors" href="tramchim.html">Sinh thái</a>
-            <a class="hover:text-green-400 transition-colors" href="ditichlichsu.html">Lịch sử</a>
-            <a class="hover:text-green-400 transition-colors" href="danhlam.html">Danh Lam</a>
+        <nav class="flex flex-wrap justify-center gap-4 text-[10px] md:text-xs font-bold uppercase text-gray-500">
+            <a class="hover:text-green-400" href="/">Trang chủ</a>
+            <a class="hover:text-green-400" href="tramchim">Sinh thái</a>
+            <a class="hover:text-green-400" href="ditichlichsu">Lịch sử</a>
+            <a class="hover:text-green-400" href="danhlam">Danh Lam</a>
         </nav>
-
-        <div class="text-center lg:text-right bg-green-900/40 p-4 md:p-5 rounded-lg border border-green-800/50 shadow-inner flex flex-col items-center lg:items-end">
-            <div class="text-[8px] md:text-[10px] text-gray-400 tracking-widest uppercase mb-2">Thực hiện bởi</div>
-            <a href="https://xuanphuc2108.vercel.app/" target="_blank" class="inline-block text-sm md:text-base font-black animate-pop-bounce drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]">
-                Nguyễn Xuân Phúc - 21/8/2012
-            </a>
+        <div class="text-center lg:text-right bg-green-900/40 p-4 rounded-lg border border-green-800/50 flex flex-col items-center lg:items-end">
+            <div class="text-[8px] md:text-[10px] text-gray-400 uppercase mb-2">Thực hiện bởi</div>
+            <a href="https://xuanphuc2108.vercel.app/" target="_blank" class="inline-block text-sm md:text-base font-black animate-pop-bounce drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]">Nguyễn Xuân Phúc - 21/8/2012</a>
         </div>
     </div>
 </footer>
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-    AOS.init({ duration: 800, offset: 50, once: true });
-</script>
-
+<script>AOS.init({ duration: 800, once: true });</script>
 </body>
 </html>

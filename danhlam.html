@@ -23,7 +23,7 @@
                     colors: {
                         primary: "#006e1c",
                     },
-                    /* Thêm hiệu ứng nảy to nhỏ (pop-bounce) */
+                    /* Hiệu ứng nảy to nhỏ kích thích người dùng nhấn vào */
                     keyframes: {
                         'pop-bounce': {
                             '0%, 100%': { transform: 'translateY(0) scale(1)', color: '#4ade80' },
@@ -43,6 +43,11 @@
         #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: var(--accent-green); width: 0%; z-index: 100; transition: width 0.1s; }
         .content-block:hover { background-color: #ffffff; box-shadow: 0 15px 40px -10px rgba(0,110,28,0.15); border-radius: 1.5rem; }
     </style>
+
+    <script>
+      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body class="pt-20">
 
@@ -58,10 +63,10 @@
             </div>
         </div>
         <nav class="hidden md:flex gap-8 text-xs font-black uppercase tracking-widest">
-            <a class="text-gray-400 hover:text-green-700 transition-colors" href="index.html">01. Trang chủ</a>
-            <a class="text-gray-400 hover:text-green-700 transition-colors" href="tramchim.html">02. Sinh thái</a>
-            <a class="text-gray-400 hover:text-green-700 transition-colors" href="ditichlichsu.html">03. Lịch sử</a>
-            <a class="text-green-700 border-b-2 border-green-700 pb-1" href="danhlam.html">04. Danh Lam</a>
+            <a class="text-gray-400 hover:text-green-700 transition-colors" href="/">01. Trang chủ</a>
+            <a class="text-gray-400 hover:text-green-700 transition-colors" href="tramchim">02. Sinh thái</a>
+            <a class="text-gray-400 hover:text-green-700 transition-colors" href="ditichlichsu">03. Lịch sử</a>
+            <a class="text-green-700 border-b-2 border-green-700 pb-1" href="danhlam">04. Danh Lam</a>
         </nav>
     </div>
 </header>
@@ -80,7 +85,7 @@
                 Hành trình về miền Đất Sen Hồng, nơi hội tụ vẻ đẹp thiên nhiên hoang sơ và di sản văn hóa độc đáo.
             </p>
             <div data-aos="fade-up" data-aos-delay="600">
-                <a href="index.html" class="inline-flex items-center gap-2 bg-green-600 text-white font-bold px-10 py-4 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-sm tracking-wider">
+                <a href="/" class="inline-flex items-center gap-2 bg-green-600 text-white font-bold px-10 py-4 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-sm tracking-wider">
                     <span class="material-symbols-outlined">west</span> Quay về trang chủ
                 </a>
             </div>
@@ -160,10 +165,10 @@
         </div>
         
         <nav class="flex gap-10 text-xs font-bold uppercase tracking-widest text-gray-500">
-            <a class="hover:text-green-400 transition-colors" href="index.html">Trang chủ</a>
-            <a class="hover:text-green-400 transition-colors" href="tramchim.html">Sinh thái</a>
-            <a class="hover:text-green-400 transition-colors" href="ditichlichsu.html">Lịch sử</a>
-            <a class="hover:text-green-400 transition-colors" href="danhlam.html">Danh Lam</a>
+            <a class="hover:text-green-400 transition-colors" href="/">Trang chủ</a>
+            <a class="hover:text-green-400 transition-colors" href="tramchim">Sinh thái</a>
+            <a class="hover:text-green-400 transition-colors" href="ditichlichsu">Lịch sử</a>
+            <a class="hover:text-green-400 transition-colors" href="danhlam">Danh Lam</a>
         </nav>
 
         <div class="text-center lg:text-right bg-green-900/40 p-5 rounded-lg border border-green-800/50 shadow-inner flex flex-col items-center lg:items-end">

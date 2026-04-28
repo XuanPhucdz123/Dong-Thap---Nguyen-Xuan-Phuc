@@ -21,7 +21,6 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: { primary: "#006e1c" },
-                    /* Hiệu ứng nảy to nhỏ */
                     keyframes: {
                         'pop-bounce': {
                             '0%, 100%': { transform: 'translateY(0) scale(1)', color: '#4ade80' },
@@ -37,10 +36,9 @@
         :root { --primary-green: #1b5e20; --accent-green: #4caf50; }
         body { background-color: #f4f7f4; font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
         #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: var(--accent-green); width: 0%; z-index: 100; transition: width 0.1s; }
-        .content-block:hover { background-color: #ffffff; box-shadow: 0 15px 40px -10px rgba(0,110,28,0.15); border-radius: 1.5rem; }
-        /* Fix lỗi hiển thị trên điện thoại */
         .safe-padding { padding-top: 120px !important; }
         @media (min-width: 768px) { .safe-padding { padding-top: 40px !important; } }
+        #main-header { transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease; }
     </style>
 
     <script>
@@ -52,97 +50,123 @@
 
 <div id="progress-bar"></div>
 
-<header class="bg-white/95 backdrop-blur-md fixed top-0 w-full z-50 border-b border-gray-200 shadow-sm">
+<header id="main-header" class="bg-white fixed top-0 w-full z-50 border-b border-gray-200">
     <div class="flex justify-between items-center px-4 md:px-6 py-3 md:py-4 max-w-7xl mx-auto">
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 md:gap-3">
             <span class="material-symbols-outlined text-green-700 text-2xl md:text-3xl">landscape</span>
-            <div class="text-lg md:text-2xl font-black text-green-900 tracking-tight uppercase leading-none">Đồng Tháp</div>
+            <div>
+                <div class="text-lg md:text-2xl font-black text-green-900 tracking-tight uppercase leading-none">Đồng Tháp</div>
+                <div class="hidden md:block text-[10px] font-mono text-green-600 tracking-widest uppercase mt-1">Hệ thống số hóa địa phương</div>
+            </div>
         </div>
         <nav class="flex gap-3 md:gap-8 text-[10px] md:text-xs font-black uppercase">
             <a class="text-gray-400 hover:text-green-700" href="/">Trang chủ</a>
             <a class="text-gray-400 hover:text-green-700" href="tramchim">Sinh thái</a>
             <a class="text-gray-400 hover:text-green-700" href="ditichlichsu">Lịch sử</a>
-            <a class="text-green-700 border-b-2 border-green-700" href="danhlam">Danh Lam</a>
+            <a class="text-green-700 border-b-2 border-green-700 pb-1" href="danhlam">Danh Lam</a>
         </nav>
     </div>
 </header>
 
 <main>
-    <section class="safe-padding relative min-h-[500px] md:h-[600px] w-full px-4 max-w-7xl mx-auto" data-aos="fade-in" data-aos-duration="1500">
-        <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl mx-4">
-            <img alt="Danh Lam Thắng Cảnh" class="w-full h-full object-cover brightness-50" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg"/>
-            <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
-        </div>
-        <div class="relative h-full flex flex-col justify-center p-8 md:p-12 z-10 text-white w-full md:w-2/3">
-            <h1 class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 uppercase leading-tight tracking-tight" data-aos="fade-right" data-aos-delay="200">
-                Danh Lam <br> <span class="text-green-400">Đồng Tháp</span>
-            </h1>
-            <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl" data-aos="fade-up" data-aos-delay="400">
-                Hành trình về miền Đất Sen Hồng, nơi hội tụ vẻ đẹp thiên nhiên hoang sơ và di sản văn hóa độc đáo.
-            </p>
-            <div data-aos="fade-up" data-aos-delay="600">
-                <a href="/" class="w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs">
-                    <span class="material-symbols-outlined text-base">west</span> Quay về trang chủ
-                </a>
+    <section class="safe-padding w-full px-4 max-w-7xl mx-auto" data-aos="fade-in" data-aos-duration="1500">
+        <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0">
+            
+            <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none -z-10">
+                <img alt="Glow" class="w-full h-full object-cover rounded-[3rem] saturate-150 brightness-110" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg"/>
+            </div>
+            
+            <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-0">
+                <img alt="Danh Lam Thắng Cảnh" class="w-full h-full object-cover brightness-50" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg"/>
+                <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
+            </div>
+            
+            <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
+                <h1 class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 md:mb-6 uppercase leading-tight tracking-tight pointer-events-auto" data-aos="fade-right" data-aos-delay="200">
+                    Danh Lam <br> <span class="text-green-400">Đồng Tháp</span>
+                </h1>
+                <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto" data-aos="fade-up" data-aos-delay="400">
+                    Hành trình về miền Đất Sen Hồng, nơi hội tụ vẻ đẹp rực rỡ của những làng hoa trăm tuổi và cảnh quan thiên nhiên trù phú của vùng sông nước miền Tây.
+                </p>
+                <div data-aos="fade-up" data-aos-delay="600" class="pointer-events-auto">
+                    <a href="/" class="w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 md:px-10 py-3 md:py-4 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs md:text-sm tracking-wider">
+                        <span class="material-symbols-outlined text-base">west</span> Quay về trang chủ
+                    </a>
+                </div>
             </div>
         </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-6 py-12 md:py-24 space-y-12 md:space-y-24">
+    <section class="max-w-7xl mx-auto px-6 py-16 md:py-24 space-y-16 md:space-y-32">
         
-        <article class="content-block p-6 md:p-10 transition-all duration-300" data-aos="fade-up">
-            <div class="flex flex-col md:flex-row gap-6 md:gap-12 items-start">
-                <div class="w-full md:w-2/5 rounded-2xl overflow-hidden shadow-xl">
-                    <img src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" alt="Làng hoa Sa Đéc" class="w-full h-48 md:h-80 object-cover">
+        <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center" data-aos="fade-up">
+            <div class="w-full md:w-1/2 relative group z-0">
+                <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.05] transition-all duration-700 pointer-events-none -z-10">
+                    <img src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-110"/>
                 </div>
-                <div class="w-full md:w-3/5">
-                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 mb-4 md:mb-6 uppercase tracking-tight">Làng hoa Sa Đéc</h2>
-                    <div class="space-y-3 md:space-y-4 text-sm md:text-lg text-gray-600 leading-relaxed text-justify">
-                        <p>
-                            <strong>Làng hoa Sa Đéc</strong> không chỉ là xứ sở rực rỡ sắc màu mà còn là minh chứng cho sự sáng tạo của người dân trong việc thích nghi với thiên nhiên qua kỹ thuật canh tác "hoa trên giàn" độc đáo.
-                        </p>
-                        <p>
-                            Vào mùa nước nổi, những giàn hoa vươn cao trên mặt nước tạo nên một cảnh quan ngoạn mục. Đây là nơi lưu giữ hàng ngàn giống hoa quý và là biểu tượng cho sức sống mãnh liệt của nông nghiệp miền Tây Nam Bộ.
-                        </p>
-                    </div>
+                <img src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" alt="Làng hoa Sa Đéc" class="w-full h-64 md:h-[400px] object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2"/>
+            </div>
+            
+            <div class="w-full md:w-1/2 space-y-4 md:space-y-6">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl">local_florist</span>
+                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Làng hoa Sa Đéc</h2>
+                </div>
+                <div class="space-y-4 text-base md:text-lg text-gray-600 leading-relaxed text-justify">
+                    <p>
+                        <strong>Làng hoa Sa Đéc</strong> không chỉ là vựa hoa kiểng lớn nhất miền Tây Nam Bộ mà còn là một bức tranh nghệ thuật sống động trải dài ven bờ sông Tiền. Điểm độc đáo nhất ở đây là kỹ thuật trồng hoa "trên giàn", thích nghi hoàn hảo với mùa nước nổi.
+                    </p>
+                    <p>
+                        Vào những ngày cận Tết, hàng ngàn luống hoa vươn cao trên mặt nước đua nhau khoe sắc. Du khách có thể chèo xuồng len lỏi giữa các giàn hoa, cảm nhận hương thơm thoang thoảng và lưu lại những khung hình rực rỡ nhất của vùng Đất Sen Hồng.
+                    </p>
                 </div>
             </div>
         </article>
 
-        <article class="content-block p-6 md:p-10 transition-all duration-300" data-aos="fade-up">
-            <div class="flex flex-col md:flex-row-reverse gap-6 md:gap-12 items-start">
-                <div class="w-full md:w-2/5 rounded-2xl overflow-hidden shadow-xl">
-                    <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" alt="Tràm Chim" class="w-full h-48 md:h-80 object-cover">
+        <article class="flex flex-col md:flex-row-reverse gap-8 md:gap-16 items-center" data-aos="fade-up">
+            <div class="w-full md:w-1/2 relative group z-0">
+                <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.05] transition-all duration-700 pointer-events-none -z-10">
+                    <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125"/>
                 </div>
-                <div class="w-full md:w-3/5">
-                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 mb-4 md:mb-6 uppercase tracking-tight text-left">Hệ sinh thái ngập nước</h2>
-                    <div class="space-y-3 md:space-y-4 text-sm md:text-lg text-gray-600 leading-relaxed text-justify">
-                        <p>
-                            Đồng Tháp sở hữu những vùng đất ngập nước hoang sơ với hệ động thực vật vô cùng phong phú. Đây không chỉ là nơi bảo tồn đa dạng sinh học mà còn là "thư viện xanh" để chúng ta tìm hiểu về sự cân bằng của tự nhiên.
-                        </p>
-                        <p>
-                            Những rừng tràm xanh mướt và những cánh đồng sen bát ngát là nét đặc trưng không thể trộn lẫn, tạo nên một bản sắc riêng biệt cho vùng Đất Sen Hồng.
-                        </p>
-                    </div>
+                <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" alt="Hệ sinh thái ngập nước" class="w-full h-64 md:h-[400px] object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2"/>
+            </div>
+            
+            <div class="w-full md:w-1/2 space-y-4 md:space-y-6">
+                <div class="flex items-center justify-start md:justify-end gap-3">
+                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight text-left md:text-right">Hệ sinh thái ngập nước</h2>
+                    <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl">water_drop</span>
+                </div>
+                <div class="space-y-4 text-base md:text-lg text-gray-600 leading-relaxed text-justify">
+                    <p>
+                        Đồng Tháp sở hữu những vùng đất ngập nước hoang sơ mang đậm dấu ấn của Đồng Tháp Mười thuở sơ khai. Sự kết hợp giữa các thảm thực vật đa dạng, từ đồng cỏ ngập nước, rừng tràm đến đầm sen bát ngát tạo nên một cảnh quan ngoạn mục.
+                    </p>
+                    <p>
+                        Được ví như "thư viện xanh" của vùng sông nước, hệ sinh thái này không chỉ mang lại giá trị to lớn về du lịch, cảnh quan mà còn đóng vai trò cốt lõi trong việc điều hòa khí hậu và bảo tồn các loài động thực vật hoang dã.
+                    </p>
                 </div>
             </div>
         </article>
 
-        <article class="content-block p-6 md:p-10 transition-all duration-300" data-aos="fade-up">
-            <div class="flex flex-col md:flex-row gap-6 md:gap-12 items-start">
-                <div class="w-full md:w-2/5 rounded-2xl overflow-hidden shadow-xl">
-                    <img src="gao-giong.jpg" alt="Gáo Giồng" class="w-full h-48 md:h-80 object-cover">
+        <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center" data-aos="fade-up">
+            <div class="w-full md:w-1/2 relative group z-0">
+                <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.05] transition-all duration-700 pointer-events-none -z-10">
+                    <img src="gao-giong.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125"/>
                 </div>
-                <div class="w-full md:w-3/5">
-                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 mb-4 md:mb-6 uppercase tracking-tight">Khu sinh thái Gáo Giồng</h2>
-                    <div class="space-y-3 md:space-y-4 text-sm md:text-lg text-gray-600 leading-relaxed text-justify">
-                        <p>
-                            Được ví như một "Đồng Tháp Mười thu nhỏ", <strong>Gáo Giồng</strong> là nơi bạn có thể cảm nhận trọn vẹn sự thanh bình của làng quê miền Tây. Những đàn chim chao lượn trên mặt nước và tiếng chèo xuồng khua nhẹ tạo nên một không gian thư thái tuyệt đối.
-                        </p>
-                        <p>
-                            Việc bảo tồn và phát huy giá trị của những khu sinh thái như Gáo Giồng là nhiệm vụ quan trọng trong việc gìn giữ di sản thiên nhiên cho các thế hệ tương lai.
-                        </p>
-                    </div>
+                <img src="gao-giong.jpg" alt="Gáo Giồng" class="w-full h-64 md:h-[400px] object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2"/>
+            </div>
+            
+            <div class="w-full md:w-1/2 space-y-4 md:space-y-6">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl">park</span>
+                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Khu sinh thái Gáo Giồng</h2>
+                </div>
+                <div class="space-y-4 text-base md:text-lg text-gray-600 leading-relaxed text-justify">
+                    <p>
+                        Được mệnh danh là "ốc đảo xanh" giữa lòng Đồng Tháp Mười, <strong>Khu sinh thái Gáo Giồng</strong> mang đến sự thanh bình và thư thái tuyệt đối. Du khách sẽ được hòa mình vào không gian rợp bóng tràm, nghe tiếng chèo khua nước nhè nhẹ và tiếng chim chao lượn trên cao.
+                    </p>
+                    <p>
+                        Từ trên đài quan sát cao vút, bạn có thể phóng tầm mắt bao quát toàn bộ vẻ đẹp hoang sơ của Gáo Giồng. Đây cũng là nơi lý tưởng để thưởng thức những món ăn đặc sản đậm chất dân dã của người miền Tây.
+                    </p>
                 </div>
             </div>
         </article>
@@ -150,23 +174,25 @@
     </section>
 </main>
 
-<footer class="bg-[#111811] text-white py-12 md:py-16 px-6">
-    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-8">
+<footer class="bg-[#111811] text-white py-12 md:py-16 px-6 md:px-8 border-t-[6px] border-green-800 mt-10">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-8 md:gap-10">
         <div class="text-center lg:text-left">
-            <div class="text-2xl md:text-3xl font-black text-green-500 uppercase">Đồng Tháp</div>
-            <p class="text-gray-400 text-xs md:text-sm max-w-md italic mt-2">Số hóa vẻ đẹp miền Đất Sen Hồng qua lăng kính công nghệ.</p>
+            <div class="text-2xl md:text-3xl font-black text-green-500 mb-2 tracking-tighter uppercase flex items-center justify-center lg:justify-start gap-2">
+                Đồng Tháp
+            </div>
+            <p class="text-gray-400 text-xs md:text-sm max-w-md italic">Số hóa vẻ đẹp miền Đất Sen Hồng qua lăng kính công nghệ.</p>
         </div>
         
-        <nav class="flex flex-wrap justify-center gap-4 text-[10px] md:text-xs font-bold uppercase text-gray-500">
-            <a class="hover:text-green-400" href="/">Trang chủ</a>
-            <a class="hover:text-green-400" href="tramchim">Sinh thái</a>
-            <a class="hover:text-green-400" href="ditichlichsu">Lịch sử</a>
-            <a class="hover:text-green-400" href="danhlam">Danh Lam</a>
+        <nav class="flex flex-wrap justify-center gap-4 md:gap-10 text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-500">
+            <a class="hover:text-green-400 transition-colors" href="/">Trang chủ</a>
+            <a class="hover:text-green-400 transition-colors" href="tramchim">Sinh thái</a>
+            <a class="hover:text-green-400 transition-colors" href="ditichlichsu">Lịch sử</a>
+            <a class="hover:text-green-400 transition-colors" href="danhlam">Danh Lam</a>
         </nav>
 
-        <div class="text-center lg:text-right bg-green-900/40 p-4 rounded-lg border border-green-800/50 flex flex-col items-center lg:items-end">
-            <div class="text-[8px] md:text-[10px] text-gray-400 uppercase mb-2">Thực hiện bởi</div>
-            <a href="https://xuanphuc2108.vercel.app/" target="_blank" class="inline-block text-sm md:text-base font-black animate-pop-bounce drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]">
+        <div class="text-center lg:text-right bg-green-900/40 p-4 md:p-5 rounded-lg border border-green-800/50 shadow-inner flex flex-col items-center lg:items-end">
+            <div class="text-[8px] md:text-[10px] text-gray-400 tracking-widest uppercase mb-2">Thực hiện bởi</div>
+            <a href="https://xuanphuc2108.vercel.app/" target="_blank" title="Xem hồ sơ của tác giả" class="inline-block text-sm md:text-base font-black animate-pop-bounce drop-shadow-[0_0_8px_rgba(74,222,128,0.5)] cursor-pointer decoration-transparent">
                 Nguyễn Xuân Phúc - 21/8/2012
             </a>
         </div>
@@ -176,12 +202,23 @@
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
     AOS.init({ duration: 800, once: true });
-    window.onscroll = function() {
+    
+    // Xử lý Progress bar & Header kính mờ
+    window.addEventListener('scroll', function() {
         let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
         let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         let scrolled = (winScroll / height) * 100;
         document.getElementById("progress-bar").style.width = scrolled + "%";
-    };
+        
+        const header = document.getElementById('main-header');
+        if (window.scrollY > 80) {
+            header.classList.remove('bg-white');
+            header.classList.add('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
+        } else {
+            header.classList.add('bg-white');
+            header.classList.remove('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
+        }
+    });
 </script>
 
 </body>

@@ -38,6 +38,7 @@
         #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: var(--accent-green); width: 0%; z-index: 100; transition: width 0.1s; }
         .safe-padding { padding-top: 120px !important; }
         @media (min-width: 768px) { .safe-padding { padding-top: 40px !important; } }
+        /* Hiệu ứng Header mượt mà */
         #main-header { transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease; }
     </style>
 
@@ -60,9 +61,9 @@
             </div>
         </div>
         <nav class="flex gap-3 md:gap-8 text-[10px] md:text-xs font-black uppercase">
-            <a class="text-gray-400 hover:text-green-700" href="/">Trang chủ</a>
-            <a class="text-gray-400 hover:text-green-700" href="tramchim">Sinh thái</a>
-            <a class="text-gray-400 hover:text-green-700" href="ditichlichsu">Lịch sử</a>
+            <a class="text-gray-400 hover:text-green-700 transition-colors" href="/">Trang chủ</a>
+            <a class="text-gray-400 hover:text-green-700 transition-colors" href="tramchim">Sinh thái</a>
+            <a class="text-gray-400 hover:text-green-700 transition-colors" href="ditichlichsu">Lịch sử</a>
             <a class="text-green-700 border-b-2 border-green-700 pb-1" href="danhlam">Danh Lam</a>
         </nav>
     </div>
@@ -201,22 +202,33 @@
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-    AOS.init({ duration: 800, once: true });
+    // 1. Khởi tạo hiệu ứng xuất hiện (chỉ chạy 1 lần để nhẹ máy)
+    AOS.init({ duration: 800, offset: 50, once: true });
     
-    // Xử lý Progress bar & Header kính mờ
+    // 2. Tối ưu hóa sự kiện cuộn trang chống lag (Debounce Scroll)
+    let ticking = false;
     window.addEventListener('scroll', function() {
-        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        let scrolled = (winScroll / height) * 100;
-        document.getElementById("progress-bar").style.width = scrolled + "%";
-        
-        const header = document.getElementById('main-header');
-        if (window.scrollY > 80) {
-            header.classList.remove('bg-white');
-            header.classList.add('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
-        } else {
-            header.classList.add('bg-white');
-            header.classList.remove('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
+        if (!ticking) {
+            window.requestAnimationFrame(function() {
+                // Xử lý thanh tiến trình (Progress Bar)
+                let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                let scrolled = (winScroll / height) * 100;
+                document.getElementById("progress-bar").style.width = scrolled + "%";
+                
+                // Xử lý Header kính mờ
+                const header = document.getElementById('main-header');
+                if (window.scrollY > 80) {
+                    header.classList.remove('bg-white');
+                    header.classList.add('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
+                } else {
+                    header.classList.add('bg-white');
+                    header.classList.remove('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
+                }
+                
+                ticking = false;
+            });
+            ticking = true;
         }
     });
 </script>

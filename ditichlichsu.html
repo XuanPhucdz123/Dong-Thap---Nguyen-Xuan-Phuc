@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <meta name="theme-color" content="#1b5e20">
     <title>Đồng Tháp - Di tích Lịch sử</title>
     
     <link rel="icon" type="image/png" href="favicon.png">
@@ -13,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
     
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     
     <script id="tailwind-config">
@@ -38,34 +38,14 @@
         #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: var(--accent-green); width: 0%; z-index: 100; transition: width 0.1s; }
         .safe-padding { padding-top: 120px !important; }
         @media (min-width: 768px) { .safe-padding { padding-top: 40px !important; } }
+        /* Hiệu ứng Header mượt mà */
         #main-header { transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease; }
-        
-        /* Animation từ Intersection Observer */
-        .aos-animate { animation: fadeIn 0.8s ease forwards; }
-        .aos-animate-up { animation: slideUp 0.8s ease forwards; }
-        .aos-animate-right { animation: slideRight 0.8s ease forwards; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideRight {
-            from { opacity: 0; transform: translateX(-30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
     </style>
 
     <script>
       window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
     <script defer src="/_vercel/insights/script.js"></script>
-    
-    <!-- Preload Hero Image -->
-    <link rel="preload" as="image" href="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg">
 </head>
 <body class="pt-16 md:pt-20">
 
@@ -90,26 +70,26 @@
 </header>
 
 <main>
-    <section class="safe-padding w-full px-4 max-w-7xl mx-auto fade-in-section" data-aos="fade-in" data-aos-duration="1500">
+    <section class="safe-padding w-full px-4 max-w-7xl mx-auto" data-aos="fade-in" data-aos-duration="1500">
         <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0">
             
             <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none -z-10">
-                <img alt="Glow" class="w-full h-full object-cover rounded-[3rem] saturate-150 brightness-110" src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" loading="lazy"/>
+                <img alt="Glow" class="w-full h-full object-cover rounded-[3rem] saturate-150 brightness-110" src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg"/>
             </div>
             
             <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-0">
-                <img alt="Di tích Lịch sử" class="w-full h-full object-cover brightness-50" src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" loading="lazy"/>
+                <img alt="Di tích Lịch sử" class="w-full h-full object-cover brightness-50" src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg"/>
                 <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
             </div>
             
             <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
-                <h1 class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 md:mb-6 uppercase leading-tight tracking-tight pointer-events-auto fade-right-element" data-aos="fade-right" data-aos-delay="200">
+                <h1 class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 md:mb-6 uppercase leading-tight tracking-tight pointer-events-auto" data-aos="fade-right" data-aos-delay="200">
                     Lịch Sử <br> <span class="text-green-400">Đồng Tháp</span>
                 </h1>
-                <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto fade-up-element" data-aos="fade-up" data-aos-delay="400">
+                <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto" data-aos="fade-up" data-aos-delay="400">
                     Hành trình ngược dòng thời gian, tìm về những di sản văn hóa hào hùng và những dấu ấn lịch sử không thể phai mờ của vùng Đất Sen Hồng.
                 </p>
-                <div data-aos="fade-up" data-aos-delay="600" class="pointer-events-auto fade-up-element">
+                <div data-aos="fade-up" data-aos-delay="600" class="pointer-events-auto">
                     <a href="/" class="w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 md:px-10 py-3 md:py-4 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs md:text-sm tracking-wider">
                         <span class="material-symbols-outlined text-base">west</span> Quay về trang chủ
                     </a>
@@ -120,12 +100,12 @@
 
     <section class="max-w-7xl mx-auto px-6 py-16 md:py-24 space-y-16 md:space-y-32">
         
-        <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center fade-up-element" data-aos="fade-up">
+        <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center" data-aos="fade-up">
             <div class="w-full md:w-1/2 relative group z-0">
                 <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.05] transition-all duration-700 pointer-events-none -z-10">
-                    <img src="vietgoing_qfs2201047730.png" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
+                    <img src="vietgoing_qfs2201047730.png" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125"/>
                 </div>
-                <img src="vietgoing_qfs2201047730.png" alt="Xẻo Quýt" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2" loading="lazy"/>
+                <img src="vietgoing_qfs2201047730.png" alt="Xẻo Quýt" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2"/>
             </div>
             
             <div class="w-full md:w-1/2 space-y-4 md:space-y-6">
@@ -144,12 +124,12 @@
             </div>
         </article>
 
-        <article class="flex flex-col md:flex-row-reverse gap-8 md:gap-16 items-center fade-up-element" data-aos="fade-up">
+        <article class="flex flex-col md:flex-row-reverse gap-8 md:gap-16 items-center" data-aos="fade-up">
             <div class="w-full md:w-1/2 relative group z-0">
                 <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.05] transition-all duration-700 pointer-events-none -z-10">
-                    <img src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
+                    <img src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125"/>
                 </div>
-                <img src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" alt="Nguyễn Sinh Sắc" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2" loading="lazy"/>
+                <img src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" alt="Nguyễn Sinh Sắc" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2"/>
             </div>
             
             <div class="w-full md:w-1/2 space-y-4 md:space-y-6">
@@ -168,12 +148,12 @@
             </div>
         </article>
 
-        <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center fade-up-element" data-aos="fade-up">
+        <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center" data-aos="fade-up">
             <div class="w-full md:w-1/2 relative group z-0">
                 <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.05] transition-all duration-700 pointer-events-none -z-10">
-                    <img src="go-and-share-khu-di-tich-go-thap-dong-thap-1.png" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
+                    <img src="go-and-share-khu-di-tich-go-thap-dong-thap-1.png" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125"/>
                 </div>
-                <img src="go-and-share-khu-di-tich-go-thap-dong-thap-1.png" alt="Gò Tháp" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2" loading="lazy"/>
+                <img src="go-and-share-khu-di-tich-go-thap-dong-thap-1.png" alt="Gò Tháp" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2"/>
             </div>
             
             <div class="w-full md:w-1/2 space-y-4 md:space-y-6">
@@ -220,37 +200,12 @@
     </div>
 </footer>
 
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-    // ============ INTERSECTION OBSERVER - Thay thế AOS ============
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('aos-animate');
-                
-                // Thêm animation khác tùy class
-                if (entry.target.classList.contains('fade-right-element')) {
-                    entry.target.classList.add('aos-animate-right');
-                }
-                if (entry.target.classList.contains('fade-up-element')) {
-                    entry.target.classList.add('aos-animate-up');
-                }
-                
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
-
-    // Quan sát tất cả element có data-aos
-    document.querySelectorAll('[data-aos]').forEach(el => {
-        observer.observe(el);
-    });
-
-    // ============ OPTIMIZED SCROLL EVENT - Debounce + RequestAnimationFrame ============
+    // 1. Khởi tạo hiệu ứng xuất hiện (chỉ chạy 1 lần để nhẹ máy)
+    AOS.init({ duration: 800, offset: 50, once: true });
+    
+    // 2. Tối ưu hóa sự kiện cuộn trang chống lag (Debounce Scroll)
     let ticking = false;
     window.addEventListener('scroll', function() {
         if (!ticking) {

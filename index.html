@@ -67,23 +67,25 @@
 </header>
 
 <main>
-    <section class="safe-padding relative min-h-[500px] md:h-[600px] w-full px-4 max-w-7xl mx-auto" data-aos="fade-in" data-aos-duration="1500">
+    <section class="safe-padding w-full px-4 max-w-7xl mx-auto" data-aos="fade-in" data-aos-duration="1500">
         
-        <div class="absolute inset-0 mx-4 relative z-0">
+        <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0">
+            
             <div class="absolute -inset-4 md:-inset-6 bg-[#00ff6a]/30 blur-[40px] md:blur-[60px] rounded-[3rem] md:rounded-[4rem] pointer-events-none -z-10"></div>
             
-            <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-10">
+            <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-0">
                 <img alt="Sen" class="w-full h-full object-cover brightness-50" src="sen-27.jpg"/>
                 <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
             </div>
-        </div>
-        
-        <div class="relative h-full flex flex-col justify-center p-8 md:p-12 z-20 text-white w-full md:w-2/3 pointer-events-none">
-            <h1 class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 uppercase leading-tight tracking-tight pointer-events-auto" data-aos="fade-right" data-aos-delay="200">Tìm Hiểu Về <br> <span class="text-green-400">Đồng Tháp</span></h1>
-            <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto" data-aos="fade-up" data-aos-delay="400">Hành trình về miền Đất Sen Hồng, nơi hội tụ vẻ đẹp thiên nhiên hoang sơ và di sản văn hóa độc đáo.</p>
-            <a href="#explore" class="w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs pointer-events-auto" data-aos="fade-up" data-aos-delay="600">
-                <span class="material-symbols-outlined">explore</span> Bắt đầu hành trình
-            </a>
+            
+            <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
+                <h1 class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 uppercase leading-tight tracking-tight pointer-events-auto" data-aos="fade-right" data-aos-delay="200">Tìm Hiểu Về <br> <span class="text-green-400">Đồng Tháp</span></h1>
+                <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto" data-aos="fade-up" data-aos-delay="400">Hành trình về miền Đất Sen Hồng, nơi hội tụ vẻ đẹp thiên nhiên hoang sơ và di sản văn hóa độc đáo.</p>
+                <a href="#explore" class="w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs pointer-events-auto" data-aos="fade-up" data-aos-delay="600">
+                    <span class="material-symbols-outlined">explore</span> Bắt đầu hành trình
+                </a>
+            </div>
+            
         </div>
     </section>
 
@@ -99,7 +101,6 @@
             
             <div class="relative group h-full z-0" data-aos="fade-up" data-aos-delay="100">
                 <div class="absolute -inset-2 bg-[#00ff6a]/20 blur-xl group-hover:bg-[#00ff6a]/50 group-hover:blur-2xl transition-all duration-500 rounded-3xl pointer-events-none -z-10"></div>
-                
                 <article onclick="window.location.href='tramchim'" class="relative data-card bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10">
                     <div class="h-48 md:h-64 overflow-hidden"><img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg"/></div>
                     <div class="p-6 md:p-8 flex-grow flex flex-col">
@@ -173,15 +174,13 @@
 <script>
     AOS.init({ duration: 800, offset: 50, once: true });
     
-    // Script xử lý Header: Ở trên cùng là màu trắng, cuộn xuống đổi thành kính mờ
+    // Đổi Header thành kính mờ khi cuộn
     window.addEventListener('scroll', function() {
         const header = document.getElementById('main-header');
         if (window.scrollY > 80) {
-            // Khi cuộn xuống
             header.classList.remove('bg-white');
             header.classList.add('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
         } else {
-            // Khi ở trên cùng
             header.classList.add('bg-white');
             header.classList.remove('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
         }

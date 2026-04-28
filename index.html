@@ -104,10 +104,10 @@
         .tilt-card {
             transform-style: preserve-3d;
             transform: perspective(1000px);
-            transition: transform 0.1s ease; /* Thời gian chuyển đổi cực ngắn để bám sát chuột */
+            transition: transform 0.1s ease;
         }
         .tilt-content {
-            transform: translateZ(30px); /* Đẩy nội dung nổi lên trên nền */
+            transform: translateZ(30px);
         }
         
         .border-animate { position: relative; overflow: hidden; }
@@ -192,7 +192,8 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center relative z-10">
                 <div class="flex flex-col items-center gap-2">
                     <span class="material-symbols-outlined text-4xl mb-2 text-green-200">map</span>
-                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="3384">0</span></div>
+                    <!-- Cập nhật diện tích sáp nhập 2026: 5939 km2 -->
+                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="5939">0</span></div>
                     <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Km² Diện Tích</div>
                 </div>
                 <div class="flex flex-col items-center gap-2">
@@ -202,7 +203,8 @@
                 </div>
                 <div class="flex flex-col items-center gap-2">
                     <span class="material-symbols-outlined text-4xl mb-2 text-green-200">account_balance</span>
-                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="17">0</span></div>
+                    <!-- Cập nhật tổng số Di tích Quốc gia sau sáp nhập Đồng Tháp + Tiền Giang -->
+                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="39">0</span></div>
                     <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Di Tích Lịch Sử QG</div>
                 </div>
                 <div class="flex flex-col items-center gap-2">
@@ -367,7 +369,6 @@
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             
-            // Tính toán góc nghiêng (tối đa 10 độ)
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
             const rotateX = ((y - centerY) / centerY) * -10; 
@@ -378,7 +379,6 @@
         
         card.addEventListener('mouseleave', () => {
             card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-            // Thêm transition mượt khi thả chuột ra
             card.style.transition = `transform 0.5s ease`;
             setTimeout(() => { card.style.transition = `transform 0.1s ease`; }, 500);
         });
@@ -408,6 +408,7 @@
                     header.classList.add('bg-white');
                     header.classList.remove('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
                 }
+                
                 ticking = false;
             });
             ticking = true;

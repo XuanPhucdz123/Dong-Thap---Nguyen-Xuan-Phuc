@@ -4,15 +4,14 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta name="theme-color" content="#1b5e20">
-    <title>Đồng Tháp - Xuân Phúc</title>
+    <title>Đồng Tháp - Cẩm nang Điện tử</title>
     
     <link rel="icon" type="image/png" href="favicon.png">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
-    
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     
     <script id="tailwind-config">
@@ -88,122 +87,55 @@
         @media (min-width: 768px) { .safe-padding { padding-top: 40px !important; } }
         #main-header { transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease; }
         
-        /* 🎨 Hiệu ứng Gradient Background */
         .gradient-bg {
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background: linear-gradient(-45deg, #1b5e20, #4caf50, #004d40, #2e7d32);
             background-size: 400% 400%;
-            animation: gradient-shift 15s ease infinite;
+            animation: gradient-shift 10s ease infinite;
         }
         
-        /* 🌟 Hiệu ứng Glow cho Cards */
-        .card-glow {
-            position: relative;
-            transition: all 0.3s ease;
-        }
+        .card-glow { position: relative; transition: all 0.3s ease; }
         .card-glow::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 1rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: -1;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 1rem; opacity: 0; transition: opacity 0.3s ease; z-index: -1;
         }
-        .card-glow:hover::before {
-            opacity: 1;
-            box-shadow: 0 0 40px rgba(76, 175, 80, 0.5);
+        .card-glow:hover::before { opacity: 1; box-shadow: 0 0 40px rgba(76, 175, 80, 0.5); }
+        
+        /* Hiệu ứng 3D Tilt */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+            transition: transform 0.1s ease; /* Thời gian chuyển đổi cực ngắn để bám sát chuột */
+        }
+        .tilt-content {
+            transform: translateZ(30px); /* Đẩy nội dung nổi lên trên nền */
         }
         
-        /* 🎯 Hiệu ứng Scale on Hover */
-        .scale-hover {
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .scale-hover:hover {
-            transform: scale(1.05);
-        }
-        
-        /* 🔲 Hiệu ứng Border Animation */
-        .border-animate {
-            position: relative;
-            overflow: hidden;
-        }
+        .border-animate { position: relative; overflow: hidden; }
         .border-animate::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.3), transparent);
-            transition: left 0.5s;
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.3), transparent); transition: left 0.5s;
         }
-        .border-animate:hover::after {
-            left: 100%;
-        }
+        .border-animate:hover::after { left: 100%; }
         
-        /* ✨ Counter Animation */
-        .counter {
-            font-weight: 900;
-            font-size: 1.875rem;
-        }
-        
-        /* 💫 Stagger Animation Delays */
         .stagger-1 { animation-delay: 0.1s; }
         .stagger-2 { animation-delay: 0.2s; }
         .stagger-3 { animation-delay: 0.3s; }
-        .stagger-4 { animation-delay: 0.4s; }
-        .stagger-5 { animation-delay: 0.5s; }
         
-        /* 🎪 Hiệu ứng Parallax */
-        .parallax {
-            background-attachment: fixed;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            min-height: 600px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        /* 🔆 Hiệu ứng Blur On Hover */
-        .blur-on-hover {
-            transition: all 0.3s ease;
-        }
-        .blur-on-hover:hover {
-            filter: blur(2px);
-            opacity: 0.7;
-        }
-        
-        /* 🌈 Hiệu ứng Text Gradient */
         .gradient-text {
             background: linear-gradient(135deg, #1b5e20, #4caf50, #81c784);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradient-shift 4s ease infinite;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; animation: gradient-shift 4s ease infinite;
         }
         
-        /* 🎬 Hiệu ứng Float Icons */
-        .float-icon {
-            animation: float 3s ease-in-out infinite;
-        }
-        .float-icon:nth-child(2) {
-            animation-delay: 0.5s;
-        }
-        .float-icon:nth-child(3) {
-            animation-delay: 1s;
-        }
+        .float-icon { animation: float 3s ease-in-out infinite; }
+        
+        [data-aos] { opacity: 0; }
     </style>
 
     <script>
       window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
     <script defer src="/_vercel/insights/script.js"></script>
-    
-    <link rel="preload" as="image" href="sen-27.jpg">
 </head>
 <body class="pt-16 md:pt-20">
 
@@ -216,7 +148,7 @@
             <div class="text-lg md:text-2xl font-black text-green-900 tracking-tight uppercase leading-none">Đồng Tháp</div>
         </div>
         <nav class="flex gap-3 md:gap-8 text-[10px] md:text-xs font-black uppercase">
-            <a class="text-green-700 border-b-2 border-green-700" href="/">Trang chủ</a>
+            <a class="text-green-700 border-b-2 border-green-700 pb-1" href="/">Trang chủ</a>
             <a class="text-gray-400 hover:text-green-700 transition-all duration-300" href="tramchim">Sinh thái</a>
             <a class="text-gray-400 hover:text-green-700 transition-all duration-300" href="ditichlichsu">Lịch sử</a>
             <a class="text-gray-400 hover:text-green-700 transition-all duration-300" href="danhlam">Danh Lam</a>
@@ -228,53 +160,80 @@
     <section class="safe-padding w-full px-4 max-w-7xl mx-auto">
         <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0">
             
-            <!-- 🎨 Parallax Background Layer -->
             <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none -z-10" id="parallax-bg">
-                <img alt="Glow" class="w-full h-full object-cover rounded-[3rem] saturate-150" src="sen-27.jpg" loading="lazy"/>
+                <img alt="Glow" class="w-full h-full object-cover rounded-[3rem] saturate-150" src="sen-27.jpg"/>
             </div>
             
             <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-0">
-                <img alt="Sen" class="w-full h-full object-cover brightness-50" src="sen-27.jpg" loading="lazy"/>
+                <img alt="Sen" class="w-full h-full object-cover brightness-50" src="sen-27.jpg"/>
                 <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
             </div>
             
-            <!-- 🎯 Content với Stagger Animation -->
             <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
                 <h1 class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 uppercase leading-tight tracking-tight pointer-events-auto animate-slide-right" style="animation-delay: 0.2s;">
                     Tìm Hiểu Về <br> 
                     <span class="gradient-text">Đồng Tháp</span>
                 </h1>
                 <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto animate-slide-up" style="animation-delay: 0.4s;">
-                    Hành trình về miền Đất Sen Hồng, nơi hội tụ vẻ đẹp thiên nhiên hoang sơ và di sản văn hóa độc đáo.
+                    Cẩm nang giáo dục trực tuyến về vùng Đất Sen Hồng, nơi hội tụ di sản văn hóa hào hùng và hệ sinh thái thiên nhiên trù phú.
                 </p>
-                <a href="#explore" class="w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs pointer-events-auto animate-scale-in scale-hover" style="animation-delay: 0.6s;">
-                    <span class="material-symbols-outlined">explore</span> Bắt đầu hành trình
+                <a href="#explore" class="w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs pointer-events-auto animate-scale-in" style="animation-delay: 0.6s;">
+                    <span class="material-symbols-outlined">auto_stories</span> Khám phá di sản
                 </a>
             </div>
         </div>
     </section>
 
-    <section id="explore" class="max-w-7xl mx-auto px-6 py-12 md:py-24">
-        <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12 animate-slide-up">
+    <section class="max-w-7xl mx-auto px-6 py-12 md:py-20" data-aos="fade-up">
+        <div class="gradient-bg rounded-[2rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden border border-green-400/30">
+            <div class="absolute -top-24 -right-24 text-white/10">
+                <span class="material-symbols-outlined" style="font-size: 300px;">local_florist</span>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center relative z-10">
+                <div class="flex flex-col items-center gap-2">
+                    <span class="material-symbols-outlined text-4xl mb-2 text-green-200">map</span>
+                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="3384">0</span></div>
+                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Km² Diện Tích</div>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                    <span class="material-symbols-outlined text-4xl mb-2 text-green-200">nature_people</span>
+                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="130">0</span>+</div>
+                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Loài Thực Vật Đặc Hữu</div>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                    <span class="material-symbols-outlined text-4xl mb-2 text-green-200">account_balance</span>
+                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="17">0</span></div>
+                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Di Tích Lịch Sử QG</div>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                    <span class="material-symbols-outlined text-4xl mb-2 text-green-200">library_books</span>
+                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="4">0</span></div>
+                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Chuyên mục Cẩm Nang</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="explore" class="max-w-7xl mx-auto px-6 pb-12 md:pb-24">
+        <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12 animate-slide-up" data-aos="fade-up">
             <div>
                 <h3 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Hành trình Di sản & Thiên nhiên</h3>
-                <div class="w-16 md:w-24 h-1 md:h-1.5 bg-gradient-to-r from-green-600 to-green-400 mt-3 animate-slide-right" style="animation-delay: 0.2s;"></div>
+                <div class="w-16 md:w-24 h-1 md:h-1.5 bg-gradient-to-r from-green-600 to-green-400 mt-3"></div>
             </div>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 mt-6">
             
-            <!-- 🎴 Card 1: Sinh thái -->
-            <div class="relative group h-full z-0 animate-slide-up stagger-1">
+            <div class="relative group h-full z-0" data-aos="fade-up" data-aos-delay="100">
                 <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.06] transition-all duration-700 pointer-events-none -z-10">
                     <img src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
                 </div>
                 
-                <article onclick="window.location.href='tramchim'" class="relative card-glow scale-hover bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
-                    <div class="h-48 md:h-64 overflow-hidden">
+                <article onclick="window.location.href='tramchim'" class="relative tilt-card card-glow bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
+                    <div class="h-48 md:h-64 overflow-hidden tilt-content">
                         <img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" loading="lazy"/>
                     </div>
-                    <div class="p-6 md:p-8 flex-grow flex flex-col">
+                    <div class="p-6 md:p-8 flex-grow flex flex-col tilt-content">
                         <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-widest mb-2 uppercase float-icon">Sinh thái ngập nước</div>
                         <h4 class="text-xl md:text-2xl font-black text-gray-900 mb-3">Vườn Quốc gia Tràm Chim</h4>
                         <p class="text-gray-600 mb-6 text-xs md:text-sm flex-grow">Khám phá khu Ramsar thứ 2000 của thế giới với loài Sếu đầu đỏ quý hiếm.</p>
@@ -286,17 +245,16 @@
                 </article>
             </div>
 
-            <!-- 🎴 Card 2: Lịch sử -->
-            <div class="relative group h-full z-0 animate-slide-up stagger-2">
+            <div class="relative group h-full z-0" data-aos="fade-up" data-aos-delay="200">
                 <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.06] transition-all duration-700 pointer-events-none -z-10">
                     <img src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
                 </div>
 
-                <article onclick="window.location.href='ditichlichsu'" class="relative card-glow scale-hover bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
-                    <div class="h-48 md:h-64 overflow-hidden">
+                <article onclick="window.location.href='ditichlichsu'" class="relative tilt-card card-glow bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
+                    <div class="h-48 md:h-64 overflow-hidden tilt-content">
                         <img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" loading="lazy"/>
                     </div>
-                    <div class="p-6 md:p-8 flex-grow flex flex-col">
+                    <div class="p-6 md:p-8 flex-grow flex flex-col tilt-content">
                         <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-widest mb-2 uppercase float-icon" style="animation-delay: 0.1s;">Dấu ấn thời gian</div>
                         <h4 class="text-xl md:text-2xl font-black text-gray-900 mb-3">Di tích Lịch sử & Văn hóa</h4>
                         <p class="text-gray-600 mb-6 text-xs md:text-sm flex-grow">Ngược dòng lịch sử tìm về các giá trị văn hóa tại Xẻo Quýt, Gò Tháp và Lăng Cụ Phó bảng.</p>
@@ -308,17 +266,16 @@
                 </article>
             </div>
 
-            <!-- 🎴 Card 3: Danh lam -->
-            <div class="relative group h-full z-0 animate-slide-up stagger-3">
+            <div class="relative group h-full z-0" data-aos="fade-up" data-aos-delay="300">
                 <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.06] transition-all duration-700 pointer-events-none -z-10">
-                    <img src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-110" loading="lazy"/>
+                    <img src="kinh-nghiem-lang-hoa-sa-dec-2.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-110" loading="lazy"/>
                 </div>
 
-                <article onclick="window.location.href='danhlam'" class="relative card-glow scale-hover bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
-                    <div class="h-48 md:h-64 overflow-hidden">
-                        <img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" loading="lazy"/>
+                <article onclick="window.location.href='danhlam'" class="relative tilt-card card-glow bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
+                    <div class="h-48 md:h-64 overflow-hidden tilt-content">
+                        <img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="kinh-nghiem-lang-hoa-sa-dec-2.jpg" loading="lazy"/>
                     </div>
-                    <div class="p-6 md:p-8 flex-grow flex flex-col">
+                    <div class="p-6 md:p-8 flex-grow flex flex-col tilt-content">
                         <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-widest mb-2 uppercase float-icon" style="animation-delay: 0.2s;">Sắc màu xứ sở</div>
                         <h4 class="text-xl md:text-2xl font-black text-gray-900 mb-3">Danh Lam Thắng Cảnh</h4>
                         <p class="text-gray-600 mb-6 text-xs md:text-sm flex-grow">Trải nghiệm nét độc đáo của Làng hoa Sa Đéc và vẻ đẹp thanh bình của Đồng Tháp Mười.</p>
@@ -334,11 +291,11 @@
     </section>
 </main>
 
-<footer class="bg-[#111811] text-white py-12 md:py-16 px-6">
+<footer class="bg-[#111811] text-white py-12 md:py-16 px-6 border-t-[6px] border-green-800">
     <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-8">
         <div class="text-center lg:text-left">
             <div class="text-2xl md:text-3xl font-black text-green-500 uppercase">Đồng Tháp</div>
-            <p class="text-gray-400 text-xs md:text-sm max-w-md italic mt-2">Số hóa vẻ đẹp miền Đất Sen Hồng qua lăng kính công nghệ.</p>
+            <p class="text-gray-400 text-xs md:text-sm max-w-md italic mt-2">Hệ thống số hóa thông tin giáo dục địa phương.</p>
         </div>
         <nav class="flex flex-wrap justify-center gap-4 text-[10px] md:text-xs font-bold uppercase text-gray-500">
             <a class="hover:text-green-400 transition-all duration-300" href="/">Trang chủ</a>
@@ -354,52 +311,35 @@
 </footer>
 
 <script>
-    // ============ INTERSECTION OBSERVER - Thay thế AOS ============
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
+    // ============ INTERSECTION OBSERVER ============
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
     const observer = new IntersectionObserver(function(entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const element = entry.target;
-                
-                // Thêm animation based on data-aos attribute
                 const aosType = element.getAttribute('data-aos');
                 let animationClass = 'animate-slide-up';
                 
                 if (aosType === 'fade-right') animationClass = 'animate-slide-right';
                 else if (aosType === 'fade-up') animationClass = 'animate-slide-up';
-                else if (aosType === 'fade-left') animationClass = 'animate-slide-left';
-                else if (aosType === 'fade-down') animationClass = 'animate-slide-down';
                 else if (aosType === 'fade-in') animationClass = 'animate-scale-in';
                 
                 element.classList.add(animationClass);
+                element.style.opacity = 1;
                 observer.unobserve(element);
             }
         });
     }, observerOptions);
-
     document.querySelectorAll('[data-aos]').forEach(el => observer.observe(el));
-
-    // ============ PARALLAX EFFECT ============
-    window.addEventListener('scroll', () => {
-        const parallaxBg = document.getElementById('parallax-bg');
-        if (parallaxBg) {
-            const scrollPos = window.scrollY;
-            parallaxBg.style.transform = `translateY(${scrollPos * 0.5}px)`;
-        }
-    });
 
     // ============ COUNTER ANIMATION ============
     const counterElements = document.querySelectorAll('.counter');
     counterElements.forEach(counter => {
-        const target = parseInt(counter.getAttribute('data-target')) || parseInt(counter.textContent);
+        const target = parseInt(counter.getAttribute('data-target'));
         const duration = 2000;
         const increment = target / (duration / 16);
         
-        const observer = new IntersectionObserver(entries => {
+        const observerCounter = new IntersectionObserver(entries => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && !counter.classList.contains('counted')) {
                     counter.classList.add('counted');
@@ -416,8 +356,32 @@
                 }
             });
         }, observerOptions);
+        observerCounter.observe(counter);
+    });
+
+    // ============ 3D TILT EFFECT ============
+    const tiltCards = document.querySelectorAll('.tilt-card');
+    tiltCards.forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Tính toán góc nghiêng (tối đa 10 độ)
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -10; 
+            const rotateY = ((x - centerX) / centerX) * 10;
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
         
-        observer.observe(counter);
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            // Thêm transition mượt khi thả chuột ra
+            card.style.transition = `transform 0.5s ease`;
+            setTimeout(() => { card.style.transition = `transform 0.1s ease`; }, 500);
+        });
     });
 
     // ============ OPTIMIZED SCROLL EVENT ============
@@ -425,22 +389,25 @@
     window.addEventListener('scroll', function() {
         if (!ticking) {
             window.requestAnimationFrame(function() {
-                // Progress Bar
-                let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                let winScroll = window.scrollY || document.documentElement.scrollTop;
+                
+                const parallaxBg = document.getElementById('parallax-bg');
+                if (parallaxBg) {
+                    parallaxBg.style.transform = `translateY(${winScroll * 0.5}px)`;
+                }
+
                 let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
                 let scrolled = (winScroll / height) * 100;
                 document.getElementById("progress-bar").style.width = scrolled + "%";
                 
-                // Header Blur
                 const header = document.getElementById('main-header');
-                if (window.scrollY > 80) {
+                if (winScroll > 80) {
                     header.classList.remove('bg-white');
                     header.classList.add('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
                 } else {
                     header.classList.add('bg-white');
                     header.classList.remove('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
                 }
-                
                 ticking = false;
             });
             ticking = true;

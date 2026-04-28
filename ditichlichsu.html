@@ -43,6 +43,14 @@
                             'from': { opacity: '0', transform: 'translateY(30px)' },
                             'to': { opacity: '1', transform: 'translateY(0)' },
                         },
+                        'slide-down': {
+                            'from': { opacity: '0', transform: 'translateY(-30px)' },
+                            'to': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        'slide-left': {
+                            'from': { opacity: '0', transform: 'translateX(30px)' },
+                            'to': { opacity: '1', transform: 'translateX(0)' },
+                        },
                         'slide-right': {
                             'from': { opacity: '0', transform: 'translateX(-30px)' },
                             'to': { opacity: '1', transform: 'translateX(0)' },
@@ -58,6 +66,8 @@
                         'glow': 'glow 2s ease-in-out infinite',
                         'gradient-shift': 'gradient-shift 3s ease infinite',
                         'slide-up': 'slide-up 0.6s ease forwards',
+                        'slide-down': 'slide-down 0.6s ease forwards',
+                        'slide-left': 'slide-left 0.6s ease forwards',
                         'slide-right': 'slide-right 0.6s ease forwards',
                         'scale-in': 'scale-in 0.6s ease forwards',
                     }
@@ -171,7 +181,7 @@
                         Nằm ẩn mình giữa thảm rừng tràm nguyên sinh rậm rạp của huyện Cao Lãnh, <strong>Xẻo Quýt</strong> từng là căn cứ kháng chiến kiên cường của Tỉnh ủy Đồng Tháp trong giai đoạn khốc liệt từ 1960 đến 1975.
                     </p>
                     <p>
-                        Bước chân vào đây, du khách sẽ được tận mắt chứng kiến mạng lưới hầm chữ A, công sự chiến đấu, và những lán trại được phục dựng nguyên bản. Nơi đây là minh chứng sống động cho nghệ thuật chiến tranh du kích, nơi quân và dân ta đã hòa mình vào thiên nhiên sông ngòi chằng chịt để che mắt kẻ thù.
+                        Bước chân vào đây, các bạn sẽ được tận mắt chứng kiến mạng lưới hầm chữ A, công sự chiến đấu, và những lán trại được phục dựng nguyên bản. Nơi đây là minh chứng sống động cho nghệ thuật chiến tranh du kích, nơi quân và dân ta đã hòa mình vào thiên nhiên sông ngòi chằng chịt để che mắt kẻ thù.
                     </p>
                 </div>
             </div>
@@ -283,7 +293,6 @@
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             
-            // Tính toán góc nghiêng (tối đa 10 độ)
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
             const rotateX = ((y - centerY) / centerY) * -10; 

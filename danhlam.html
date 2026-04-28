@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta name="theme-color" content="#1b5e20">
-    <title>Đồng Tháp - Danh Lam Thắng Cảnh</title>
+    <title>Đồng Tháp - Di tích Lịch sử</title>
     
     <link rel="icon" type="image/png" href="favicon.png">
     
@@ -43,14 +43,6 @@
                             'from': { opacity: '0', transform: 'translateY(30px)' },
                             'to': { opacity: '1', transform: 'translateY(0)' },
                         },
-                        'slide-down': {
-                            'from': { opacity: '0', transform: 'translateY(-30px)' },
-                            'to': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        'slide-left': {
-                            'from': { opacity: '0', transform: 'translateX(30px)' },
-                            'to': { opacity: '1', transform: 'translateX(0)' },
-                        },
                         'slide-right': {
                             'from': { opacity: '0', transform: 'translateX(-30px)' },
                             'to': { opacity: '1', transform: 'translateX(0)' },
@@ -66,8 +58,6 @@
                         'glow': 'glow 2s ease-in-out infinite',
                         'gradient-shift': 'gradient-shift 3s ease infinite',
                         'slide-up': 'slide-up 0.6s ease forwards',
-                        'slide-down': 'slide-down 0.6s ease forwards',
-                        'slide-left': 'slide-left 0.6s ease forwards',
                         'slide-right': 'slide-right 0.6s ease forwards',
                         'scale-in': 'scale-in 0.6s ease forwards',
                     }
@@ -125,8 +115,8 @@
         <nav class="flex gap-3 md:gap-8 text-[10px] md:text-xs font-black uppercase">
             <a class="text-gray-400 hover:text-green-700 transition-colors" href="/">Trang chủ</a>
             <a class="text-gray-400 hover:text-green-700 transition-colors" href="tramchim">Sinh thái</a>
-            <a class="text-gray-400 hover:text-green-700 transition-colors" href="ditichlichsu">Lịch sử</a>
-            <a class="text-green-700 border-b-2 border-green-700 pb-1" href="danhlam">Danh Lam</a>
+            <a class="text-green-700 border-b-2 border-green-700 pb-1" href="ditichlichsu">Lịch sử</a>
+            <a class="text-gray-400 hover:text-green-700 transition-colors" href="danhlam">Danh Lam</a>
         </nav>
     </div>
 </header>
@@ -136,21 +126,21 @@
         <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0">
             
             <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none -z-10" id="parallax-bg">
-                <img alt="Glow" class="w-full h-full object-cover rounded-[3rem] saturate-150 brightness-110" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg"/>
+                <img alt="Glow" class="w-full h-full object-cover rounded-[3rem] saturate-150 brightness-110" src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg"/>
             </div>
             
             <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-0">
-                <img alt="Danh Lam Thắng Cảnh" class="w-full h-full object-cover brightness-50" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg"/>
+                <img alt="Di tích Lịch sử" class="w-full h-full object-cover brightness-50" src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg"/>
                 <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
             </div>
             
             <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
                 <h1 class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 md:mb-6 uppercase leading-tight tracking-tight pointer-events-auto animate-slide-right" style="animation-delay: 0.2s;">
-                    Danh Lam <br> 
+                    Lịch Sử <br> 
                     <span class="gradient-text">Đồng Tháp</span>
                 </h1>
                 <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto animate-slide-up" style="animation-delay: 0.4s;">
-                    Không gian học tập thực tế về miền Đất Sen Hồng, nơi bảo tồn và phát huy giá trị của những làng nghề truyền thống và cảnh quan thiên nhiên trù phú.
+                    Hành trình ngược dòng thời gian, tìm về những di sản văn hóa hào hùng và những dấu ấn lịch sử không thể phai mờ của vùng Đất Sen Hồng.
                 </p>
                 <div class="pointer-events-auto animate-scale-in" style="animation-delay: 0.6s;">
                     <a href="/" class="w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 md:px-10 py-3 md:py-4 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs md:text-sm tracking-wider">
@@ -164,72 +154,72 @@
     <section class="max-w-7xl mx-auto px-6 py-16 md:py-24 space-y-16 md:space-y-32">
         
         <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center" data-aos="fade-up">
-            <div class="w-full md:w-1/2 relative group z-0 tilt-card">
+            <div class="w-full md:w-1/2 relative group z-0 tilt-card cursor-pointer">
                 <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.05] transition-all duration-700 pointer-events-none -z-10 tilt-content">
-                    <img src="kinh-nghiem-lang-hoa-sa-dec-2.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-110"/>
+                    <img src="vietgoing_qfs2201047730.png" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125"/>
                 </div>
-                <img src="kinh-nghiem-lang-hoa-sa-dec-2.jpg" alt="Làng hoa Sa Đéc" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2 tilt-content"/>
+                <img src="vietgoing_qfs2201047730.png" alt="Xẻo Quýt" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2 tilt-content"/>
             </div>
             
             <div class="w-full md:w-1/2 space-y-4 md:space-y-6">
                 <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl float-icon">local_florist</span>
-                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Làng hoa Sa Đéc</h2>
+                    <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl float-icon">fort</span>
+                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Căn cứ Cách mạng Xẻo Quýt</h2>
                 </div>
                 <div class="space-y-4 text-base md:text-lg text-gray-600 leading-relaxed text-justify">
                     <p>
-                        <strong>Làng hoa Sa Đéc</strong> không chỉ là vựa hoa kiểng lớn nhất miền Tây Nam Bộ mà còn là một minh chứng sống động cho sự sáng tạo trong lao động sản xuất. Điểm độc đáo mang tính biểu tượng ở đây là kỹ thuật canh tác "hoa trên giàn", giúp người dân thích nghi hoàn hảo với chu kỳ nước nổi hàng năm.
+                        Nằm ẩn mình giữa thảm rừng tràm nguyên sinh rậm rạp của huyện Cao Lãnh, <strong>Xẻo Quýt</strong> từng là căn cứ kháng chiến kiên cường của Tỉnh ủy Đồng Tháp trong giai đoạn khốc liệt từ 1960 đến 1975.
                     </p>
                     <p>
-                        Dưới góc độ giáo dục, đây là mô hình học tập thực tế quý giá. Các em học sinh có cơ hội trực tiếp quan sát các phương pháp lai tạo giống, kỹ thuật chăm sóc thực vật và hiểu rõ hơn về tác động của điều kiện thủy văn đến nông nghiệp vùng Đồng bằng sông Cửu Long.
+                        Bước chân vào đây, các bạn sẽ được tận mắt chứng kiến mạng lưới hầm chữ A, công sự chiến đấu, và những lán trại được phục dựng nguyên bản. Nơi đây là minh chứng sống động cho nghệ thuật chiến tranh du kích, nơi quân và dân ta đã hòa mình vào thiên nhiên sông ngòi chằng chịt để che mắt kẻ thù.
                     </p>
                 </div>
             </div>
         </article>
 
         <article class="flex flex-col md:flex-row-reverse gap-8 md:gap-16 items-center" data-aos="fade-up">
-            <div class="w-full md:w-1/2 relative group z-0 tilt-card">
+            <div class="w-full md:w-1/2 relative group z-0 tilt-card cursor-pointer">
                 <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.05] transition-all duration-700 pointer-events-none -z-10 tilt-content">
-                    <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125"/>
+                    <img src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125"/>
                 </div>
-                <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" alt="Hệ sinh thái ngập nước" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2 tilt-content"/>
+                <img src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" alt="Nguyễn Sinh Sắc" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2 tilt-content"/>
             </div>
             
             <div class="w-full md:w-1/2 space-y-4 md:space-y-6">
                 <div class="flex items-center justify-start md:justify-end gap-3">
-                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight text-left md:text-right">Hệ sinh thái ngập nước</h2>
-                    <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl float-icon" style="animation-delay: 0.5s;">water_drop</span>
+                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight text-left md:text-right">Khu di tích Nguyễn Sinh Sắc</h2>
+                    <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl float-icon" style="animation-delay: 0.5s;">account_balance</span>
                 </div>
                 <div class="space-y-4 text-base md:text-lg text-gray-600 leading-relaxed text-justify">
                     <p>
-                        Đồng Tháp sở hữu những vùng đất ngập nước hoang sơ mang đậm dấu ấn của Đồng Tháp Mười thuở sơ khai. Sự kết hợp giữa các quần xã thực vật đa dạng, từ đồng cỏ ngập nước, rừng tràm đến đầm sen bát ngát tạo nên một hệ thống sinh thái hoàn chỉnh và bền vững.
+                        Tọa lạc ngay tại trung tâm thành phố Cao Lãnh, đây là nơi yên nghỉ cuối cùng của cụ Phó bảng <strong>Nguyễn Sinh Sắc</strong> - thân sinh của Chủ tịch Hồ Chí Minh. Khu lăng mộ là biểu tượng của lòng tôn kính và lòng biết ơn sâu sắc mà nhân dân Nam Bộ dành cho cụ.
                     </p>
                     <p>
-                        Được ví như "thư viện xanh" của vùng sông nước, hệ sinh thái này đóng vai trò cốt lõi trong việc điều hòa vi hậu hậu và bảo tồn các loài động thực vật hoang dã. Việc tìm hiểu về môi trường này giúp định hình ý thức bảo vệ thiên nhiên và tình yêu quê hương đất nước cho thế hệ trẻ.
+                        Quần thể kiến trúc này mang đậm nét văn hóa truyền thống với mái ngói hình đóa sen cách điệu, hồ sen thanh bình và đặc biệt là mô hình nhà sàn Bác Hồ được phục dựng theo đúng tỷ lệ 1:1 so với nguyên bản tại Hà Nội.
                     </p>
                 </div>
             </div>
         </article>
 
         <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center" data-aos="fade-up">
-            <div class="w-full md:w-1/2 relative group z-0 tilt-card">
+            <div class="w-full md:w-1/2 relative group z-0 tilt-card cursor-pointer">
                 <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.05] transition-all duration-700 pointer-events-none -z-10 tilt-content">
-                    <img src="gao-giong.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125"/>
+                    <img src="go-and-share-khu-di-tich-go-thap-dong-thap-1.png" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125"/>
                 </div>
-                <img src="gao-giong.jpg" alt="Gáo Giồng" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2 tilt-content"/>
+                <img src="go-and-share-khu-di-tich-go-thap-dong-thap-1.png" alt="Gò Tháp" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2 tilt-content"/>
             </div>
             
             <div class="w-full md:w-1/2 space-y-4 md:space-y-6">
                 <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl float-icon" style="animation-delay: 1s;">park</span>
-                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Khu sinh thái Gáo Giồng</h2>
+                    <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl float-icon" style="animation-delay: 1s;">travel_explore</span>
+                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Khu di tích Quốc gia đặc biệt Gò Tháp</h2>
                 </div>
                 <div class="space-y-4 text-base md:text-lg text-gray-600 leading-relaxed text-justify">
                     <p>
-                        Được mệnh danh là "ốc đảo xanh" giữa lòng Đồng Tháp Mười, <strong>Khu sinh thái Gáo Giồng</strong> là một ví dụ điển hình về công tác quy hoạch và bảo vệ tài nguyên rừng. Nơi đây duy trì môi trường sống tự nhiên cho hàng chục loài chim nước và các loài thủy sản bản địa.
+                        <strong>Gò Tháp</strong> (huyện Tháp Mười) không chỉ là một danh thắng mà còn là vùng đất thiêng liêng lưu giữ "mã gen" của nền văn hóa Óc Eo rực rỡ tồn tại từ hơn 1.500 năm trước.
                     </p>
                     <p>
-                        Từ góc nhìn nghiên cứu, đài quan sát tại Gáo Giồng cung cấp một tầm nhìn toàn cảnh, hỗ trợ tốt cho việc ghi chép và phân tích tập tính sinh hoạt của các bầy chim chao lượn. Đây là không gian lý tưởng để tổ chức các hoạt động ngoại khóa, khơi dậy niềm đam mê sinh học và khoa học môi trường.
+                        Các cuộc khai quật khảo cổ học tại đây đã phát lộ ra nền móng của những đền tháp cổ bằng gạch nung, vô số hiện vật bằng vàng, tượng Phật và linh vật Mộc bản. Gò Tháp còn gắn liền với giai thoại về hai vị anh hùng dân tộc Thiên hộ Võ Duy Dương và Đốc binh Nguyễn Tấn Kiều.
                     </p>
                 </div>
             </div>

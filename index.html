@@ -79,76 +79,287 @@
             }
         }
     </script>
+
     <style>
         :root { --primary-green: #1b5e20; --accent-green: #4caf50; }
+
+        /* ========== BASE ========== */
         body { background-color: #f4f7f4; font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
-        #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: var(--accent-green); width: 0%; z-index: 100; transition: width 0.1s; }
+        #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(90deg, #1b5e20, #4caf50, #81c784); width: 0%; z-index: 200; transition: width 0.1s; }
         .safe-padding { padding-top: 120px !important; }
         @media (min-width: 768px) { .safe-padding { padding-top: 40px !important; } }
         #main-header { transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease; }
-        
+
+        /* ========== LOADING SCREEN ========== */
+        #loading-screen {
+            position: fixed; inset: 0; background: #0a1f0a; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        #loading-screen.hidden { opacity: 0; visibility: hidden; }
+        .loader-lotus {
+            width: 60px; height: 60px; position: relative; margin-bottom: 24px;
+        }
+        .loader-petal {
+            position: absolute; width: 20px; height: 30px;
+            background: linear-gradient(135deg, #4caf50, #81c784);
+            border-radius: 50% 50% 50% 0;
+            transform-origin: bottom right;
+            animation: petal-spin 1.6s ease-in-out infinite;
+            opacity: 0.85;
+        }
+        .loader-petal:nth-child(1) { transform: rotate(0deg); animation-delay: 0s; }
+        .loader-petal:nth-child(2) { transform: rotate(72deg); animation-delay: 0.2s; }
+        .loader-petal:nth-child(3) { transform: rotate(144deg); animation-delay: 0.4s; }
+        .loader-petal:nth-child(4) { transform: rotate(216deg); animation-delay: 0.6s; }
+        .loader-petal:nth-child(5) { transform: rotate(288deg); animation-delay: 0.8s; }
+        @keyframes petal-spin {
+            0%, 100% { opacity: 0.3; transform: rotate(var(--r, 0deg)) scale(0.8); }
+            50% { opacity: 1; transform: rotate(var(--r, 0deg)) scale(1.1); }
+        }
+        .loader-petal:nth-child(1) { --r: 0deg; }
+        .loader-petal:nth-child(2) { --r: 72deg; }
+        .loader-petal:nth-child(3) { --r: 144deg; }
+        .loader-petal:nth-child(4) { --r: 216deg; }
+        .loader-petal:nth-child(5) { --r: 288deg; }
+        .loader-text {
+            color: #4caf50; font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+            font-weight: 800; animation: loader-pulse 1.2s ease-in-out infinite;
+        }
+        @keyframes loader-pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+        /* ========== GRAIN OVERLAY ========== */
+        body::before {
+            content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none;
+            opacity: 0.025;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* ========== GRADIENT BG ========== */
         .gradient-bg {
             background: linear-gradient(-45deg, #1b5e20, #4caf50, #004d40, #2e7d32);
             background-size: 400% 400%;
             animation: gradient-shift 10s ease infinite;
         }
-        
-        .card-glow { position: relative; transition: all 0.3s ease; }
-        .card-glow::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            border-radius: 1rem; opacity: 0; transition: opacity 0.3s ease; z-index: -1;
-        }
-        .card-glow:hover::before { opacity: 1; box-shadow: 0 0 40px rgba(76, 175, 80, 0.5); }
-        
-        /* Hiệu ứng 3D Tilt */
-        .tilt-card {
-            transform-style: preserve-3d;
-            transform: perspective(1000px);
-            transition: transform 0.1s ease;
-        }
-        .tilt-content {
-            transform: translateZ(30px);
-        }
-        
-        .border-animate { position: relative; overflow: hidden; }
-        .border-animate::after {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.3), transparent); transition: left 0.5s;
-        }
-        .border-animate:hover::after { left: 100%; }
-        
-        .stagger-1 { animation-delay: 0.1s; }
-        .stagger-2 { animation-delay: 0.2s; }
-        .stagger-3 { animation-delay: 0.3s; }
-        
-        /* Cứu cánh cho chữ ĐỒNG THÁP không bị cắt dấu */
+
+        /* ========== GRADIENT TEXT ========== */
         .gradient-text {
             background: linear-gradient(135deg, #1b5e20, #4caf50, #81c784, #1b5e20);
             background-size: 300% 300%;
-            -webkit-background-clip: text; 
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text; 
+            background-clip: text;
             animation: gradient-shift 6s ease infinite;
             display: inline-block;
-            padding-top: 0.3em;
-            padding-bottom: 0.1em;
-            line-height: 1.2;
+            padding-top: 0.3em; padding-bottom: 0.1em; line-height: 1.2;
         }
-        
-        .float-icon { animation: float 3s ease-in-out infinite; }
-        
-        [data-aos] { opacity: 0; }
-    </style>
 
-    <script>
-      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    </script>
-    <script defer src="/_vercel/insights/script.js"></script>
+        /* ========== FLOAT ICON ========== */
+        .float-icon { animation: float 3s ease-in-out infinite; }
+
+        /* ========== CARD EFFECTS ========== */
+        .card-glow { position: relative; transition: all 0.3s ease; }
+        .card-glow::before {
+            content: ''; position: absolute; inset: 0; border-radius: 1rem;
+            opacity: 0; transition: opacity 0.3s ease; z-index: -1;
+        }
+        .card-glow:hover::before { opacity: 1; box-shadow: 0 0 40px rgba(76, 175, 80, 0.5); }
+
+        /* Shine sweep on cards */
+        .card-shine { position: relative; overflow: hidden; }
+        .card-shine::after {
+            content: ''; position: absolute; top: -50%; left: -80%; width: 50%; height: 200%;
+            background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.18) 50%, transparent 60%);
+            transform: skewX(-20deg); transition: left 0.6s ease; pointer-events: none; z-index: 5;
+        }
+        .card-shine:hover::after, .card-shine:active::after { left: 120%; }
+
+        /* ========== 3D TILT ========== */
+        .tilt-card { transform-style: preserve-3d; transform: perspective(1000px); transition: transform 0.1s ease; }
+        .tilt-content { transform: translateZ(30px); }
+
+        /* ========== BORDER SHIMMER ========== */
+        .border-animate { position: relative; overflow: hidden; }
+        .border-animate::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.3), transparent);
+            transition: left 0.5s; z-index: 4; pointer-events: none;
+        }
+        .border-animate:hover::before { left: 100%; }
+
+        /* ========== RIPPLE ========== */
+        .ripple-container { position: relative; overflow: hidden; }
+        .ripple {
+            position: absolute; border-radius: 50%; background: rgba(76, 175, 80, 0.35);
+            transform: scale(0); animation: ripple-anim 0.6s linear;
+            pointer-events: none; z-index: 10;
+        }
+        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+
+        /* ========== FLOATING PARTICLES ========== */
+        #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+        .particle {
+            position: absolute; border-radius: 50%;
+            background: radial-gradient(circle, rgba(76,175,80,0.6) 0%, transparent 70%);
+            animation: particle-float linear infinite;
+            will-change: transform;
+        }
+        @keyframes particle-float {
+            0% { transform: translateY(110vh) scale(0); opacity: 0; }
+            10% { opacity: 1; transform: translateY(90vh) scale(1); }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-20px) scale(0.5); opacity: 0; }
+        }
+
+        /* ========== SCROLL TO TOP ========== */
+        #scroll-top {
+            position: fixed; bottom: 24px; right: 20px; z-index: 100;
+            width: 48px; height: 48px; background: linear-gradient(135deg, #1b5e20, #4caf50);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 4px 20px rgba(76,175,80,0.5);
+            opacity: 0; transform: translateY(20px) scale(0.8);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        #scroll-top.visible { opacity: 1; transform: translateY(0) scale(1); }
+        #scroll-top:active { transform: scale(0.9); }
+        #scroll-top svg { width: 20px; height: 20px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* ========== PULSE RING ON STAT ICONS ========== */
+        .pulse-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+        .pulse-wrap::before, .pulse-wrap::after {
+            content: ''; position: absolute; inset: -6px; border-radius: 50%;
+            border: 2px solid rgba(129, 199, 132, 0.5);
+            animation: pulse-ring-anim 2.5s ease-out infinite;
+        }
+        .pulse-wrap::after { animation-delay: 1.25s; }
+        @keyframes pulse-ring-anim {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
+
+        /* ========== TYPEWRITER ========== */
+        .typewriter-cursor::after {
+            content: '|'; animation: blink 0.8s step-start infinite; color: #4caf50;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* ========== WAVE DIVIDER ========== */
+        .wave-divider { line-height: 0; }
+        .wave-divider svg { display: block; }
+
+        /* ========== SCROLL REVEAL BASE ========== */
+        [data-aos] { opacity: 0; }
+
+        /* ========== STAGGER ========== */
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+
+        /* ========== MAGNETIC BTN ========== */
+        .magnetic-btn { display: inline-flex; transition: transform 0.2s ease; }
+
+        /* ========== HIGHLIGHT UNDERLINE ON SCROLL ========== */
+        .highlight-word {
+            position: relative; display: inline-block;
+        }
+        .highlight-word::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 3px;
+            background: linear-gradient(90deg, #4caf50, #81c784);
+            border-radius: 2px; transition: width 0.8s ease;
+        }
+        .highlight-word.active::after { width: 100%; }
+
+        /* ========== TAG BADGE ========== */
+        .eco-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: rgba(76,175,80,0.12); border: 1px solid rgba(76,175,80,0.3);
+            color: #1b5e20; font-size: 9px; font-weight: 800; letter-spacing: 1.5px;
+            text-transform: uppercase; padding: 3px 10px; border-radius: 999px;
+            animation: badge-glow 3s ease-in-out infinite;
+        }
+        @keyframes badge-glow {
+            0%, 100% { box-shadow: 0 0 0px rgba(76,175,80,0); }
+            50% { box-shadow: 0 0 12px rgba(76,175,80,0.4); }
+        }
+
+        /* ========== MORPHING BLOB ========== */
+        .blob-bg {
+            position: absolute; border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            background: radial-gradient(circle at 30% 50%, rgba(76,175,80,0.15), rgba(27,94,32,0.08));
+            filter: blur(30px);
+            animation: blob-morph 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes blob-morph {
+            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+            50% { border-radius: 50% 60% 30% 60% / 30% 40% 70% 50%; }
+            75% { border-radius: 40% 60% 60% 30% / 60% 40% 50% 60%; }
+        }
+
+        /* ========== STATS PROGRESS BAR ========== */
+        .stat-bar { height: 3px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; margin-top: 8px; }
+        .stat-bar-fill { height: 100%; background: linear-gradient(90deg, #81c784, #fff); border-radius: 2px; width: 0; transition: width 1.5s cubic-bezier(0.4,0,0.2,1); }
+
+        /* ========== SWIPE HINT (mobile) ========== */
+        .swipe-hint {
+            display: none; align-items: center; gap: 6px; color: #6b7280;
+            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+        }
+        @media (max-width: 767px) { .swipe-hint { display: flex; } }
+        .swipe-arrow { animation: swipe-anim 1.5s ease-in-out infinite; }
+        @keyframes swipe-anim {
+            0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); }
+        }
+
+        /* ========== CARD ACTIVE STATE (mobile tap) ========== */
+        article:active { transform: scale(0.97); transition: transform 0.15s ease; }
+
+        /* ========== MOBILE SCROLL SNAP for cards ========== */
+        @media (max-width: 767px) {
+            .cards-scroll-snap { display: flex; overflow-x: auto; gap: 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 12px; }
+            .cards-scroll-snap::-webkit-scrollbar { display: none; }
+            .cards-scroll-snap > div { scroll-snap-align: start; flex: 0 0 82vw; }
+        }
+
+        /* ========== FOOTER GLOW LINK ========== */
+        .glow-link { text-shadow: 0 0 12px rgba(74,222,128,0.5); }
+
+        /* ========== REDUCED MOTION ========== */
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
 </head>
 <body class="pt-20 md:pt-24">
 
+<!-- ====== LOADING SCREEN ====== -->
+<div id="loading-screen">
+    <div class="loader-lotus">
+        <div class="loader-petal"></div>
+        <div class="loader-petal"></div>
+        <div class="loader-petal"></div>
+        <div class="loader-petal"></div>
+        <div class="loader-petal"></div>
+    </div>
+    <div class="loader-text">Đất Sen Hồng</div>
+</div>
+
+<!-- ====== PARTICLES ====== -->
+<div id="particles" aria-hidden="true"></div>
+
+<!-- ====== PROGRESS BAR ====== -->
 <div id="progress-bar"></div>
 
+<!-- ====== SCROLL TO TOP ====== -->
+<button id="scroll-top" aria-label="Lên đầu trang" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+</button>
+
+<!-- ====== HEADER ====== -->
 <header id="main-header" class="bg-white fixed top-0 w-full z-50 border-b border-gray-200">
     <div class="flex justify-between items-center px-4 md:px-6 py-3 md:py-4 max-w-7xl mx-auto">
         <div class="flex items-center gap-2">
@@ -165,85 +376,135 @@
 </header>
 
 <main>
+    <!-- ====== HERO SECTION ====== -->
     <section class="w-full px-4 max-w-7xl mx-auto mb-8">
         <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0">
             
+            <!-- Parallax glow bg -->
             <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none -z-10" id="parallax-bg">
                 <img alt="Glow" class="w-full h-full object-cover rounded-[3rem] saturate-150" src="sen-27.jpg"/>
             </div>
             
+            <!-- Hero image -->
             <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-0">
-                <img alt="Sen" class="w-full h-full object-cover brightness-50" src="sen-27.jpg"/>
+                <img alt="Sen" class="w-full h-full object-cover brightness-50" src="sen-27.jpg" id="hero-img"/>
                 <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
             </div>
-            
+
+            <!-- Morphing blob decorations -->
+            <div class="blob-bg w-64 h-64 md:w-96 md:h-96 absolute right-10 top-10 z-1 opacity-60"></div>
+
+            <!-- Content -->
             <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
+                <div class="eco-badge mb-4 pointer-events-auto animate-slide-down" style="animation-delay:0.1s;">
+                    <span class="material-symbols-outlined" style="font-size:12px;">eco</span>
+                    Đất Sen Hồng
+                </div>
                 <h1 class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 uppercase leading-normal tracking-tight pointer-events-auto animate-slide-right" style="animation-delay: 0.2s;">
-                    Tìm Hiểu Về <br> 
+                    Tìm Hiểu Về <br>
                     <span class="gradient-text">Đồng Tháp</span>
                 </h1>
-                <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto animate-slide-up" style="animation-delay: 0.4s;">
-                    Cẩm nang giáo dục trực tuyến về vùng Đất Sen Hồng, nơi hội tụ di sản văn hóa hào hùng và hệ sinh thái thiên nhiên trù phú.
-                </p>
-                <a href="#explore" class="w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs pointer-events-auto animate-scale-in" style="animation-delay: 0.6s;">
+                <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto animate-slide-up" style="animation-delay: 0.4s;" id="hero-subtitle"></p>
+                <a href="#explore" class="magnetic-btn ripple-container w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs pointer-events-auto animate-scale-in" style="animation-delay: 0.6s;">
                     <span class="material-symbols-outlined">auto_stories</span> Khám phá di sản
                 </a>
             </div>
         </div>
     </section>
 
+    <!-- ====== WAVE DIVIDER ====== -->
+    <div class="wave-divider -mt-8 relative z-10" aria-hidden="true">
+        <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:40px;">
+            <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#f4f7f4"/>
+        </svg>
+    </div>
+
+    <!-- ====== STATS SECTION ====== -->
     <section class="max-w-7xl mx-auto px-6 py-12 md:py-20" data-aos="fade-up">
         <div class="gradient-bg rounded-[2rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden border border-green-400/30">
-            <div class="absolute -top-24 -right-24 text-white/10">
+            <!-- Blob inside stats -->
+            <div class="blob-bg w-72 h-72 absolute -bottom-10 -left-10 opacity-40"></div>
+            <div class="absolute -top-24 -right-24 text-white/10" aria-hidden="true">
                 <span class="material-symbols-outlined" style="font-size: 300px;">local_florist</span>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center relative z-10">
+                <!-- Stat 1 -->
                 <div class="flex flex-col items-center gap-2">
-                    <span class="material-symbols-outlined text-4xl mb-2 text-green-200">map</span>
-                    <!-- Cập nhật diện tích sáp nhập 2026 -->
+                    <div class="pulse-wrap">
+                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">map</span>
+                    </div>
                     <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="5939">0</span></div>
                     <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Km² Diện Tích</div>
+                    <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="92"></div></div>
                 </div>
+                <!-- Stat 2 -->
                 <div class="flex flex-col items-center gap-2">
-                    <span class="material-symbols-outlined text-4xl mb-2 text-green-200">nature_people</span>
+                    <div class="pulse-wrap">
+                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">nature_people</span>
+                    </div>
                     <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="130">0</span>+</div>
                     <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Loài Thực Vật Đặc Hữu</div>
+                    <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="75"></div></div>
                 </div>
+                <!-- Stat 3 -->
                 <div class="flex flex-col items-center gap-2">
-                    <span class="material-symbols-outlined text-4xl mb-2 text-green-200">account_balance</span>
-                    <!-- Cập nhật tổng số Di tích Quốc gia -->
+                    <div class="pulse-wrap">
+                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">account_balance</span>
+                    </div>
                     <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="39">0</span></div>
                     <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Di Tích Lịch Sử QG</div>
+                    <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="60"></div></div>
                 </div>
+                <!-- Stat 4 -->
                 <div class="flex flex-col items-center gap-2">
-                    <span class="material-symbols-outlined text-4xl mb-2 text-green-200">library_books</span>
+                    <div class="pulse-wrap">
+                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">library_books</span>
+                    </div>
                     <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="4">0</span></div>
                     <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Chuyên mục Cẩm Nang</div>
+                    <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="40"></div></div>
                 </div>
             </div>
         </div>
     </section>
 
-<section id="explore" class="max-w-7xl mx-auto px-6 pb-12 md:pb-16">
+    <!-- ====== EXPLORE SECTION ====== -->
+    <section id="explore" class="max-w-7xl mx-auto px-6 pb-12 md:pb-16">
         <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12 animate-slide-up" data-aos="fade-up">
             <div>
-                <h3 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Hành trình Di sản & Thiên nhiên</h3>
-                <div class="w-16 md:w-24 h-1 md:h-1.5 bg-gradient-to-r from-green-600 to-green-400 mt-3"></div>
+                <h3 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">
+                    Hành trình
+                    <span class="highlight-word" id="hl-disản">Di sản</span>
+                    &amp;
+                    <span class="highlight-word" id="hl-thiênnhiên">Thiên nhiên</span>
+                </h3>
+                <div class="w-16 md:w-24 h-1 md:h-1.5 bg-gradient-to-r from-green-600 to-green-400 mt-3" id="title-underline" style="width:0;transition:width 1s ease;"></div>
+            </div>
+            <!-- Mobile swipe hint -->
+            <div class="swipe-hint mt-4 md:mt-0">
+                <span>Vuốt để xem</span>
+                <span class="swipe-arrow material-symbols-outlined" style="font-size:18px;">chevron_right</span>
             </div>
         </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 mt-6">
-            
+
+        <!-- Cards — snap scroll on mobile -->
+        <div class="cards-scroll-snap grid-cols-1 md:grid md:grid-cols-3 gap-6 md:gap-10 mt-6">
+
             <!-- THẺ 1: TRÀM CHIM -->
             <div class="relative group h-full z-0" data-aos="fade-up" data-aos-delay="100">
-                <!-- Đã cập nhật class tăng độ loang màu ở div dưới đây -->
                 <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
                     <img src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
                 </div>
-                
-                <article onclick="window.location.href='tramchim'" class="relative tilt-card card-glow bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
-                    <div class="h-48 md:h-64 overflow-hidden tilt-content">
+                <article onclick="window.location.href='tramchim'" class="relative tilt-card card-glow card-shine ripple-container bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
+                    <div class="h-48 md:h-64 overflow-hidden tilt-content relative">
                         <img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" loading="lazy"/>
+                        <!-- Tag badge overlay -->
+                        <div class="absolute top-3 left-3 z-20">
+                            <span class="eco-badge bg-white/80 text-green-800 border-green-300">
+                                <span class="material-symbols-outlined" style="font-size:10px;">water</span>
+                                Ramsar
+                            </span>
+                        </div>
                     </div>
                     <div class="p-6 md:p-8 flex-grow flex flex-col tilt-content">
                         <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-widest mb-2 uppercase float-icon">Sinh thái ngập nước</div>
@@ -259,18 +520,22 @@
 
             <!-- THẺ 2: DI TÍCH LỊCH SỬ -->
             <div class="relative group h-full z-0" data-aos="fade-up" data-aos-delay="200">
-                <!-- Đã cập nhật class tăng độ loang màu ở div dưới đây -->
                 <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
                     <img src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
                 </div>
-
-                <article onclick="window.location.href='ditichlichsu'" class="relative tilt-card card-glow bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
-                    <div class="h-48 md:h-64 overflow-hidden tilt-content">
+                <article onclick="window.location.href='ditichlichsu'" class="relative tilt-card card-glow card-shine ripple-container bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
+                    <div class="h-48 md:h-64 overflow-hidden tilt-content relative">
                         <img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" loading="lazy"/>
+                        <div class="absolute top-3 left-3 z-20">
+                            <span class="eco-badge bg-white/80 text-green-800 border-green-300">
+                                <span class="material-symbols-outlined" style="font-size:10px;">history_edu</span>
+                                Di tích QG
+                            </span>
+                        </div>
                     </div>
                     <div class="p-6 md:p-8 flex-grow flex flex-col tilt-content">
                         <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-widest mb-2 uppercase float-icon" style="animation-delay: 0.1s;">Dấu ấn thời gian</div>
-                        <h4 class="text-xl md:text-2xl font-black text-gray-900 mb-3">Di tích Lịch sử & Văn hóa</h4>
+                        <h4 class="text-xl md:text-2xl font-black text-gray-900 mb-3">Di tích Lịch sử &amp; Văn hóa</h4>
                         <p class="text-gray-600 mb-6 text-xs md:text-sm flex-grow">Ngược dòng lịch sử tìm về các giá trị văn hóa tại Xẻo Quýt, Gò Tháp và Lăng Cụ Phó bảng.</p>
                         <div class="mt-auto flex items-center justify-between border-t pt-4">
                             <span class="text-[10px] font-bold text-green-800 uppercase">Khám phá ngay</span>
@@ -280,16 +545,20 @@
                 </article>
             </div>
 
-            <!-- THẺ 3: DANH LAM THẮNG CẢNH -->
+            <!-- THẺ 3: DANH LAM -->
             <div class="relative group h-full z-0" data-aos="fade-up" data-aos-delay="300">
-                <!-- Đã cập nhật class tăng độ loang màu ở div dưới đây -->
                 <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
                     <img src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-110" loading="lazy"/>
                 </div>
-
-                <article onclick="window.location.href='danhlam'" class="relative tilt-card card-glow bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
-                    <div class="h-48 md:h-64 overflow-hidden tilt-content">
+                <article onclick="window.location.href='danhlam'" class="relative tilt-card card-glow card-shine ripple-container bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
+                    <div class="h-48 md:h-64 overflow-hidden tilt-content relative">
                         <img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" loading="lazy"/>
+                        <div class="absolute top-3 left-3 z-20">
+                            <span class="eco-badge bg-white/80 text-green-800 border-green-300">
+                                <span class="material-symbols-outlined" style="font-size:10px;">local_florist</span>
+                                Làng hoa
+                            </span>
+                        </div>
                     </div>
                     <div class="p-6 md:p-8 flex-grow flex flex-col tilt-content">
                         <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-widest mb-2 uppercase float-icon" style="animation-delay: 0.2s;">Sắc màu xứ sở</div>
@@ -302,11 +571,11 @@
                     </div>
                 </article>
             </div>
-            
+
         </div>
     </section>
 
-    <!-- Nguồn Tham Khảo Chính Thống -->
+    <!-- ====== REFERENCES ====== -->
     <section class="max-w-7xl mx-auto px-6 py-8 border-t border-gray-200 mt-8 mb-8" data-aos="fade-up">
         <div class="bg-green-50/50 rounded-2xl p-6 md:p-8 border border-green-100 shadow-sm">
             <h4 class="text-green-800 font-black text-lg mb-4 flex items-center gap-2 uppercase tracking-tight">
@@ -319,7 +588,7 @@
                 </li>
                 <li class="flex items-start gap-3">
                     <span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5">check_circle</span>
-                    <span class="leading-relaxed"><strong>Cục Di sản Văn hóa - Bộ VH,TT&DL (dsvh.gov.vn):</strong> Thông tin xếp hạng và hồ sơ quản lý 39 Di tích Lịch sử - Văn hóa cấp Quốc gia.</span>
+                    <span class="leading-relaxed"><strong>Cục Di sản Văn hóa - Bộ VH,TT&amp;DL (dsvh.gov.vn):</strong> Thông tin xếp hạng và hồ sơ quản lý 39 Di tích Lịch sử - Văn hóa cấp Quốc gia.</span>
                 </li>
                 <li class="flex items-start gap-3">
                     <span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5">check_circle</span>
@@ -330,6 +599,7 @@
     </section>
 </main>
 
+<!-- ====== FOOTER ====== -->
 <footer class="bg-[#111811] text-white py-12 md:py-16 px-6 border-t-[6px] border-green-800">
     <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-8">
         <div class="text-center lg:text-left">
@@ -344,100 +614,179 @@
         </nav>
         <div class="text-center lg:text-right bg-green-900/40 p-4 rounded-lg border border-green-800/50 flex flex-col items-center lg:items-end">
             <div class="text-[8px] md:text-[10px] text-gray-400 uppercase mb-2">Thực hiện bởi</div>
-            <a href="https://xuanphuc2108.vercel.app/" target="_blank" class="inline-block text-sm md:text-base font-black animate-pop-bounce drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]">Nguyễn Xuân Phúc - 21/8/2012</a>
+            <a href="https://xuanphuc2108.vercel.app/" target="_blank" class="glow-link inline-block text-sm md:text-base font-black animate-pop-bounce drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]">Nguyễn Xuân Phúc - 21/8/2012</a>
         </div>
     </div>
 </footer>
 
 <script>
-    // ============ INTERSECTION OBSERVER ============
-    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
+(function() {
+    'use strict';
+
+    /* ============ LOADING SCREEN ============ */
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            document.getElementById('loading-screen').classList.add('hidden');
+        }, 1000);
+    });
+
+    /* ============ TYPEWRITER ============ */
+    var subtitle = document.getElementById('hero-subtitle');
+    var text = 'Cẩm nang giáo dục trực tuyến về vùng Đất Sen Hồng, nơi hội tụ di sản văn hóa hào hùng và hệ sinh thái thiên nhiên trù phú.';
+    var i = 0;
+    subtitle.classList.add('typewriter-cursor');
+    function type() {
+        if (i < text.length) {
+            subtitle.textContent += text[i++];
+            setTimeout(type, 28);
+        } else {
+            subtitle.classList.remove('typewriter-cursor');
+        }
+    }
+    setTimeout(type, 900);
+
+    /* ============ PARTICLES (lightweight — 8 on mobile, 16 on desktop) ============ */
+    var container = document.getElementById('particles');
+    var isMobile = window.innerWidth < 768;
+    var count = isMobile ? 8 : 16;
+    for (var p = 0; p < count; p++) {
+        var el = document.createElement('div');
+        el.className = 'particle';
+        var size = Math.random() * 6 + 3;
+        el.style.cssText = [
+            'width:' + size + 'px',
+            'height:' + size + 'px',
+            'left:' + Math.random() * 100 + '%',
+            'animation-duration:' + (Math.random() * 10 + 8) + 's',
+            'animation-delay:' + (Math.random() * 8) + 's'
+        ].join(';');
+        container.appendChild(el);
+    }
+
+    /* ============ INTERSECTION OBSERVER ============ */
+    var observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
             if (entry.isIntersecting) {
-                const element = entry.target;
-                const aosType = element.getAttribute('data-aos');
-                let animationClass = 'animate-slide-up';
-                
-                if (aosType === 'fade-right') animationClass = 'animate-slide-right';
-                else if (aosType === 'fade-up') animationClass = 'animate-slide-up';
-                else if (aosType === 'fade-in') animationClass = 'animate-scale-in';
-                
-                element.classList.add(animationClass);
-                element.style.opacity = 1;
-                observer.unobserve(element);
+                var el = entry.target;
+                var aosType = el.getAttribute('data-aos');
+                var cls = aosType === 'fade-right' ? 'animate-slide-right' : aosType === 'fade-in' ? 'animate-scale-in' : 'animate-slide-up';
+                el.classList.add(cls);
+                el.style.opacity = 1;
+                observer.unobserve(el);
             }
         });
     }, observerOptions);
-    document.querySelectorAll('[data-aos]').forEach(el => observer.observe(el));
+    document.querySelectorAll('[data-aos]').forEach(function(el) { observer.observe(el); });
 
-    // ============ COUNTER ANIMATION ============
-    const counterElements = document.querySelectorAll('.counter');
-    counterElements.forEach(counter => {
-        const target = parseInt(counter.getAttribute('data-target'));
-        const duration = 2000;
-        const increment = target / (duration / 16);
-        
-        const observerCounter = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !counter.classList.contains('counted')) {
-                    counter.classList.add('counted');
-                    let current = 0;
-                    const timer = setInterval(() => {
-                        current += increment;
-                        if (current >= target) {
-                            counter.textContent = target;
-                            clearInterval(timer);
-                        } else {
-                            counter.textContent = Math.floor(current);
-                        }
-                    }, 16);
-                }
+    /* ============ COUNTER ANIMATION ============ */
+    var counterObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (!entry.isIntersecting) return;
+            var counter = entry.target;
+            if (counter.classList.contains('counted')) return;
+            counter.classList.add('counted');
+            var target = parseInt(counter.getAttribute('data-target'));
+            var duration = 2000, inc = target / (duration / 16), cur = 0;
+            var timer = setInterval(function() {
+                cur += inc;
+                if (cur >= target) { counter.textContent = target; clearInterval(timer); }
+                else { counter.textContent = Math.floor(cur); }
+            }, 16);
+            // Trigger stat bar fill
+            var bar = counter.closest('.flex').querySelector('.stat-bar-fill');
+            if (bar) bar.style.width = bar.getAttribute('data-width') + '%';
+            counterObs.unobserve(counter);
+        });
+    }, observerOptions);
+    document.querySelectorAll('.counter').forEach(function(el) { counterObs.observe(el); });
+
+    /* ============ HIGHLIGHT WORDS ON SCROLL ============ */
+    var hlObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                // animate section underline bar
+                var bar = document.getElementById('title-underline');
+                if (bar) bar.style.width = window.innerWidth < 768 ? '64px' : '96px';
+            }
+        });
+    }, { threshold: 0.5 });
+    ['hl-disản','hl-thiênnhiên'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) hlObserver.observe(el);
+    });
+
+    /* ============ RIPPLE EFFECT (touch & click) ============ */
+    function addRipple(e) {
+        var el = e.currentTarget;
+        var rect = el.getBoundingClientRect();
+        var x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        var y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+        var size = Math.max(rect.width, rect.height) * 1.2;
+        var ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        ripple.style.cssText = 'width:' + size + 'px;height:' + size + 'px;top:' + (y - size/2) + 'px;left:' + (x - size/2) + 'px;';
+        el.appendChild(ripple);
+        ripple.addEventListener('animationend', function() { ripple.remove(); });
+    }
+    document.querySelectorAll('.ripple-container').forEach(function(el) {
+        el.addEventListener('click', addRipple);
+        el.addEventListener('touchstart', addRipple, { passive: true });
+    });
+
+    /* ============ 3D TILT (desktop only) ============ */
+    if (!isMobile) {
+        document.querySelectorAll('.tilt-card').forEach(function(card) {
+            card.addEventListener('mousemove', function(e) {
+                var r = card.getBoundingClientRect();
+                var x = e.clientX - r.left, y = e.clientY - r.top;
+                var rx = ((y - r.height/2) / r.height) * -10;
+                var ry = ((x - r.width/2) / r.width) * 10;
+                card.style.transform = 'perspective(1000px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) scale3d(1.02,1.02,1.02)';
             });
-        }, observerOptions);
-        observerCounter.observe(counter);
-    });
-
-    // ============ 3D TILT EFFECT ============
-    const tiltCards = document.querySelectorAll('.tilt-card');
-    tiltCards.forEach(card => {
-        card.addEventListener('mousemove', e => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = ((y - centerY) / centerY) * -10; 
-            const rotateY = ((x - centerX) / centerX) * 10;
-            
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            card.addEventListener('mouseleave', function() {
+                card.style.transition = 'transform 0.5s ease';
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
+                setTimeout(function() { card.style.transition = 'transform 0.1s ease'; }, 500);
+            });
         });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-            card.style.transition = `transform 0.5s ease`;
-            setTimeout(() => { card.style.transition = `transform 0.1s ease`; }, 500);
-        });
-    });
+    }
 
-    // ============ OPTIMIZED SCROLL EVENT ============
-    let ticking = false;
+    /* ============ MAGNETIC BUTTON (desktop only) ============ */
+    if (!isMobile) {
+        document.querySelectorAll('.magnetic-btn').forEach(function(btn) {
+            btn.addEventListener('mousemove', function(e) {
+                var r = btn.getBoundingClientRect();
+                var dx = e.clientX - (r.left + r.width/2);
+                var dy = e.clientY - (r.top + r.height/2);
+                btn.style.transform = 'translate(' + dx*0.25 + 'px,' + dy*0.25 + 'px)';
+            });
+            btn.addEventListener('mouseleave', function() {
+                btn.style.transform = '';
+            });
+        });
+    }
+
+    /* ============ OPTIMIZED SCROLL ============ */
+    var ticking = false;
     window.addEventListener('scroll', function() {
         if (!ticking) {
             window.requestAnimationFrame(function() {
-                let winScroll = window.scrollY || document.documentElement.scrollTop;
-                
-                const parallaxBg = document.getElementById('parallax-bg');
-                if (parallaxBg) {
-                    parallaxBg.style.transform = `translateY(${winScroll * 0.5}px)`;
+                var winScroll = window.scrollY;
+
+                // Parallax (only on non-mobile for perf)
+                if (!isMobile) {
+                    var pb = document.getElementById('parallax-bg');
+                    if (pb) pb.style.transform = 'translateY(' + winScroll * 0.3 + 'px)';
                 }
 
-                let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                let scrolled = (winScroll / height) * 100;
-                document.getElementById("progress-bar").style.width = scrolled + "%";
-                
-                const header = document.getElementById('main-header');
+                // Progress bar
+                var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                document.getElementById('progress-bar').style.width = (winScroll / height * 100) + '%';
+
+                // Header
+                var header = document.getElementById('main-header');
                 if (winScroll > 80) {
                     header.classList.remove('bg-white');
                     header.classList.add('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
@@ -445,12 +794,28 @@
                     header.classList.add('bg-white');
                     header.classList.remove('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
                 }
-                
+
+                // Scroll-to-top
+                var btn = document.getElementById('scroll-top');
+                btn.classList.toggle('visible', winScroll > 300);
+
                 ticking = false;
             });
             ticking = true;
         }
     });
+
+    /* ============ HERO IMAGE PARALLAX on touch (mobile) ============ */
+    if (isMobile) {
+        var heroImg = document.getElementById('hero-img');
+        if (heroImg) {
+            window.addEventListener('scroll', function() {
+                heroImg.style.transform = 'scale(1.08) translateY(' + window.scrollY * 0.08 + 'px)';
+            }, { passive: true });
+        }
+    }
+
+})();
 </script>
 
 </body>

@@ -7,7 +7,6 @@
     <title>Đồng Tháp - Danh Lam Thắng Cảnh</title>
     
     <link rel="icon" type="image/png" href="favicon.png">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -39,6 +38,10 @@
                             '50%': { backgroundPosition: '100% 50%' },
                             '100%': { backgroundPosition: '0% 50%' },
                         },
+                        'pulse-ring': {
+                            '0%': { transform: 'scale(1)', opacity: '1' },
+                            '100%': { transform: 'scale(2)', opacity: '0' },
+                        },
                         'slide-up': {
                             'from': { opacity: '0', transform: 'translateY(30px)' },
                             'to': { opacity: '1', transform: 'translateY(0)' },
@@ -65,6 +68,7 @@
                         'float': 'float 3s ease-in-out infinite',
                         'glow': 'glow 2s ease-in-out infinite',
                         'gradient-shift': 'gradient-shift 3s ease infinite',
+                        'pulse-ring': 'pulse-ring 2s ease-out infinite',
                         'slide-up': 'slide-up 0.6s ease forwards',
                         'slide-down': 'slide-down 0.6s ease forwards',
                         'slide-left': 'slide-left 0.6s ease forwards',
@@ -75,100 +79,483 @@
             }
         }
     </script>
+
     <style>
         :root { --primary-green: #1b5e20; --accent-green: #4caf50; }
+
+        /* ========== BASE ========== */
         body { background-color: #f4f7f4; font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
-        #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: var(--accent-green); width: 0%; z-index: 100; transition: width 0.1s; }
-        .safe-padding { padding-top: 120px !important; }
-        @media (min-width: 768px) { .safe-padding { padding-top: 40px !important; } }
+        #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(90deg, #1b5e20, #4caf50, #81c784); width: 0%; z-index: 200; transition: width 0.1s; }
         #main-header { transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease; }
-        
+
+        /* ========== PAGE TRANSITION ========== */
+        #page-transition {
+            position: fixed; inset: 0; z-index: 10000; pointer-events: none;
+            background: #0a1f0a; opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        #page-transition.out { opacity: 1; pointer-events: all; }
+
+        /* ========== LOADING SCREEN ========== */
+        #loading-screen {
+            position: fixed; inset: 0; background: #0a1f0a; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        #loading-screen.hidden { opacity: 0; visibility: hidden; }
+        .loader-lotus { width: 60px; height: 60px; position: relative; margin-bottom: 24px; }
+        .loader-petal {
+            position: absolute; width: 20px; height: 30px;
+            background: linear-gradient(135deg, #4caf50, #81c784);
+            border-radius: 50% 50% 50% 0;
+            transform-origin: bottom right;
+            animation: petal-spin 1.6s ease-in-out infinite;
+            opacity: 0.85;
+        }
+        .loader-petal:nth-child(1) { --r: 0deg; transform: rotate(0deg); animation-delay: 0s; }
+        .loader-petal:nth-child(2) { --r: 72deg; transform: rotate(72deg); animation-delay: 0.2s; }
+        .loader-petal:nth-child(3) { --r: 144deg; transform: rotate(144deg); animation-delay: 0.4s; }
+        .loader-petal:nth-child(4) { --r: 216deg; transform: rotate(216deg); animation-delay: 0.6s; }
+        .loader-petal:nth-child(5) { --r: 288deg; transform: rotate(288deg); animation-delay: 0.8s; }
+        @keyframes petal-spin {
+            0%, 100% { opacity: 0.3; transform: rotate(var(--r, 0deg)) scale(0.8); }
+            50% { opacity: 1; transform: rotate(var(--r, 0deg)) scale(1.1); }
+        }
+        .loader-text { color: #4caf50; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; font-weight: 800; animation: loader-pulse 1.2s ease-in-out infinite; }
+        .loader-bar-wrap { width: 140px; height: 2px; background: rgba(76,175,80,0.2); border-radius: 2px; margin-top: 16px; overflow: hidden; }
+        .loader-bar-fill { height: 100%; background: linear-gradient(90deg, #1b5e20, #4caf50); width: 0; animation: loader-bar 1s ease forwards 0.3s; border-radius: 2px; }
+        @keyframes loader-bar { to { width: 100%; } }
+        @keyframes loader-pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+        /* ========== CUSTOM CURSOR (desktop only) ========== */
+        @media (pointer: fine) {
+            body { cursor: none; }
+            a, button, [onclick] { cursor: none; }
+        }
+        #cursor-dot {
+            position: fixed; width: 8px; height: 8px; border-radius: 50%;
+            background: #4caf50; pointer-events: none; z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.05s linear, width 0.2s ease, height 0.2s ease, background 0.2s ease;
+            mix-blend-mode: multiply;
+        }
+        #cursor-ring {
+            position: fixed; width: 36px; height: 36px; border-radius: 50%;
+            border: 1.5px solid rgba(76,175,80,0.7); pointer-events: none; z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition: transform 0.15s cubic-bezier(0.25,0.46,0.45,0.94), width 0.3s ease, height 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+        }
+        #cursor-ring.hovered { width: 56px; height: 56px; border-color: rgba(76,175,80,1); background: rgba(76,175,80,0.06); }
+        #cursor-ring.clicking { transform: translate(-50%, -50%) scale(0.75); }
+        #cursor-glow {
+            position: fixed; width: 200px; height: 200px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(76,175,80,0.12) 0%, transparent 70%);
+            pointer-events: none; z-index: 99997;
+            transform: translate(-50%, -50%);
+            transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+            will-change: transform;
+        }
+
+        /* ========== GRAIN OVERLAY ========== */
+        body::before {
+            content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* ========== DOT GRID BACKGROUND ========== */
+        body::after {
+            content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image: radial-gradient(circle, rgba(27,94,32,0.06) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+
+        /* ========== GRADIENT TEXT ========== */
         .gradient-text {
-            background: linear-gradient(135deg, #1b5e20, #4caf50, #81c784);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text; animation: gradient-shift 4s ease infinite;
+            background: linear-gradient(135deg, #1b5e20, #4caf50, #81c784, #1b5e20);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 6s ease infinite;
+            display: inline-block;
+            padding-top: 0.3em; padding-bottom: 0.1em; line-height: 1.2;
         }
-        
-        .float-icon { animation: float 3s ease-in-out infinite; }
-        
-        /* Hiệu ứng 3D Tilt */
-        .tilt-card {
-            transform-style: preserve-3d;
-            transform: perspective(1000px);
-            transition: transform 0.1s ease;
+
+        /* ========== GLITCH EFFECT ========== */
+        .glitch { position: relative; }
+        .glitch:hover { animation: glitch-shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes glitch-shake {
+            0%,100% { transform: none; }
+            20% { transform: skewX(-2deg) translateX(2px); }
+            40% { transform: skewX(2deg) translateX(-2px); }
+            60% { transform: skewX(-1deg) translateX(1px); }
+            80% { transform: skewX(1deg) translateX(-1px); }
         }
-        .tilt-content {
-            transform: translateZ(30px);
+        .glitch::before, .glitch::after {
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            opacity: 0; pointer-events: none;
         }
-        
+        .glitch:hover::before {
+            background: linear-gradient(135deg, #ff4444, #ff8888, #ff4444);
+            animation: glitch-before 0.4s steps(2) forwards;
+            clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
+        }
+        .glitch:hover::after {
+            background: linear-gradient(135deg, #4444ff, #8888ff, #4444ff);
+            animation: glitch-after 0.4s steps(2) forwards;
+            clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+        }
+        @keyframes glitch-before {
+            0%,100% { opacity: 0; transform: none; }
+            30%,70% { opacity: 0.6; transform: translateX(-3px); }
+        }
+        @keyframes glitch-after {
+            0%,100% { opacity: 0; transform: none; }
+            30%,70% { opacity: 0.5; transform: translateX(3px); }
+        }
+
+        /* ========== TEXT SHIMMER ========== */
+        .text-shimmer {
+            background: linear-gradient(90deg, #1b5e20 0%, #4caf50 30%, #81c784 50%, #4caf50 70%, #1b5e20 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            animation: shimmer-move 3s linear infinite;
+        }
+        @keyframes shimmer-move { to { background-position: 200% center; } }
+
+        /* ========== SPARKLE ========== */
+        .sparkle-wrap { position: relative; }
+        .sparkle {
+            position: absolute; pointer-events: none; z-index: 20;
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #4caf50;
+            animation: sparkle-burst 0.7s ease forwards;
+        }
+        @keyframes sparkle-burst {
+            0% { opacity: 1; transform: translate(0,0) scale(1); }
+            100% { opacity: 0; transform: translate(var(--sx, 0px), var(--sy, 0px)) scale(0); }
+        }
+
+        /* ========== CLIP-PATH IMAGE REVEAL ========== */
+        .img-reveal { clip-path: inset(0 100% 0 0); transition: clip-path 1s cubic-bezier(0.77,0,0.175,1); }
+        .img-reveal.revealed { clip-path: inset(0 0% 0 0); }
+
+        /* ========== FLOAT ICON ========== */
+        .float-icon { display: inline-block; animation: float 3s ease-in-out infinite; }
+
+        /* ========== CARD EFFECTS ========== */
+        .card-glow { position: relative; transition: all 0.3s ease; }
+        .card-glow::before {
+            content: ''; position: absolute; inset: 0; border-radius: 1rem;
+            opacity: 0; transition: opacity 0.3s ease; z-index: -1;
+        }
+        .card-glow:hover::before { opacity: 1; box-shadow: 0 0 60px rgba(76, 175, 80, 0.8); }
+
+        /* Shine sweep */
+        .card-shine { position: relative; overflow: hidden; }
+        .card-shine::after {
+            content: ''; position: absolute; top: -50%; left: -80%; width: 50%; height: 200%;
+            background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.18) 50%, transparent 60%);
+            transform: skewX(-20deg); transition: left 0.6s ease; pointer-events: none; z-index: 5;
+        }
+        .card-shine:hover::after, .card-shine:active::after { left: 120%; }
+
+        /* Card border glow on hover */
+        .card-border-glow {
+            box-shadow: 0 0 0 0px rgba(76,175,80,0);
+            transition: box-shadow 0.4s ease, transform 0.3s ease;
+        }
+        .card-border-glow:hover {
+            box-shadow: 0 0 0 2px rgba(76,175,80,0.5), 0 20px 60px rgba(76,175,80,0.15);
+        }
+
+        /* ========== 3D TILT ========== */
+        .tilt-card { transform-style: preserve-3d; transform: perspective(1000px); transition: transform 0.1s ease; }
+        .tilt-content { transform: translateZ(30px); }
+
+        /* ========== BORDER SHIMMER ========== */
+        .border-animate { position: relative; overflow: hidden; }
+        .border-animate::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.3), transparent);
+            transition: left 0.5s; z-index: 4; pointer-events: none;
+        }
+        .border-animate:hover::before { left: 100%; }
+
+        /* ========== RIPPLE ========== */
+        .ripple-container { position: relative; overflow: hidden; }
+        .ripple {
+            position: absolute; border-radius: 50%; background: rgba(76, 175, 80, 0.35);
+            transform: scale(0); animation: ripple-anim 0.6s linear;
+            pointer-events: none; z-index: 10;
+        }
+        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+
+        /* ========== FLOATING PARTICLES ========== */
+        #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+        .particle {
+            position: absolute; border-radius: 50%;
+            background: radial-gradient(circle, rgba(76,175,80,0.6) 0%, transparent 70%);
+            animation: particle-float linear infinite;
+            will-change: transform;
+        }
+        @keyframes particle-float {
+            0% { transform: translateY(110vh) scale(0); opacity: 0; }
+            10% { opacity: 1; transform: translateY(90vh) scale(1); }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-20px) scale(0.5); opacity: 0; }
+        }
+
+        /* ========== NEON UNDERLINE ========== */
+        .neon-link {
+            position: relative; text-decoration: none;
+        }
+        .neon-link::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
+            background: linear-gradient(90deg, #4caf50, #81c784);
+            box-shadow: 0 0 8px rgba(76,175,80,0.8);
+            transition: width 0.35s ease;
+            border-radius: 1px;
+        }
+        .neon-link:hover::after { width: 100%; }
+        /* Active neon link style for current page */
+        .neon-link.active::after { width: 100%; }
+
+        /* ========== SCROLL TO TOP ========== */
+        #scroll-top {
+            position: fixed; bottom: 24px; right: 20px; z-index: 100;
+            width: 48px; height: 48px; background: linear-gradient(135deg, #1b5e20, #4caf50);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 4px 20px rgba(76,175,80,0.5);
+            opacity: 0; transform: translateY(20px) scale(0.8);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        #scroll-top.visible { opacity: 1; transform: translateY(0) scale(1); }
+        #scroll-top:active { transform: scale(0.9); }
+        #scroll-top svg { width: 20px; height: 20px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* ========== TYPEWRITER ========== */
+        .typewriter-cursor::after { content: '|'; animation: blink 0.8s step-start infinite; color: #4caf50; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* ========== WAVE DIVIDER ========== */
+        .wave-divider { line-height: 0; }
+        .wave-divider svg { display: block; }
+
+        /* ========== SCROLL REVEAL BASE ========== */
         [data-aos] { opacity: 0; }
+
+        /* ========== MAGNETIC BTN ========== */
+        .magnetic-btn { display: inline-flex; transition: transform 0.2s ease; }
+
+        /* ========== HIGHLIGHT UNDERLINE ON SCROLL ========== */
+        .highlight-word { position: relative; display: inline-block; }
+        .highlight-word::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 3px;
+            background: linear-gradient(90deg, #4caf50, #81c784);
+            border-radius: 2px; transition: width 0.8s ease;
+        }
+        .highlight-word.active::after { width: 100%; }
+
+        /* ========== TAG BADGE ========== */
+        .eco-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: rgba(76,175,80,0.12); border: 1px solid rgba(76,175,80,0.3);
+            color: #1b5e20; font-size: 9px; font-weight: 800; letter-spacing: 1.5px;
+            text-transform: uppercase; padding: 3px 10px; border-radius: 999px;
+            animation: badge-glow 3s ease-in-out infinite;
+        }
+        @keyframes badge-glow {
+            0%, 100% { box-shadow: 0 0 0px rgba(76,175,80,0); }
+            50% { box-shadow: 0 0 12px rgba(76,175,80,0.4); }
+        }
+
+        /* ========== MORPHING BLOB ========== */
+        .blob-bg {
+            position: absolute; border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            background: radial-gradient(circle at 30% 50%, rgba(76,175,80,0.15), rgba(27,94,32,0.08));
+            filter: blur(30px);
+            animation: blob-morph 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes blob-morph {
+            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+            50% { border-radius: 50% 60% 30% 60% / 30% 40% 70% 50%; }
+            75% { border-radius: 40% 60% 60% 30% / 60% 40% 50% 60%; }
+        }
+
+        /* ========== MOBILE SCROLL SNAP for cards ========== */
+        @media (max-width: 767px) {
+            .cards-scroll-snap { display: flex; overflow-x: auto; gap: 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 12px; }
+            .cards-scroll-snap::-webkit-scrollbar { display: none; }
+            .cards-scroll-snap > div { scroll-snap-align: start; flex: 0 0 82vw; }
+        }
+
+        /* ========== SCROLL INDICATOR LINE ========== */
+        .scroll-line {
+            position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
+            width: 2px; height: 80px; background: rgba(27,94,32,0.1);
+            z-index: 50; border-radius: 2px; overflow: hidden;
+            display: none;
+        }
+        @media (min-width: 1280px) { .scroll-line { display: block; } }
+        .scroll-line-fill {
+            width: 100%; background: linear-gradient(180deg, #1b5e20, #4caf50);
+            border-radius: 2px; height: 0;
+            transition: height 0.2s ease;
+        }
+
+        /* ========== HOVER CARD LABEL ========== */
+        .card-hover-label {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(27,94,32,0.9) 0%, transparent 100%);
+            color: white; padding: 20px 16px 12px;
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+            font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+            z-index: 15;
+        }
+        .group:hover .card-hover-label { transform: translateY(0); }
+
+        /* ========== REDUCED MOTION ========== */
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
     </style>
-
-    <script>
-      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    </script>
-    <script defer src="/_vercel/insights/script.js"></script>
 </head>
-<body class="pt-16 md:pt-20">
+<body class="pt-20 md:pt-24">
 
+<!-- ====== PAGE TRANSITION OVERLAY ====== -->
+<div id="page-transition"></div>
+
+<!-- ====== CUSTOM CURSOR (desktop only) ====== -->
+<div id="cursor-dot" aria-hidden="true"></div>
+<div id="cursor-ring" aria-hidden="true"></div>
+<div id="cursor-glow" aria-hidden="true"></div>
+
+<!-- ====== LOADING SCREEN ====== -->
+<div id="loading-screen">
+    <div class="loader-lotus">
+        <div class="loader-petal"></div>
+        <div class="loader-petal"></div>
+        <div class="loader-petal"></div>
+        <div class="loader-petal"></div>
+        <div class="loader-petal"></div>
+    </div>
+    <div class="loader-text">Đất Sen Hồng</div>
+    <div class="loader-bar-wrap"><div class="loader-bar-fill"></div></div>
+</div>
+
+<!-- ====== PARTICLES ====== -->
+<div id="particles" aria-hidden="true"></div>
+
+<!-- ====== PROGRESS BAR ====== -->
 <div id="progress-bar"></div>
 
+<!-- ====== SCROLL LINE INDICATOR ====== -->
+<div class="scroll-line" aria-hidden="true">
+    <div class="scroll-line-fill" id="scroll-line-fill"></div>
+</div>
+
+<!-- ====== SCROLL TO TOP ====== -->
+<button id="scroll-top" aria-label="Lên đầu trang" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+</button>
+
+<!-- ====== HEADER ====== -->
 <header id="main-header" class="bg-white fixed top-0 w-full z-50 border-b border-gray-200">
     <div class="flex justify-between items-center px-4 md:px-6 py-3 md:py-4 max-w-7xl mx-auto">
-        <div class="flex items-center gap-2 md:gap-3">
+        <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-green-700 text-2xl md:text-3xl float-icon">landscape</span>
-            <div>
-                <div class="text-lg md:text-2xl font-black text-green-900 tracking-tight uppercase leading-none">Đồng Tháp</div>
-                <div class="hidden md:block text-[10px] font-mono text-green-600 tracking-widest uppercase mt-1">Hệ thống số hóa giáo dục địa phương</div>
-            </div>
+            <div class="glitch text-lg md:text-2xl font-black text-green-900 tracking-tight uppercase leading-none" data-text="Đồng Tháp">Đồng Tháp</div>
         </div>
         <nav class="flex gap-3 md:gap-8 text-[10px] md:text-xs font-black uppercase">
-            <a class="text-gray-400 hover:text-green-700 transition-colors" href="/">Trang chủ</a>
-            <a class="text-gray-400 hover:text-green-700 transition-colors" href="tramchim">Sinh thái</a>
-            <a class="text-gray-400 hover:text-green-700 transition-colors" href="ditichlichsu">Lịch sử</a>
-            <a class="text-green-700 border-b-2 border-green-700 pb-1" href="danhlam">Danh Lam</a>
+            <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="/">Trang chủ</a>
+            <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="tramchim">Sinh thái</a>
+            <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="ditichlichsu">Lịch sử</a>
+            <a class="text-green-700 border-b-2 border-green-700 pb-1 neon-link active" href="danhlam">Danh Lam</a>
         </nav>
     </div>
 </header>
 
 <main>
-    <section class="safe-padding w-full px-4 max-w-7xl mx-auto">
+    <!-- ====== HERO SECTION ====== -->
+    <section class="w-full px-4 max-w-7xl mx-auto mb-8">
         <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0">
             
+            <!-- Parallax glow bg -->
             <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none -z-10" id="parallax-bg">
-                <img alt="Glow" class="w-full h-full object-cover rounded-[3rem] saturate-150 brightness-110" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg"/>
+                <img alt="Glow" class="w-full h-full object-cover rounded-[3rem] saturate-150" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg"/>
             </div>
             
+            <!-- Hero image with reveal -->
             <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-0">
-                <img alt="Danh Lam Thắng Cảnh" class="w-full h-full object-cover brightness-50" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg"/>
+                <img alt="Danh Lam Thắng Cảnh" class="w-full h-full object-cover brightness-50 img-reveal" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" id="hero-img"/>
                 <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
+                <!-- Scanline overlay -->
+                <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px);"></div>
             </div>
-            
+
+            <!-- Morphing blob decorations -->
+            <div class="blob-bg w-64 h-64 md:w-96 md:h-96 absolute right-10 top-10 z-1 opacity-60"></div>
+
+            <!-- Floating geometric accents -->
+            <div class="absolute right-8 bottom-16 w-3 h-3 border-2 border-green-400/40 rotate-45 animate-[float_4s_ease-in-out_infinite]" aria-hidden="true"></div>
+            <div class="absolute right-24 bottom-32 w-2 h-2 bg-green-400/30 rounded-full animate-[float_3s_ease-in-out_infinite_0.5s]" aria-hidden="true"></div>
+            <div class="absolute right-16 top-20 w-4 h-4 border border-green-300/30 rounded-full animate-[float_5s_ease-in-out_infinite_1s]" aria-hidden="true"></div>
+
+            <!-- Content -->
             <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
-                <h1 class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 md:mb-6 uppercase leading-tight tracking-tight pointer-events-auto animate-slide-right" style="animation-delay: 0.2s;">
-                    Danh Lam <br> 
+                <div class="eco-badge mb-4 pointer-events-auto animate-slide-down" style="animation-delay:0.1s;">
+                    <span class="material-symbols-outlined" style="font-size:12px;">local_florist</span>
+                    Sắc màu xứ sở
+                </div>
+                <h1 id="hero-title" class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 uppercase leading-normal tracking-tight pointer-events-auto" style="animation-delay: 0.2s;">
+                    Danh Lam <br>
                     <span class="gradient-text">Đồng Tháp</span>
                 </h1>
-                <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto animate-slide-up" style="animation-delay: 0.4s;">
-                    Không gian học tập thực tế về miền Đất Sen Hồng, nơi bảo tồn và phát huy giá trị của những làng nghề truyền thống và cảnh quan thiên nhiên trù phú.
-                </p>
-                <div class="pointer-events-auto animate-scale-in" style="animation-delay: 0.6s;">
-                    <a href="/" class="w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 md:px-10 py-3 md:py-4 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs md:text-sm tracking-wider">
-                        <span class="material-symbols-outlined text-base">west</span> Quay về trang chủ
-                    </a>
-                </div>
+                <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto animate-slide-up" style="animation-delay: 0.4s;" id="hero-subtitle"></p>
+                <a href="#explore" class="magnetic-btn ripple-container w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs pointer-events-auto animate-scale-in" style="animation-delay: 0.6s;">
+                    <span class="material-symbols-outlined">auto_stories</span> Khám phá di sản
+                </a>
             </div>
         </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-6 py-16 md:py-24 space-y-16 md:space-y-32">
-        
+    <!-- ====== WAVE DIVIDER ====== -->
+    <div class="wave-divider -mt-8 relative z-10" aria-hidden="true">
+        <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:40px;">
+            <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#f4f7f4"/>
+        </svg>
+    </div>
+
+    <!-- ====== DETAIL SECTION ====== -->
+    <section id="explore" class="max-w-7xl mx-auto px-6 py-16 md:py-24 space-y-16 md:space-y-32">
+        <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12 relative" data-aos="fade-up">
+            <div class="relative">
+                <h3 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight split-heading">
+                    <span class="highlight-word" id="hl-danhlam">Danh Lam</span>
+                    Tiêu Biểu
+                </h3>
+                <div class="w-16 md:w-24 h-1 md:h-1.5 bg-gradient-to-r from-green-600 to-green-400 mt-3" id="title-underline" style="width:0;transition:width 1s ease;"></div>
+            </div>
+        </div>
+
         <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center" data-aos="fade-up">
-            <div class="w-full md:w-1/2 relative group z-0 tilt-card">
-                <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.05] transition-all duration-700 pointer-events-none -z-10 tilt-content">
+            <div class="w-full md:w-1/2 relative group z-0 tilt-card sparkle-wrap cursor-pointer">
+                <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10 tilt-content">
                     <img src="kinh-nghiem-lang-hoa-sa-dec-2.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-110"/>
                 </div>
-                <img src="kinh-nghiem-lang-hoa-sa-dec-2.jpg" alt="Làng hoa Sa Đéc" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2 tilt-content"/>
+                <div class="relative tilt-card card-glow card-shine card-border-glow bg-white rounded-2xl overflow-hidden h-full z-10 border-animate">
+                    <img src="kinh-nghiem-lang-hoa-sa-dec-2.jpg" alt="Làng hoa Sa Đéc" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl transition-transform duration-500 group-hover:-translate-y-2 grayscale-[20%] group-hover:grayscale-0 img-reveal tilt-content"/>
+                    <div class="absolute top-3 left-3 z-20">
+                        <span class="eco-badge bg-white/80 text-green-800 border-green-300">
+                            <span class="material-symbols-outlined" style="font-size:10px;">local_florist</span>
+                            Làng hoa
+                        </span>
+                    </div>
+                </div>
             </div>
             
             <div class="w-full md:w-1/2 space-y-4 md:space-y-6">
@@ -188,11 +575,19 @@
         </article>
 
         <article class="flex flex-col md:flex-row-reverse gap-8 md:gap-16 items-center" data-aos="fade-up">
-            <div class="w-full md:w-1/2 relative group z-0 tilt-card">
-                <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.05] transition-all duration-700 pointer-events-none -z-10 tilt-content">
+            <div class="w-full md:w-1/2 relative group z-0 tilt-card sparkle-wrap cursor-pointer">
+                <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10 tilt-content">
                     <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125"/>
                 </div>
-                <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" alt="Hệ sinh thái ngập nước" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2 tilt-content"/>
+                <div class="relative tilt-card card-glow card-shine card-border-glow bg-white rounded-2xl overflow-hidden h-full z-10 border-animate">
+                    <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" alt="Hệ sinh thái ngập nước" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl transition-transform duration-500 group-hover:-translate-y-2 grayscale-[20%] group-hover:grayscale-0 img-reveal tilt-content"/>
+                    <div class="absolute top-3 left-3 z-20">
+                        <span class="eco-badge bg-white/80 text-green-800 border-green-300">
+                            <span class="material-symbols-outlined" style="font-size:10px;">water_drop</span>
+                            Sinh thái
+                        </span>
+                    </div>
+                </div>
             </div>
             
             <div class="w-full md:w-1/2 space-y-4 md:space-y-6">
@@ -212,11 +607,19 @@
         </article>
 
         <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center" data-aos="fade-up">
-            <div class="w-full md:w-1/2 relative group z-0 tilt-card">
-                <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.05] transition-all duration-700 pointer-events-none -z-10 tilt-content">
+            <div class="w-full md:w-1/2 relative group z-0 tilt-card sparkle-wrap cursor-pointer">
+                <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10 tilt-content">
                     <img src="gao-giong.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125"/>
                 </div>
-                <img src="gao-giong.jpg" alt="Gáo Giồng" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2 tilt-content"/>
+                <div class="relative tilt-card card-glow card-shine card-border-glow bg-white rounded-2xl overflow-hidden h-full z-10 border-animate">
+                    <img src="gao-giong.jpg" alt="Gáo Giồng" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl transition-transform duration-500 group-hover:-translate-y-2 grayscale-[20%] group-hover:grayscale-0 img-reveal tilt-content"/>
+                    <div class="absolute top-3 left-3 z-20">
+                        <span class="eco-badge bg-white/80 text-green-800 border-green-300">
+                            <span class="material-symbols-outlined" style="font-size:10px;">park</span>
+                            Khu sinh thái
+                        </span>
+                    </div>
+                </div>
             </div>
             
             <div class="w-full md:w-1/2 space-y-4 md:space-y-6">
@@ -236,92 +639,314 @@
         </article>
 
     </section>
+
+    <!-- ====== REFERENCES ====== -->
+    <section class="max-w-7xl mx-auto px-6 py-8 border-t border-gray-200 mt-8 mb-8" data-aos="fade-up">
+        <div class="bg-green-50/50 rounded-2xl p-6 md:p-8 border border-green-100 shadow-sm relative overflow-hidden">
+            <h4 class="text-green-800 font-black text-lg mb-4 flex items-center gap-2 uppercase tracking-tight">
+                <span class="material-symbols-outlined text-green-600">verified</span>
+                <span class="text-shimmer">Nguồn dữ liệu tham khảo chính thống</span>
+            </h4>
+            <ul class="space-y-3 text-sm md:text-base text-gray-700 relative z-10">
+                <li class="flex items-start gap-3 group/ref">
+                    <span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5 group-hover/ref:scale-125 transition-transform">check_circle</span>
+                    <span class="leading-relaxed"><strong>Cổng Thông tin điện tử tỉnh Đồng Tháp (dongthap.gov.vn):</strong> Số liệu cập nhật mới nhất về diện tích tự nhiên, dân số và quy hoạch hành chính.</span>
+                </li>
+                <li class="flex items-start gap-3 group/ref">
+                    <span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5 group-hover/ref:scale-125 transition-transform">check_circle</span>
+                    <span class="leading-relaxed"><strong>Cục Di sản Văn hóa - Bộ VH,TT&amp;DL (dsvh.gov.vn):</strong> Thông tin xếp hạng và hồ sơ quản lý 39 Di tích Lịch sử - Văn hóa cấp Quốc gia.</span>
+                </li>
+                <li class="flex items-start gap-3 group/ref">
+                    <span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5 group-hover/ref:scale-125 transition-transform">check_circle</span>
+                    <span class="leading-relaxed"><strong>Ban Quản lý Vườn Quốc gia Tràm Chim:</strong> Báo cáo thống kê hệ sinh thái đất ngập nước, danh mục bảo tồn 130+ loài thực vật đặc hữu và 231 loài chim.</span>
+                </li>
+            </ul>
+        </div>
+    </section>
 </main>
 
-<footer class="bg-[#111811] text-white py-12 md:py-16 px-6 md:px-8 border-t-[6px] border-green-800 mt-10">
-    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-8 md:gap-10">
+<!-- ====== FOOTER ====== -->
+<footer class="bg-[#111811] text-white py-12 md:py-16 px-6 border-t-[6px] border-green-800 relative overflow-hidden">
+    <!-- Animated border top -->
+    <div class="absolute top-0 left-0 h-[6px] w-full overflow-hidden" aria-hidden="true">
+        <div style="height:100%;width:200%;background:linear-gradient(90deg,#1b5e20,#4caf50,#81c784,#4caf50,#1b5e20);animation:shimmer-move 3s linear infinite;background-size:50% 100%;"></div>
+    </div>
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-8 relative z-10">
         <div class="text-center lg:text-left">
-            <div class="text-2xl md:text-3xl font-black text-green-500 mb-2 tracking-tighter uppercase flex items-center justify-center lg:justify-start gap-2">
-                Đồng Tháp
-            </div>
-            <p class="text-gray-400 text-xs md:text-sm max-w-md italic">Hệ thống số hóa thông tin giáo dục địa phương.</p>
+            <div class="text-2xl md:text-3xl font-black text-green-500 uppercase glitch" data-text="Đồng Tháp">Đồng Tháp</div>
+            <p class="text-gray-400 text-xs md:text-sm max-w-md italic mt-2">Hệ thống số hóa thông tin giáo dục địa phương.</p>
         </div>
-        
-        <nav class="flex flex-wrap justify-center gap-4 md:gap-10 text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-500">
-            <a class="hover:text-green-400 transition-colors" href="/">Trang chủ</a>
-            <a class="hover:text-green-400 transition-colors" href="tramchim">Sinh thái</a>
-            <a class="hover:text-green-400 transition-colors" href="ditichlichsu">Lịch sử</a>
-            <a class="hover:text-green-400 transition-colors" href="danhlam">Danh Lam</a>
+        <nav class="flex flex-wrap justify-center gap-4 text-[10px] md:text-xs font-bold uppercase text-gray-500">
+            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="/">Trang chủ</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="tramchim">Sinh thái</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="ditichlichsu">Lịch sử</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="danhlam">Danh Lam</a>
         </nav>
-
-        <div class="text-center lg:text-right bg-green-900/40 p-4 md:p-5 rounded-lg border border-green-800/50 shadow-inner flex flex-col items-center lg:items-end">
-            <div class="text-[8px] md:text-[10px] text-gray-400 tracking-widest uppercase mb-2">Thực hiện bởi</div>
-            <a href="https://xuanphuc2108.vercel.app/" target="_blank" title="Xem hồ sơ của tác giả" class="inline-block text-sm md:text-base font-black animate-pop-bounce drop-shadow-[0_0_8px_rgba(74,222,128,0.5)] cursor-pointer decoration-transparent">
-                Nguyễn Xuân Phúc - 21/8/2012
-            </a>
+        <div class="text-center lg:text-right bg-green-900/40 p-4 rounded-lg border border-green-800/50 flex flex-col items-center lg:items-end">
+            <div class="text-[8px] md:text-[10px] text-gray-400 uppercase mb-2">Thực hiện bởi</div>
+            <a href="https://xuanphuc2108.vercel.app/" target="_blank" class="glow-link inline-block text-sm md:text-base font-black animate-pop-bounce drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]">Nguyễn Xuân Phúc - 21/8/2012</a>
         </div>
     </div>
 </footer>
 
 <script>
-    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const element = entry.target;
-                const aosType = element.getAttribute('data-aos');
-                let animationClass = 'animate-slide-up';
-                
-                if (aosType === 'fade-right') animationClass = 'animate-slide-right';
-                else if (aosType === 'fade-up') animationClass = 'animate-slide-up';
-                else if (aosType === 'fade-in') animationClass = 'animate-scale-in';
-                
-                element.classList.add(animationClass);
-                element.style.opacity = 1;
-                observer.unobserve(element);
-            }
-        });
-    }, observerOptions);
-    document.querySelectorAll('[data-aos]').forEach(el => observer.observe(el));
+(function() {
+    'use strict';
+    var isMobile = window.innerWidth < 768;
+    var isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var isTouch = !window.matchMedia('(pointer: fine)').matches;
 
-    const tiltCards = document.querySelectorAll('.tilt-card');
-    tiltCards.forEach(card => {
-        card.addEventListener('mousemove', e => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = ((y - centerY) / centerY) * -10; 
-            const rotateY = ((x - centerX) / centerX) * 10;
-            
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-            card.style.transition = `transform 0.5s ease`;
-            setTimeout(() => { card.style.transition = `transform 0.1s ease`; }, 500);
-        });
+    /* ============ AUDIO SETUP ============ */
+    let soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+    let audioContext = null;
+
+    function initAudioContext() {
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        return audioContext;
+    }
+
+    function playTone(frequency, duration, type = 'triangle') {
+        if (!soundEnabled) return;
+        try {
+            const ctx = initAudioContext();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = type;
+            osc.frequency.setValueAtTime(frequency, ctx.currentTime);
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + duration);
+        } catch (e) {
+            console.log('Audio error');
+        }
+    }
+
+    function playHoverSound() {
+        playTone(400, 0.05, 'triangle');
+        setTimeout(() => playTone(450, 0.05, 'triangle'), 30);
+    }
+
+    function playClickSound() {
+        playTone(300, 0.1, 'triangle');
+        setTimeout(() => playTone(600, 0.1, 'triangle'), 70);
+    }
+
+    /* ============ LOADING SCREEN ============ */
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            document.getElementById('loading-screen').classList.add('hidden');
+            document.querySelector('#hero-img').classList.add('revealed');
+            setTimeout(function() {
+                document.querySelectorAll('.img-reveal:not(#hero-img)').forEach(function(img, i) {
+                    setTimeout(function() { img.classList.add('revealed'); }, i * 150);
+                });
+            }, 400);
+        }, 1200);
     });
 
-    let ticking = false;
+    /* ============ PAGE TRANSITION ============ */
+    window.navigateTo = function(href) {
+        var overlay = document.getElementById('page-transition');
+        overlay.classList.add('out');
+        setTimeout(function() { window.location.href = href; }, 380);
+    };
+    document.querySelectorAll('a[href]').forEach(function(link) {
+        var href = link.getAttribute('href');
+        if (!href.startsWith('http') && !href.startsWith('#') && !href.startsWith('mailto')) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                navigateTo(href);
+            });
+        }
+    });
+
+    /* ============ CUSTOM CURSOR ============ */
+    if (!isTouch) {
+        var dot = document.getElementById('cursor-dot');
+        var ring = document.getElementById('cursor-ring');
+        var glow = document.getElementById('cursor-glow');
+        var mx = 0, my = 0, rx = 0, ry = 0, gx = 0, gy = 0;
+
+        document.addEventListener('mousemove', function(e) {
+            mx = e.clientX; my = e.clientY;
+        });
+
+        (function cursorLoop() {
+            dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+            rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
+            ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+            gx += (mx - gx) * 0.08; gy += (my - gy) * 0.08;
+            glow.style.left = gx + 'px'; glow.style.top = gy + 'px';
+            requestAnimationFrame(cursorLoop);
+        })();
+
+        document.querySelectorAll('a, button, [onclick], article').forEach(function(el) {
+            el.addEventListener('mouseenter', function() { ring.classList.add('hovered'); playHoverSound(); });
+            el.addEventListener('mouseleave', function() { ring.classList.remove('hovered'); });
+        });
+        document.addEventListener('mousedown', function() { ring.classList.add('clicking'); });
+        document.addEventListener('mouseup', function() { ring.classList.remove('clicking'); });
+    } else {
+        ['cursor-dot','cursor-ring','cursor-glow'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+    }
+
+    /* ============ TYPEWRITER ============ */
+    var subtitle = document.getElementById('hero-subtitle');
+    var text = 'Không gian học tập thực tế về miền Đất Sen Hồng, nơi bảo tồn và phát huy giá trị của những làng nghề truyền thống và cảnh quan thiên nhiên trù phú.';
+    var i = 0;
+    subtitle.classList.add('typewriter-cursor');
+    function type() {
+        if (i < text.length) {
+            subtitle.textContent += text[i++];
+            setTimeout(type, 28);
+        } else { subtitle.classList.remove('typewriter-cursor'); }
+    }
+    setTimeout(type, 1400);
+
+    /* ============ PARTICLES ============ */
+    var container = document.getElementById('particles');
+    var count = isMobile ? 8 : 16;
+    for (var p = 0; p < count; p++) {
+        var el = document.createElement('div');
+        el.className = 'particle';
+        var size = Math.random() * 6 + 3;
+        el.style.cssText = 'width:' + size + 'px;height:' + size + 'px;left:' + Math.random() * 100 + '%;animation-duration:' + (Math.random() * 10 + 8) + 's;animation-delay:' + (Math.random() * 8) + 's;';
+        container.appendChild(el);
+    }
+
+    /* ============ SPARKLE ON CARD HOVER ============ */
+    if (!isReducedMotion) {
+        document.querySelectorAll('.sparkle-wrap').forEach(function(wrap) {
+            var timer = null;
+            wrap.addEventListener('mouseenter', function() {
+                timer = setInterval(function() {
+                    var s = document.createElement('div');
+                    s.className = 'sparkle';
+                    var angle = Math.random() * Math.PI * 2;
+                    var dist = 30 + Math.random() * 60;
+                    s.style.setProperty('--sx', Math.cos(angle) * dist + 'px');
+                    s.style.setProperty('--sy', Math.sin(angle) * dist + 'px');
+                    s.style.left = (20 + Math.random() * 60) + '%';
+                    s.style.top = (20 + Math.random() * 60) + '%';
+                    s.style.width = (3 + Math.random() * 5) + 'px';
+                    s.style.height = s.style.width;
+                    s.style.background = ['#4caf50','#81c784','#a5d6a7','#fff'][Math.floor(Math.random()*4)];
+                    wrap.appendChild(s);
+                    s.addEventListener('animationend', function() { s.remove(); });
+                }, 120);
+            });
+            wrap.addEventListener('mouseleave', function() { clearInterval(timer); });
+        });
+    }
+
+    /* ============ INTERSECTION OBSERVER ============ */
+    var observerOpts = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                var el = entry.target;
+                var aosType = el.getAttribute('data-aos');
+                var cls = aosType === 'fade-right' ? 'animate-slide-right' : aosType === 'fade-in' ? 'animate-scale-in' : 'animate-slide-up';
+                el.classList.add(cls);
+                el.style.opacity = 1;
+                observer.unobserve(el);
+            }
+        });
+    }, observerOpts);
+    document.querySelectorAll('[data-aos]').forEach(function(el) { observer.observe(el); });
+
+    /* ============ HIGHLIGHT WORDS ON SCROLL ============ */
+    var hlObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                var bar = document.getElementById('title-underline');
+                if (bar) bar.style.width = window.innerWidth < 768 ? '64px' : '96px';
+            }
+        });
+    }, { threshold: 0.5 });
+    ['hl-danhlam'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) hlObserver.observe(el);
+    });
+
+    /* ============ RIPPLE EFFECT ============ */
+    function addRipple(e) {
+        var el = e.currentTarget;
+        var rect = el.getBoundingClientRect();
+        var x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        var y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+        var size = Math.max(rect.width, rect.height) * 1.2;
+        var ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        ripple.style.cssText = 'width:' + size + 'px;height:' + size + 'px;top:' + (y - size/2) + 'px;left:' + (x - size/2) + 'px;';
+        el.appendChild(ripple);
+        ripple.addEventListener('animationend', function() { ripple.remove(); });
+        playClickSound();
+    }
+    document.querySelectorAll('.ripple-container').forEach(function(el) {
+        el.addEventListener('click', addRipple);
+        el.addEventListener('touchstart', addRipple, { passive: true });
+    });
+
+    /* ============ 3D TILT (desktop only) ============ */
+    if (!isMobile && !isReducedMotion) {
+        document.querySelectorAll('.tilt-card').forEach(function(card) {
+            card.addEventListener('mousemove', function(e) {
+                var r = card.getBoundingClientRect();
+                var x = e.clientX - r.left, y = e.clientY - r.top;
+                var rx = ((y - r.height/2) / r.height) * -10;
+                var ry = ((x - r.width/2) / r.width) * 10;
+                card.style.transform = 'perspective(1000px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) scale3d(1.02,1.02,1.02)';
+            });
+            card.addEventListener('mouseleave', function() {
+                card.style.transition = 'transform 0.5s ease';
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
+                setTimeout(function() { card.style.transition = 'transform 0.1s ease'; }, 500);
+            });
+        });
+    }
+
+    /* ============ MAGNETIC BUTTON ============ */
+    if (!isMobile) {
+        document.querySelectorAll('.magnetic-btn').forEach(function(btn) {
+            btn.addEventListener('mousemove', function(e) {
+                var r = btn.getBoundingClientRect();
+                var dx = e.clientX - (r.left + r.width/2);
+                var dy = e.clientY - (r.top + r.height/2);
+                btn.style.transform = 'translate(' + dx*0.3 + 'px,' + dy*0.3 + 'px) scale(1.05)';
+            });
+            btn.addEventListener('mouseleave', function() { btn.style.transform = ''; });
+        });
+    }
+
+    /* ============ OPTIMIZED SCROLL ============ */
+    var ticking = false;
     window.addEventListener('scroll', function() {
         if (!ticking) {
             window.requestAnimationFrame(function() {
-                let winScroll = window.scrollY || document.documentElement.scrollTop;
-                
-                const parallaxBg = document.getElementById('parallax-bg');
-                if (parallaxBg) {
-                    parallaxBg.style.transform = `translateY(${winScroll * 0.5}px)`;
+                var winScroll = window.scrollY;
+                var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                var pct = winScroll / height;
+
+                if (!isMobile) {
+                    var pb = document.getElementById('parallax-bg');
+                    if (pb) pb.style.transform = 'translateY(' + winScroll * 0.3 + 'px)';
                 }
 
-                let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                let scrolled = (winScroll / height) * 100;
-                document.getElementById("progress-bar").style.width = scrolled + "%";
-                
-                const header = document.getElementById('main-header');
+                document.getElementById('progress-bar').style.width = (pct * 100) + '%';
+                var slf = document.getElementById('scroll-line-fill');
+                if (slf) slf.style.height = (pct * 100) + '%';
+
+                var header = document.getElementById('main-header');
                 if (winScroll > 80) {
                     header.classList.remove('bg-white');
                     header.classList.add('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
@@ -329,12 +954,46 @@
                     header.classList.add('bg-white');
                     header.classList.remove('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
                 }
-                
+
+                document.getElementById('scroll-top').classList.toggle('visible', winScroll > 300);
+
                 ticking = false;
             });
             ticking = true;
         }
-    });
+    }, { passive: true });
+
+    /* ============ HERO IMAGE PARALLAX ON TOUCH ============ */
+    if (isMobile) {
+        var heroImg = document.getElementById('hero-img');
+        if (heroImg) {
+            window.addEventListener('scroll', function() {
+                heroImg.style.transform = 'scale(1.08) translateY(' + window.scrollY * 0.08 + 'px)';
+            }, { passive: true });
+        }
+    }
+
+    /* ============ MOUSE PARALLAX ON HERO (desktop) ============ */
+    if (!isMobile && !isReducedMotion) {
+        var heroSection = document.querySelector('section');
+        if (heroSection) {
+            heroSection.addEventListener('mousemove', function(e) {
+                var rect = heroSection.getBoundingClientRect();
+                var cx = (e.clientX - rect.left) / rect.width - 0.5;
+                var cy = (e.clientY - rect.top) / rect.height - 0.5;
+                var blobs = heroSection.querySelectorAll('.blob-bg');
+                blobs.forEach(function(b) {
+                    b.style.transform = 'translate(' + cx * 20 + 'px,' + cy * 20 + 'px)';
+                });
+                var geoms = heroSection.querySelectorAll('.absolute.right-8, .absolute.right-24, .absolute.right-16');
+                geoms.forEach(function(g, i) {
+                    g.style.transform = 'translate(' + cx * (10 + i*8) + 'px,' + cy * (10 + i*8) + 'px)';
+                });
+            });
+        }
+    }
+
+})();
 </script>
 
 </body>

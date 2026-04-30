@@ -7,7 +7,6 @@
     <title>Đồng Tháp - Vườn Quốc gia Tràm Chim</title>
     
     <link rel="icon" type="image/png" href="favicon.png">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -39,6 +38,10 @@
                             '50%': { backgroundPosition: '100% 50%' },
                             '100%': { backgroundPosition: '0% 50%' },
                         },
+                        'pulse-ring': {
+                            '0%': { transform: 'scale(1)', opacity: '1' },
+                            '100%': { transform: 'scale(2)', opacity: '0' },
+                        },
                         'slide-up': {
                             'from': { opacity: '0', transform: 'translateY(30px)' },
                             'to': { opacity: '1', transform: 'translateY(0)' },
@@ -65,6 +68,7 @@
                         'float': 'float 3s ease-in-out infinite',
                         'glow': 'glow 2s ease-in-out infinite',
                         'gradient-shift': 'gradient-shift 3s ease infinite',
+                        'pulse-ring': 'pulse-ring 2s ease-out infinite',
                         'slide-up': 'slide-up 0.6s ease forwards',
                         'slide-down': 'slide-down 0.6s ease forwards',
                         'slide-left': 'slide-left 0.6s ease forwards',
@@ -75,286 +79,1001 @@
             }
         }
     </script>
+
     <style>
         :root { --primary-green: #1b5e20; --accent-green: #4caf50; }
+
+        /* ========== BASE ========== */
         body { background-color: #f4f7f4; font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
-        #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: var(--accent-green); width: 0%; z-index: 100; transition: width 0.1s; }
-        .safe-padding { padding-top: 120px !important; }
-        @media (min-width: 768px) { .safe-padding { padding-top: 40px !important; } }
+        #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(90deg, #1b5e20, #4caf50, #81c784); width: 0%; z-index: 200; transition: width 0.1s; }
         #main-header { transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease; }
-        
+
+        /* ========== PAGE TRANSITION ========== */
+        #page-transition {
+            position: fixed; inset: 0; z-index: 10000; pointer-events: none;
+            background: #0a1f0a; opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        #page-transition.out { opacity: 1; pointer-events: all; }
+
+        /* ========== LOADING SCREEN ========== */
+        #loading-screen {
+            position: fixed; inset: 0; background: #0a1f0a; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        #loading-screen.hidden { opacity: 0; visibility: hidden; }
+        .loader-lotus { width: 60px; height: 60px; position: relative; margin-bottom: 24px; }
+        .loader-petal {
+            position: absolute; width: 20px; height: 30px;
+            background: linear-gradient(135deg, #4caf50, #81c784);
+            border-radius: 50% 50% 50% 0;
+            transform-origin: bottom right;
+            animation: petal-spin 1.6s ease-in-out infinite;
+            opacity: 0.85;
+        }
+        .loader-petal:nth-child(1) { --r: 0deg; transform: rotate(0deg); animation-delay: 0s; }
+        .loader-petal:nth-child(2) { --r: 72deg; transform: rotate(72deg); animation-delay: 0.2s; }
+        .loader-petal:nth-child(3) { --r: 144deg; transform: rotate(144deg); animation-delay: 0.4s; }
+        .loader-petal:nth-child(4) { --r: 216deg; transform: rotate(216deg); animation-delay: 0.6s; }
+        .loader-petal:nth-child(5) { --r: 288deg; transform: rotate(288deg); animation-delay: 0.8s; }
+        @keyframes petal-spin {
+            0%, 100% { opacity: 0.3; transform: rotate(var(--r, 0deg)) scale(0.8); }
+            50% { opacity: 1; transform: rotate(var(--r, 0deg)) scale(1.1); }
+        }
+        .loader-text { color: #4caf50; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; font-weight: 800; animation: loader-pulse 1.2s ease-in-out infinite; }
+        .loader-bar-wrap { width: 140px; height: 2px; background: rgba(76,175,80,0.2); border-radius: 2px; margin-top: 16px; overflow: hidden; }
+        .loader-bar-fill { height: 100%; background: linear-gradient(90deg, #1b5e20, #4caf50); width: 0; animation: loader-bar 1s ease forwards 0.3s; border-radius: 2px; }
+        @keyframes loader-bar { to { width: 100%; } }
+        @keyframes loader-pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+        /* ========== CUSTOM CURSOR (desktop only) ========== */
+        @media (pointer: fine) {
+            body { cursor: none; }
+            a, button, [onclick] { cursor: none; }
+        }
+        #cursor-dot {
+            position: fixed; width: 8px; height: 8px; border-radius: 50%;
+            background: #4caf50; pointer-events: none; z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.05s linear, width 0.2s ease, height 0.2s ease, background 0.2s ease;
+            mix-blend-mode: multiply;
+        }
+        #cursor-ring {
+            position: fixed; width: 36px; height: 36px; border-radius: 50%;
+            border: 1.5px solid rgba(76,175,80,0.7); pointer-events: none; z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition: transform 0.15s cubic-bezier(0.25,0.46,0.45,0.94), width 0.3s ease, height 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+        }
+        #cursor-ring.hovered { width: 56px; height: 56px; border-color: rgba(76,175,80,1); background: rgba(76,175,80,0.06); }
+        #cursor-ring.clicking { transform: translate(-50%, -50%) scale(0.75); }
+        #cursor-glow {
+            position: fixed; width: 200px; height: 200px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(76,175,80,0.12) 0%, transparent 70%);
+            pointer-events: none; z-index: 99997;
+            transform: translate(-50%, -50%);
+            transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+            will-change: transform;
+        }
+
+        /* ========== GRAIN OVERLAY ========== */
+        body::before {
+            content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* ========== DOT GRID BACKGROUND ========== */
+        body::after {
+            content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image: radial-gradient(circle, rgba(27,94,32,0.06) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+
+        /* ========== GRADIENT BG ========== */
+        .gradient-bg {
+            background: linear-gradient(-45deg, #1b5e20, #4caf50, #004d40, #2e7d32);
+            background-size: 400% 400%;
+            animation: gradient-shift 10s ease infinite;
+        }
+
+        /* ========== GRADIENT TEXT ========== */
         .gradient-text {
-            background: linear-gradient(135deg, #1b5e20, #4caf50, #81c784);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text; animation: gradient-shift 4s ease infinite;
+            background: linear-gradient(135deg, #1b5e20, #4caf50, #81c784, #1b5e20);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 6s ease infinite;
+            display: inline-block;
+            padding-top: 0.3em; padding-bottom: 0.1em; line-height: 1.2;
         }
-        
+
+        /* ========== GLITCH EFFECT ========== */
+        .glitch { position: relative; }
+        .glitch:hover { animation: glitch-shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes glitch-shake {
+            0%,100% { transform: none; }
+            20% { transform: skewX(-2deg) translateX(2px); }
+            40% { transform: skewX(2deg) translateX(-2px); }
+            60% { transform: skewX(-1deg) translateX(1px); }
+            80% { transform: skewX(1deg) translateX(-1px); }
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            opacity: 0; pointer-events: none;
+        }
+        .glitch:hover::before {
+            background: linear-gradient(135deg, #ff4444, #ff8888, #ff4444);
+            animation: glitch-before 0.4s steps(2) forwards;
+            clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
+        }
+        .glitch:hover::after {
+            background: linear-gradient(135deg, #4444ff, #8888ff, #4444ff);
+            animation: glitch-after 0.4s steps(2) forwards;
+            clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+        }
+        @keyframes glitch-before {
+            0%,100% { opacity: 0; transform: none; }
+            30%,70% { opacity: 0.6; transform: translateX(-3px); }
+        }
+        @keyframes glitch-after {
+            0%,100% { opacity: 0; transform: none; }
+            30%,70% { opacity: 0.5; transform: translateX(3px); }
+        }
+
+        /* ========== TEXT SHIMMER ========== */
+        .text-shimmer {
+            background: linear-gradient(90deg, #1b5e20 0%, #4caf50 30%, #81c784 50%, #4caf50 70%, #1b5e20 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            animation: shimmer-move 3s linear infinite;
+        }
+        @keyframes shimmer-move { to { background-position: 200% center; } }
+
+        /* ========== SPARKLE ========== */
+        .sparkle-wrap { position: relative; }
+        .sparkle {
+            position: absolute; pointer-events: none; z-index: 20;
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #4caf50;
+            animation: sparkle-burst 0.7s ease forwards;
+        }
+        @keyframes sparkle-burst {
+            0% { opacity: 1; transform: translate(0,0) scale(1); }
+            100% { opacity: 0; transform: translate(var(--sx, 0px), var(--sy, 0px)) scale(0); }
+        }
+
+        /* ========== CLIP-PATH IMAGE REVEAL ========== */
+        .img-reveal { clip-path: inset(0 100% 0 0); transition: clip-path 1s cubic-bezier(0.77,0,0.175,1); }
+        .img-reveal.revealed { clip-path: inset(0 0% 0 0); }
+
+        /* ========== FLOAT ICON ========== */
         .float-icon { animation: float 3s ease-in-out infinite; }
-        
-        /* Hiệu ứng 3D Tilt */
-        .tilt-card {
-            transform-style: preserve-3d;
-            transform: perspective(1000px);
-            transition: transform 0.1s ease;
+
+        /* ========== CARD EFFECTS ========== */
+        .card-glow { position: relative; transition: all 0.3s ease; }
+        .card-glow::before {
+            content: ''; position: absolute; inset: 0; border-radius: 1rem;
+            opacity: 0; transition: opacity 0.3s ease; z-index: -1;
         }
-        .tilt-content {
-            transform: translateZ(30px);
+        .card-glow:hover::before { opacity: 1; box-shadow: 0 0 40px rgba(76, 175, 80, 0.5); }
+
+        /* Shine sweep */
+        .card-shine { position: relative; overflow: hidden; }
+        .card-shine::after {
+            content: ''; position: absolute; top: -50%; left: -80%; width: 50%; height: 200%;
+            background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.18) 50%, transparent 60%);
+            transform: skewX(-20deg); transition: left 0.6s ease; pointer-events: none; z-index: 5;
         }
-        
+        .card-shine:hover::after, .card-shine:active::after { left: 120%; }
+
+        /* Card border glow on hover */
+        .card-border-glow {
+            box-shadow: 0 0 0 0px rgba(76,175,80,0);
+            transition: box-shadow 0.4s ease, transform 0.3s ease;
+        }
+        .card-border-glow:hover {
+            box-shadow: 0 0 0 2px rgba(76,175,80,0.5), 0 20px 60px rgba(76,175,80,0.15);
+        }
+
+        /* ========== 3D TILT ========== */
+        .tilt-card { transform-style: preserve-3d; transform: perspective(1000px); transition: transform 0.1s ease; }
+        .tilt-content { transform: translateZ(30px); }
+
+        /* ========== BORDER SHIMMER ========== */
+        .border-animate { position: relative; overflow: hidden; }
+        .border-animate::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.3), transparent);
+            transition: left 0.5s; z-index: 4; pointer-events: none;
+        }
+        .border-animate:hover::before { left: 100%; }
+
+        /* ========== RIPPLE ========== */
+        .ripple-container { position: relative; overflow: hidden; }
+        .ripple {
+            position: absolute; border-radius: 50%; background: rgba(76, 175, 80, 0.35);
+            transform: scale(0); animation: ripple-anim 0.6s linear;
+            pointer-events: none; z-index: 10;
+        }
+        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+
+        /* ========== FLOATING PARTICLES ========== */
+        #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+        .particle {
+            position: absolute; border-radius: 50%;
+            background: radial-gradient(circle, rgba(76,175,80,0.6) 0%, transparent 70%);
+            animation: particle-float linear infinite;
+            will-change: transform;
+        }
+        @keyframes particle-float {
+            0% { transform: translateY(110vh) scale(0); opacity: 0; }
+            10% { opacity: 1; transform: translateY(90vh) scale(1); }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-20px) scale(0.5); opacity: 0; }
+        }
+
+        /* ========== ORBITING RINGS on stats ========== */
+        .orbit-wrap { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: 2rem; }
+        .orbit-ring {
+            position: absolute; border-radius: 50%;
+            border: 1px solid rgba(129,199,132,0.15);
+            animation: orbit-spin linear infinite;
+        }
+        .orbit-ring::after {
+            content: ''; position: absolute; width: 6px; height: 6px; border-radius: 50%;
+            background: rgba(129,199,132,0.6); top: -3px; left: 50%; margin-left: -3px;
+        }
+        .orbit-ring:nth-child(1) { width: 180px; height: 180px; top: -30px; right: 80px; animation-duration: 12s; }
+        .orbit-ring:nth-child(2) { width: 280px; height: 280px; top: -80px; right: 40px; animation-duration: 20s; animation-direction: reverse; }
+        .orbit-ring:nth-child(3) { width: 140px; height: 140px; bottom: -20px; left: 30px; animation-duration: 9s; }
+        @keyframes orbit-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* ========== NEON UNDERLINE ========== */
+        .neon-link { position: relative; text-decoration: none; }
+        .neon-link::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
+            background: linear-gradient(90deg, #4caf50, #81c784);
+            box-shadow: 0 0 8px rgba(76,175,80,0.8);
+            transition: width 0.35s ease; border-radius: 1px;
+        }
+        .neon-link:hover::after { width: 100%; }
+
+        /* ========== SCROLL TO TOP ========== */
+        #scroll-top {
+            position: fixed; bottom: 24px; right: 20px; z-index: 100;
+            width: 48px; height: 48px; background: linear-gradient(135deg, #1b5e20, #4caf50);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 4px 20px rgba(76,175,80,0.5);
+            opacity: 0; transform: translateY(20px) scale(0.8);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        #scroll-top.visible { opacity: 1; transform: translateY(0) scale(1); }
+        #scroll-top:active { transform: scale(0.9); }
+        #scroll-top svg { width: 20px; height: 20px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* ========== PULSE RING ON STAT ICONS ========== */
+        .pulse-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+        .pulse-wrap::before, .pulse-wrap::after {
+            content: ''; position: absolute; inset: -6px; border-radius: 50%;
+            border: 2px solid rgba(129, 199, 132, 0.5);
+            animation: pulse-ring-anim 2.5s ease-out infinite;
+        }
+        .pulse-wrap::after { animation-delay: 1.25s; }
+        @keyframes pulse-ring-anim {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
+
+        /* ========== SCROLL REVEAL BASE ========== */
         [data-aos] { opacity: 0; }
+
+        /* ========== MAGNETIC BTN ========== */
+        .magnetic-btn { display: inline-flex; transition: transform 0.2s ease; }
+
+        /* ========== HIGHLIGHT UNDERLINE ON SCROLL ========== */
+        .highlight-word { position: relative; display: inline-block; }
+        .highlight-word::after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 3px;
+            background: linear-gradient(90deg, #4caf50, #81c784);
+            border-radius: 2px; transition: width 0.8s ease;
+        }
+        .highlight-word.active::after { width: 100%; }
+
+        /* ========== TAG BADGE ========== */
+        .eco-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: rgba(76,175,80,0.12); border: 1px solid rgba(76,175,80,0.3);
+            color: #1b5e20; font-size: 9px; font-weight: 800; letter-spacing: 1.5px;
+            text-transform: uppercase; padding: 3px 10px; border-radius: 999px;
+            animation: badge-glow 3s ease-in-out infinite;
+        }
+        @keyframes badge-glow {
+            0%, 100% { box-shadow: 0 0 0px rgba(76,175,80,0); }
+            50% { box-shadow: 0 0 12px rgba(76,175,80,0.4); }
+        }
+
+        /* ========== MORPHING BLOB ========== */
+        .blob-bg {
+            position: absolute; border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            background: radial-gradient(circle at 30% 50%, rgba(76,175,80,0.15), rgba(27,94,32,0.08));
+            filter: blur(30px);
+            animation: blob-morph 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes blob-morph {
+            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+            50% { border-radius: 50% 60% 30% 60% / 30% 40% 70% 50%; }
+            75% { border-radius: 40% 60% 60% 30% / 60% 40% 50% 60%; }
+        }
+
+        /* ========== STATS PROGRESS BAR ========== */
+        .stat-bar { height: 3px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; margin-top: 8px; }
+        .stat-bar-fill { height: 100%; background: linear-gradient(90deg, #81c784, #fff); border-radius: 2px; width: 0; transition: width 1.5s cubic-bezier(0.4,0,0.2,1); }
+
+        /* ========== SECTION NUMBER ========== */
+        .section-number {
+            font-size: 120px; font-weight: 900; position: absolute; right: -10px; top: -40px;
+            color: rgba(76,175,80,0.06); line-height: 1; pointer-events: none; user-select: none;
+            letter-spacing: -8px;
+        }
+
+        /* ========== FOOTER GLOW LINK ========== */
+        .glow-link { text-shadow: 0 0 12px rgba(74,222,128,0.5); }
+
+        /* ========== SCROLL INDICATOR LINE ========== */
+        .scroll-line {
+            position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
+            width: 2px; height: 80px; background: rgba(27,94,32,0.1);
+            z-index: 50; border-radius: 2px; overflow: hidden; display: none;
+        }
+        @media (min-width: 1280px) { .scroll-line { display: block; } }
+        .scroll-line-fill {
+            width: 100%; background: linear-gradient(180deg, #1b5e20, #4caf50);
+            border-radius: 2px; height: 0; transition: height 0.2s ease;
+        }
+
+        /* ========== CARD HOVER LABEL ========== */
+        .card-hover-label {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(27,94,32,0.9) 0%, transparent 100%);
+            color: white; padding: 20px 16px 12px;
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+            font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; z-index: 15;
+        }
+        .group:hover .card-hover-label { transform: translateY(0); }
+
+        /* ========== VIDEO BADGE ========== */
+        .video-badge {
+            position: absolute; top: 14px; left: 14px; z-index: 20;
+            background: #16a34a; color: white; font-size: 10px; font-weight: 800;
+            letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 12px;
+            border-radius: 2px;
+        }
+
+        /* ========== ARTICLE CONTENT ========== */
+        .article-body p {
+            text-align: justify;
+            line-height: 1.9;
+        }
+
+        /* ========== ACTIVE STATE (mobile tap) ========== */
+        article:active { transform: scale(0.97); transition: transform 0.15s ease; }
+
+        /* ========== REDUCED MOTION ========== */
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
     </style>
-
-    <script>
-      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    </script>
-    <script defer src="/_vercel/insights/script.js"></script>
 </head>
-<body class="pt-16 md:pt-20">
+<body class="pt-20 md:pt-24">
 
+<!-- ====== PAGE TRANSITION OVERLAY ====== -->
+<div id="page-transition"></div>
+
+<!-- ====== CUSTOM CURSOR (desktop only) ====== -->
+<div id="cursor-dot" aria-hidden="true"></div>
+<div id="cursor-ring" aria-hidden="true"></div>
+<div id="cursor-glow" aria-hidden="true"></div>
+
+<!-- ====== LOADING SCREEN ====== -->
+<div id="loading-screen">
+    <div class="loader-lotus">
+        <div class="loader-petal"></div>
+        <div class="loader-petal"></div>
+        <div class="loader-petal"></div>
+        <div class="loader-petal"></div>
+        <div class="loader-petal"></div>
+    </div>
+    <div class="loader-text">Tràm Chim</div>
+    <div class="loader-bar-wrap"><div class="loader-bar-fill"></div></div>
+</div>
+
+<!-- ====== PARTICLES ====== -->
+<div id="particles" aria-hidden="true"></div>
+
+<!-- ====== PROGRESS BAR ====== -->
 <div id="progress-bar"></div>
 
+<!-- ====== SCROLL LINE INDICATOR ====== -->
+<div class="scroll-line" aria-hidden="true">
+    <div class="scroll-line-fill" id="scroll-line-fill"></div>
+</div>
+
+<!-- ====== SCROLL TO TOP ====== -->
+<button id="scroll-top" aria-label="Lên đầu trang" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
+</button>
+
+<!-- ====== HEADER ====== -->
 <header id="main-header" class="bg-white fixed top-0 w-full z-50 border-b border-gray-200">
     <div class="flex justify-between items-center px-4 md:px-6 py-3 md:py-4 max-w-7xl mx-auto">
         <div class="flex items-center gap-2 md:gap-3">
             <span class="material-symbols-outlined text-green-700 text-2xl md:text-3xl float-icon">landscape</span>
             <div>
-                <div class="text-lg md:text-2xl font-black text-green-900 tracking-tight uppercase leading-none">Đồng Tháp</div>
+                <div class="glitch text-lg md:text-2xl font-black text-green-900 tracking-tight uppercase leading-none" data-text="Đồng Tháp">Đồng Tháp</div>
                 <div class="hidden md:block text-[10px] font-mono text-green-600 tracking-widest uppercase mt-1">Hệ thống số hóa giáo dục địa phương</div>
             </div>
         </div>
         <nav class="flex gap-3 md:gap-8 text-[10px] md:text-xs font-black uppercase">
-            <a class="text-gray-400 hover:text-green-700 transition-colors" href="/">Trang chủ</a>
-            <a class="text-green-700 border-b-2 border-green-700 pb-1" href="tramchim">Sinh thái</a>
-            <a class="text-gray-400 hover:text-green-700 transition-colors" href="ditichlichsu">Lịch sử</a>
-            <a class="text-gray-400 hover:text-green-700 transition-colors" href="danhlam">Danh Lam</a>
+            <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="/">Trang chủ</a>
+            <a class="text-green-700 border-b-2 border-green-700 pb-1 neon-link" href="tramchim">Sinh thái</a>
+            <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="ditichlichsu">Lịch sử</a>
+            <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="danhlam">Danh Lam</a>
         </nav>
     </div>
 </header>
 
 <main>
-    <section class="safe-padding w-full px-4 max-w-7xl mx-auto">
+    <!-- ====== HERO SECTION ====== -->
+    <section class="w-full px-4 max-w-7xl mx-auto mb-8">
         <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0">
             
+            <!-- Parallax glow bg -->
             <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none -z-10" id="parallax-bg">
                 <img alt="Glow" class="w-full h-full object-cover rounded-[3rem] saturate-150 brightness-110" src="thong_tin_vuon_quoc_gia_tram_chim_dong_thap_co_gi_hay_h1.jpg"/>
             </div>
-            
+
+            <!-- Hero image -->
             <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-0">
-                <img alt="Sinh thái Tràm Chim" class="w-full h-full object-cover brightness-50" src="thong_tin_vuon_quoc_gia_tram_chim_dong_thap_co_gi_hay_h1.jpg"/>
+                <img alt="Sinh thái Tràm Chim" class="w-full h-full object-cover brightness-50 img-reveal" src="thong_tin_vuon_quoc_gia_tram_chim_dong_thap_co_gi_hay_h1.jpg" id="hero-img"/>
                 <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
+                <!-- Scanline overlay -->
+                <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px);"></div>
             </div>
-            
+
+            <!-- Morphing blob -->
+            <div class="blob-bg w-64 h-64 md:w-96 md:h-96 absolute right-10 top-10 z-1 opacity-60"></div>
+
+            <!-- Floating geometric accents -->
+            <div class="absolute right-8 bottom-16 w-3 h-3 border-2 border-green-400/40 rotate-45 animate-[float_4s_ease-in-out_infinite]" aria-hidden="true"></div>
+            <div class="absolute right-24 bottom-32 w-2 h-2 bg-green-400/30 rounded-full animate-[float_3s_ease-in-out_infinite_0.5s]" aria-hidden="true"></div>
+            <div class="absolute right-16 top-20 w-4 h-4 border border-green-300/30 rounded-full animate-[float_5s_ease-in-out_infinite_1s]" aria-hidden="true"></div>
+
+            <!-- Content -->
             <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
-                <h1 class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 md:mb-6 uppercase leading-tight tracking-tight pointer-events-auto animate-slide-right" style="animation-delay: 0.2s;">
-                    Sinh Thái <br> 
-                    <span class="gradient-text">Đồng Tháp</span>
+                <div class="eco-badge mb-4 pointer-events-auto animate-slide-down" style="animation-delay:0.1s;">
+                    <span class="material-symbols-outlined" style="font-size:12px;">water</span>
+                    Ramsar • Khu 2000
+                </div>
+                <h1 class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 uppercase leading-normal tracking-tight pointer-events-auto animate-slide-right" style="animation-delay: 0.2s;">
+                    Sinh Thái <br>
+                    <span class="gradient-text">Tràm Chim</span>
                 </h1>
                 <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto animate-slide-up" style="animation-delay: 0.4s;">
-                    Hành trình về miền Đất Sen Hồng, khám phá Vườn Quốc gia Tràm Chim - Khu Ramsar thứ 2000 của thế giới với hệ sinh thái hoang sơ tuyệt đẹp.
+                    Hành trình về miền Đất Sen Hồng, khám phá Vườn Quốc gia Tràm Chim — Khu Ramsar thứ 2000 của thế giới với hệ sinh thái hoang sơ tuyệt đẹp.
                 </p>
-                <div class="pointer-events-auto animate-scale-in" style="animation-delay: 0.6s;">
-                    <a href="/" class="w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 md:px-10 py-3 md:py-4 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs md:text-sm tracking-wider">
-                        <span class="material-symbols-outlined text-base">west</span> Quay về trang chủ
-                    </a>
+                <a href="/" class="magnetic-btn ripple-container w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs pointer-events-auto animate-scale-in" style="animation-delay: 0.6s;">
+                    <span class="material-symbols-outlined">west</span> Quay về trang chủ
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== WAVE DIVIDER ====== -->
+    <div aria-hidden="true" style="line-height:0;position:relative;z-index:10;margin-top:-2rem;">
+        <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:40px;">
+            <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#f4f7f4"/>
+        </svg>
+    </div>
+
+    <!-- ====== STATS SECTION ====== -->
+    <section class="max-w-7xl mx-auto px-6 py-12 md:py-20" data-aos="fade-up">
+        <div class="gradient-bg rounded-[2rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden border border-green-400/30">
+            <!-- Orbiting rings -->
+            <div class="orbit-wrap" aria-hidden="true">
+                <div class="orbit-ring"></div>
+                <div class="orbit-ring"></div>
+                <div class="orbit-ring"></div>
+            </div>
+            <!-- Blob inside stats -->
+            <div class="blob-bg w-72 h-72 absolute -bottom-10 -left-10 opacity-40"></div>
+            <div class="absolute -top-24 -right-24 text-white/10" aria-hidden="true">
+                <span class="material-symbols-outlined" style="font-size: 300px;">water</span>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center relative z-10">
+                <!-- Stat 1 -->
+                <div class="flex flex-col items-center gap-2">
+                    <div class="pulse-wrap">
+                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">forest</span>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="7313">0</span></div>
+                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Hecta diện tích</div>
+                    <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="88"></div></div>
+                </div>
+                <!-- Stat 2 -->
+                <div class="flex flex-col items-center gap-2">
+                    <div class="pulse-wrap">
+                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">flutter_dash</span>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="231">0</span></div>
+                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Loài chim nước</div>
+                    <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="75"></div></div>
+                </div>
+                <!-- Stat 3 -->
+                <div class="flex flex-col items-center gap-2">
+                    <div class="pulse-wrap">
+                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">eco</span>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="130">0</span>+</div>
+                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Loài thực vật</div>
+                    <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="60"></div></div>
+                </div>
+                <!-- Stat 4 -->
+                <div class="flex flex-col items-center gap-2">
+                    <div class="pulse-wrap">
+                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">set_meal</span>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="130">0</span>+</div>
+                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Loài cá nước ngọt</div>
+                    <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="50"></div></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-6 py-12 md:pt-20 md:pb-10" data-aos="fade-up">
-        <div class="bg-slate-800 text-white rounded-2xl md:rounded-3xl p-6 md:p-10 shadow-2xl border-t-[6px] border-green-500 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-64 h-64 bg-green-500/20 blur-[80px] rounded-full pointer-events-none"></div>
-            
-            <h3 class="text-2xl md:text-3xl font-black mb-8 border-b border-slate-600 pb-4 flex items-center gap-3 uppercase tracking-tight">
-                <span class="material-symbols-outlined text-3xl text-green-400 float-icon">data_object</span> Thống kê Đa dạng Sinh học
-            </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-                <div class="flex flex-col gap-2">
-                    <span class="material-symbols-outlined text-green-400 text-4xl">forest</span>
-                    <div class="text-3xl font-black text-white"><span class="counter" data-target="130">0</span>+</div>
-                    <span class="text-sm text-gray-400">Loài thực vật bậc cao đặc hữu của vùng Đồng Tháp Mười.</span>
+    <!-- ====== MAIN CONTENT ====== -->
+    <section class="max-w-7xl mx-auto px-6 pb-16 space-y-20 md:space-y-36">
+
+        <!-- ARTICLE 1: Khu Ramsar 2000 -->
+        <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center sparkle-wrap" data-aos="fade-up">
+            <div class="w-full md:w-1/2 relative group z-0 tilt-card">
+                <!-- Glow blur bg -->
+                <div class="absolute -inset-4 translate-y-4 scale-[1.04] opacity-70 blur-3xl group-hover:opacity-100 group-hover:blur-[70px] group-hover:scale-[1.07] transition-all duration-700 pointer-events-none -z-10 tilt-content">
+                    <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
                 </div>
-                <div class="flex flex-col gap-2">
-                    <span class="material-symbols-outlined text-green-400 text-4xl">flutter_dash</span>
-                    <div class="text-3xl font-black text-white"><span class="counter" data-target="231">0</span></div>
-                    <span class="text-sm text-gray-400">Loài chim nước thuộc 25 họ, bao gồm nhiều loài quý hiếm.</span>
-                </div>
-                <div class="flex flex-col gap-2">
-                    <span class="material-symbols-outlined text-green-400 text-4xl">set_meal</span>
-                    <div class="text-3xl font-black text-white"><span class="counter" data-target="130">0</span>+</div>
-                    <span class="text-sm text-gray-400">Loài cá nước ngọt, duy trì chuỗi thức ăn bền vững.</span>
+                <div class="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-10 card-shine card-border-glow border-animate tilt-content">
+                    <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg"
+                         alt="Tràm Chim toàn cảnh"
+                         class="w-full h-64 md:h-96 object-cover img-reveal transition-transform duration-700 group-hover:scale-105"/>
+                    <div class="absolute top-3 left-3 z-20">
+                        <span class="eco-badge bg-white/80 text-green-800 border-green-300">
+                            <span class="material-symbols-outlined" style="font-size:10px;">biotech</span>
+                            Khu Ramsar 2000
+                        </span>
+                    </div>
+                    <div class="card-hover-label">Vườn Quốc gia Tràm Chim →</div>
                 </div>
             </div>
-        </div>
+
+            <div class="w-full md:w-1/2 space-y-5 md:space-y-6">
+                <div class="relative">
+                    <div class="section-number" aria-hidden="true">01</div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl float-icon">biotech</span>
+                        <span class="eco-badge">Sinh thái ngập nước</span>
+                    </div>
+                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">
+                        <span class="highlight-word" id="hl-ramsar">Khu Ramsar</span> Thứ 2000
+                    </h2>
+                    <div class="w-16 h-1 bg-gradient-to-r from-green-600 to-green-400 mt-3" id="ul-ramsar" style="width:0;transition:width 1s ease;"></div>
+                </div>
+                <div class="article-body space-y-4 text-base md:text-lg text-gray-600 leading-relaxed">
+                    <p>
+                        Trải rộng trên diện tích hơn <strong>7.313 hecta</strong> tại huyện Tam Nông, <strong>Vườn Quốc gia Tràm Chim</strong> được ví như một "Đồng Tháp Mười thu nhỏ". Đây là mảnh ghép hiếm hoi còn lưu giữ trọn vẹn nét hoang sơ, nguyên thủy của hệ sinh thái đất ngập nước miền Tây từ thuở mở cõi.
+                    </p>
+                    <p>
+                        Quần thể sinh thái rộng lớn này là sự đan xen tuyệt mỹ giữa những cánh rừng tràm xanh thẳm, đầm lầy thanh bình và những đồng cỏ ngập nước trải dài ngút tầm mắt. Vượt lên trên một điểm tham quan thuần túy, Tràm Chim thực sự là một <em>"bảo tàng tự nhiên sống động"</em> — một không gian tuyệt vời để các bạn tìm hiểu về hệ sinh thái ngập nước và hòa mình vào nhịp thở của đại ngàn.
+                    </p>
+                </div>
+            </div>
+        </article>
+
+        <!-- ARTICLE 2: Sếu Đầu Đỏ -->
+        <article class="flex flex-col md:flex-row-reverse gap-8 md:gap-16 items-center sparkle-wrap" data-aos="fade-up">
+            <div class="w-full md:w-1/2 relative group z-0 tilt-card">
+                <!-- Glow blur bg using video poster -->
+                <div class="absolute -inset-4 translate-y-4 scale-[1.04] opacity-70 blur-3xl group-hover:opacity-100 group-hover:blur-[70px] group-hover:scale-[1.07] transition-all duration-700 pointer-events-none -z-10 tilt-content">
+                    <div class="w-full h-full rounded-3xl" style="background:linear-gradient(135deg,#2d6a4f,#52b788,#1b4332);"></div>
+                </div>
+                <div class="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl bg-black z-10 card-shine card-border-glow tilt-content">
+                    <video src="227085.mp4" autoplay loop muted playsinline
+                           class="w-full h-64 md:h-96 object-cover opacity-95 transition-transform duration-700 group-hover:scale-105"></video>
+                    <div class="video-badge">
+                        <span class="material-symbols-outlined" style="font-size:12px;vertical-align:middle;">videocam</span>
+                        Tư liệu thực địa
+                    </div>
+                    <div class="card-hover-label">Sếu Đầu Đỏ — Biểu tượng Tràm Chim →</div>
+                </div>
+            </div>
+
+            <div class="w-full md:w-1/2 space-y-5 md:space-y-6">
+                <div class="relative">
+                    <div class="section-number" aria-hidden="true">02</div>
+                    <div class="flex items-center justify-start md:justify-end gap-3 mb-2">
+                        <span class="eco-badge">Loài quý hiếm</span>
+                        <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl float-icon" style="animation-delay:0.5s;">troubleshoot</span>
+                    </div>
+                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight text-left md:text-right">
+                        Biểu tượng <span class="highlight-word" id="hl-seu">Sếu Đầu Đỏ</span>
+                    </h2>
+                    <div class="w-16 h-1 bg-gradient-to-r from-green-600 to-green-400 mt-3 ml-auto md:ml-0 md:mr-0" id="ul-seu" style="width:0;transition:width 1s ease;float:right;"></div>
+                    <div style="clear:both;"></div>
+                </div>
+                <div class="article-body space-y-4 text-base md:text-lg text-gray-600 leading-relaxed">
+                    <p>
+                        Nhắc đến Tràm Chim là nhắc đến <strong>Sếu đầu đỏ (Grus antigone)</strong> — loài chim quý hiếm có tên trong Sách Đỏ thế giới. Sự hiện diện của chúng là chỉ thị sinh học quan trọng, minh chứng cho độ trong lành của môi trường nước và thảm thực vật nơi đây.
+                    </p>
+                    <p>
+                        Vào mùa khô (từ tháng 12 đến tháng 5 năm sau), khi nước rút để lộ ra những bãi lầy đầy củ năng ống — món ăn khoái khẩu của Sếu, từng đàn chim bắt đầu di cư về đây tìm thức ăn và múa đôi. Vũ điệu vươn cổ, vỗ cánh của Sếu đầu đỏ dưới ánh hoàng hôn là kiệt tác của thiên nhiên Đồng Tháp, mang đến những bài học thực tế sinh động cho các bạn yêu thích khám phá sinh học.
+                    </p>
+                </div>
+            </div>
+        </article>
+
+        <!-- ARTICLE 3: Đa dạng sinh học -->
+        <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center sparkle-wrap" data-aos="fade-up">
+            <div class="w-full md:w-1/2 relative group z-0 tilt-card">
+                <div class="absolute -inset-4 translate-y-4 scale-[1.04] opacity-70 blur-3xl group-hover:opacity-100 group-hover:blur-[70px] group-hover:scale-[1.07] transition-all duration-700 pointer-events-none -z-10 tilt-content">
+                    <img src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
+                </div>
+                <div class="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-10 card-shine card-border-glow border-animate tilt-content">
+                    <img src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg"
+                         alt="Đa dạng sinh học Tràm Chim"
+                         class="w-full h-64 md:h-96 object-cover img-reveal transition-transform duration-700 group-hover:scale-105" loading="lazy"/>
+                    <div class="absolute top-3 left-3 z-20">
+                        <span class="eco-badge bg-white/80 text-green-800 border-green-300">
+                            <span class="material-symbols-outlined" style="font-size:10px;">nature_people</span>
+                            Đa dạng sinh học
+                        </span>
+                    </div>
+                    <div class="card-hover-label">Khám phá hệ sinh thái →</div>
+                </div>
+            </div>
+
+            <div class="w-full md:w-1/2 space-y-5 md:space-y-6">
+                <div class="relative">
+                    <div class="section-number" aria-hidden="true">03</div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl float-icon" style="animation-delay:1s;">nature_people</span>
+                        <span class="eco-badge">Hệ sinh thái</span>
+                    </div>
+                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">
+                        Đa dạng <span class="highlight-word" id="hl-sinh">Sinh học</span>
+                    </h2>
+                    <div class="w-16 h-1 bg-gradient-to-r from-green-600 to-green-400 mt-3" id="ul-sinh" style="width:0;transition:width 1s ease;"></div>
+                </div>
+                <div class="article-body space-y-4 text-base md:text-lg text-gray-600 leading-relaxed">
+                    <p>
+                        Tràm Chim là nơi cư ngụ của hơn <strong>231 loài chim</strong> thuộc 25 họ khác nhau, trong đó có nhiều loài nằm trong danh sách bảo tồn toàn cầu. Ngoài Sếu đầu đỏ, vườn còn là ngôi nhà của các loài như Giang sen, Cò thìa mặt đen, Vịt trời, và hàng trăm loài chim di cư theo mùa.
+                    </p>
+                    <p>
+                        Dưới lớp nước mát lành của các kênh rạch chằng chịt là hơn <strong>130 loài cá</strong> nước ngọt đặc trưng của vùng Đồng Tháp Mười — từ cá lóc, cá trê đến các loài cá quý hiếm đang được bảo tồn nghiêm ngặt, tạo nên chuỗi thức ăn bền vững và phong phú cho toàn hệ sinh thái.
+                    </p>
+                </div>
+            </div>
+        </article>
+
     </section>
 
-    <section class="max-w-7xl mx-auto px-6 py-10 md:py-16 space-y-16 md:space-y-32">
-        
-        <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center" data-aos="fade-up">
-            <div class="w-full md:w-1/2 relative group z-0 tilt-card cursor-pointer">
-                <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.05] transition-all duration-700 pointer-events-none -z-10 tilt-content">
-                    <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125"/>
-                </div>
-                <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" alt="Tràm Chim" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl relative z-10 transition-transform duration-500 group-hover:-translate-y-2 tilt-content"/>
-            </div>
-            
-            <div class="w-full md:w-1/2 space-y-4 md:space-y-6">
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl float-icon">biotech</span>
-                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Khu Ramsar 2000</h2>
-                </div>
-                <div class="space-y-4 text-base md:text-lg text-gray-600 leading-relaxed text-justify">
-                    <p>
-                        Trải rộng trên diện tích hơn 7.313 hecta tại huyện Tam Nông, <strong>Vườn Quốc gia Tràm Chim</strong> được ví như một "Đồng Tháp Mười thu nhỏ". Đây là mảnh ghép hiếm hoi còn lưu giữ trọn vẹn nét hoang sơ, nguyên thủy của hệ sinh thái đất ngập nước miền Tây từ thuở mở cõi.
-                    </p>
-                    <p>
-                        Quần thể sinh thái rộng lớn này là sự đan xen tuyệt mỹ giữa những cánh rừng tràm xanh thẳm, đầm lầy thanh bình và những đồng cỏ ngập nước trải dài ngút tầm mắt. Vượt lên trên một điểm tham quan thuần túy, Tràm Chim thực sự là một "bảo tàng tự nhiên sống động" – một không gian tuyệt vời để các bạn tìm hiểu về hệ sinh thái ngập nước và hòa mình vào nhịp thở của đại ngàn.
-                    </p>
-                </div>
-            </div>
-        </article>
-
-        <article class="flex flex-col md:flex-row-reverse gap-8 md:gap-16 items-center" data-aos="fade-up">
-            <div class="w-full md:w-1/2 relative group z-0 tilt-card cursor-pointer">
-                <div class="absolute -inset-2 translate-y-3 scale-[1.02] opacity-70 blur-2xl group-hover:opacity-100 group-hover:blur-3xl group-hover:scale-[1.05] transition-all duration-700 pointer-events-none -z-10 tilt-content">
-                    <video src="227085.mp4" autoplay loop muted playsinline class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125"></video>
-                </div>
-                <div class="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl bg-black z-10 transition-transform duration-500 group-hover:-translate-y-2 tilt-content">
-                    <video src="227085.mp4" autoplay loop muted playsinline class="w-full h-64 md:h-96 object-cover opacity-95"></video>
-                    <div class="absolute top-4 left-4 bg-green-600 text-white text-[10px] md:text-xs font-bold px-3 py-1 rounded-sm uppercase tracking-widest">Tư liệu thực địa</div>
-                </div>
-            </div>
-            
-            <div class="w-full md:w-1/2 space-y-4 md:space-y-6">
-                <div class="flex items-center justify-start md:justify-end gap-3">
-                    <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight text-left md:text-right">Biểu tượng Sếu Đầu Đỏ</h2>
-                    <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl float-icon" style="animation-delay: 0.5s;">troubleshoot</span>
-                </div>
-                <div class="space-y-4 text-base md:text-lg text-gray-600 leading-relaxed text-justify">
-                    <p>
-                        Nhắc đến Tràm Chim là nhắc đến <strong>Sếu đầu đỏ (Grus antigone)</strong> – loài chim quý hiếm có tên trong Sách Đỏ thế giới. Sự hiện diện của chúng là chỉ thị sinh học quan trọng, minh chứng cho độ trong lành của môi trường nước và thảm thực vật nơi đây.
-                    </p>
-                    <p>
-                        Vào mùa khô (từ tháng 12 đến tháng 5 năm sau), khi nước rút để lộ ra những bãi lầy đầy củ năng ống – món ăn khoái khẩu của Sếu, từng đàn chim bắt đầu di cư về đây tìm thức ăn và múa đôi. Vũ điệu vươn cổ, vỗ cánh của Sếu đầu đỏ dưới ánh hoàng hôn là kiệt tác của thiên nhiên Đồng Tháp, mang đến những bài học thực tế sinh động cho các bạn yêu thích khám phá sinh học.
-                    </p>
-                </div>
-            </div>
-        </article>
-
+    <!-- ====== REFERENCES ====== -->
+    <section class="max-w-7xl mx-auto px-6 py-8 border-t border-gray-200 mb-8" data-aos="fade-up">
+        <div class="bg-green-50/50 rounded-2xl p-6 md:p-8 border border-green-100 shadow-sm relative overflow-hidden">
+            <div class="section-number" aria-hidden="true">04</div>
+            <h4 class="text-green-800 font-black text-lg mb-4 flex items-center gap-2 uppercase tracking-tight">
+                <span class="material-symbols-outlined text-green-600">verified</span>
+                <span class="text-shimmer">Nguồn dữ liệu tham khảo chính thống</span>
+            </h4>
+            <ul class="space-y-3 text-sm md:text-base text-gray-700 relative z-10">
+                <li class="flex items-start gap-3 group/ref">
+                    <span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5 group-hover/ref:scale-125 transition-transform">check_circle</span>
+                    <span class="leading-relaxed"><strong>Ban Quản lý Vườn Quốc gia Tràm Chim:</strong> Báo cáo thống kê hệ sinh thái đất ngập nước, danh mục bảo tồn 130+ loài thực vật đặc hữu và 231 loài chim.</span>
+                </li>
+                <li class="flex items-start gap-3 group/ref">
+                    <span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5 group-hover/ref:scale-125 transition-transform">check_circle</span>
+                    <span class="leading-relaxed"><strong>Công ước Ramsar (ramsar.org):</strong> Hồ sơ công nhận Tràm Chim là khu Ramsar thứ 2000 của thế giới năm 1998, với các tiêu chí bảo tồn đất ngập nước quốc tế.</span>
+                </li>
+                <li class="flex items-start gap-3 group/ref">
+                    <span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5 group-hover/ref:scale-125 transition-transform">check_circle</span>
+                    <span class="leading-relaxed"><strong>Cổng Thông tin điện tử tỉnh Đồng Tháp (dongthap.gov.vn):</strong> Số liệu cập nhật về diện tích, quy hoạch bảo tồn và phát triển du lịch sinh thái Tràm Chim.</span>
+                </li>
+            </ul>
+        </div>
     </section>
 </main>
 
-<footer class="bg-[#111811] text-white py-12 md:py-16 px-6 md:px-8 border-t-[6px] border-green-800 mt-10">
-    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-8 md:gap-10">
+<!-- ====== FOOTER ====== -->
+<footer class="bg-[#111811] text-white py-12 md:py-16 px-6 border-t-[6px] border-green-800 relative overflow-hidden">
+    <!-- Animated border top -->
+    <div class="absolute top-0 left-0 h-[6px] w-full overflow-hidden" aria-hidden="true">
+        <div style="height:100%;width:200%;background:linear-gradient(90deg,#1b5e20,#4caf50,#81c784,#4caf50,#1b5e20);animation:shimmer-move 3s linear infinite;background-size:50% 100%;"></div>
+    </div>
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-8 relative z-10">
         <div class="text-center lg:text-left">
-            <div class="text-2xl md:text-3xl font-black text-green-500 mb-2 tracking-tighter uppercase flex items-center justify-center lg:justify-start gap-2">
-                Đồng Tháp
-            </div>
-            <p class="text-gray-400 text-xs md:text-sm max-w-md italic">Hệ thống số hóa thông tin giáo dục địa phương.</p>
+            <div class="text-2xl md:text-3xl font-black text-green-500 uppercase glitch" data-text="Đồng Tháp">Đồng Tháp</div>
+            <p class="text-gray-400 text-xs md:text-sm max-w-md italic mt-2">Hệ thống số hóa thông tin giáo dục địa phương.</p>
         </div>
-        
-        <nav class="flex flex-wrap justify-center gap-4 md:gap-10 text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-500">
-            <a class="hover:text-green-400 transition-colors" href="/">Trang chủ</a>
-            <a class="hover:text-green-400 transition-colors" href="tramchim">Sinh thái</a>
-            <a class="hover:text-green-400 transition-colors" href="ditichlichsu">Lịch sử</a>
-            <a class="hover:text-green-400 transition-colors" href="danhlam">Danh Lam</a>
+        <nav class="flex flex-wrap justify-center gap-4 text-[10px] md:text-xs font-bold uppercase text-gray-500">
+            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="/">Trang chủ</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="tramchim">Sinh thái</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="ditichlichsu">Lịch sử</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="danhlam">Danh Lam</a>
         </nav>
-
-        <div class="text-center lg:text-right bg-green-900/40 p-4 md:p-5 rounded-lg border border-green-800/50 shadow-inner flex flex-col items-center lg:items-end">
-            <div class="text-[8px] md:text-[10px] text-gray-400 tracking-widest uppercase mb-2">Thực hiện bởi</div>
-            <a href="https://xuanphuc2108.vercel.app/" target="_blank" title="Xem hồ sơ của tác giả" class="inline-block text-sm md:text-base font-black animate-pop-bounce drop-shadow-[0_0_8px_rgba(74,222,128,0.5)] cursor-pointer decoration-transparent">
-                Nguyễn Xuân Phúc - 21/8/2012
-            </a>
+        <div class="text-center lg:text-right bg-green-900/40 p-4 rounded-lg border border-green-800/50 flex flex-col items-center lg:items-end">
+            <div class="text-[8px] md:text-[10px] text-gray-400 uppercase mb-2">Thực hiện bởi</div>
+            <a href="https://xuanphuc2108.vercel.app/" target="_blank" class="glow-link inline-block text-sm md:text-base font-black animate-pop-bounce drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]">Nguyễn Xuân Phúc - 21/8/2012</a>
         </div>
     </div>
 </footer>
 
+<!-- ====== MAIN SCRIPTS ====== -->
 <script>
-    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
+(function() {
+    'use strict';
+    var isMobile = window.innerWidth < 768;
+    var isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var isTouch = !window.matchMedia('(pointer: fine)').matches;
+
+    /* ============ LOADING SCREEN ============ */
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            document.getElementById('loading-screen').classList.add('hidden');
+            var heroImg = document.getElementById('hero-img');
+            if (heroImg) heroImg.classList.add('revealed');
+            setTimeout(function() {
+                document.querySelectorAll('.img-reveal:not(#hero-img)').forEach(function(img, i) {
+                    setTimeout(function() { img.classList.add('revealed'); }, i * 200);
+                });
+            }, 400);
+        }, 1200);
+    });
+
+    /* ============ PAGE TRANSITION ============ */
+    window.navigateTo = function(href) {
+        var overlay = document.getElementById('page-transition');
+        overlay.classList.add('out');
+        setTimeout(function() { window.location.href = href; }, 380);
+    };
+    document.querySelectorAll('a[href]').forEach(function(link) {
+        var href = link.getAttribute('href');
+        if (!href.startsWith('http') && !href.startsWith('#') && !href.startsWith('mailto')) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                navigateTo(href);
+            });
+        }
+    });
+
+    /* ============ CUSTOM CURSOR ============ */
+    if (!isTouch) {
+        var dot = document.getElementById('cursor-dot');
+        var ring = document.getElementById('cursor-ring');
+        var glow = document.getElementById('cursor-glow');
+        var mx = 0, my = 0, rx = 0, ry = 0, gx = 0, gy = 0;
+
+        document.addEventListener('mousemove', function(e) { mx = e.clientX; my = e.clientY; });
+
+        (function cursorLoop() {
+            dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+            rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
+            ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+            gx += (mx - gx) * 0.08; gy += (my - gy) * 0.08;
+            glow.style.left = gx + 'px'; glow.style.top = gy + 'px';
+            requestAnimationFrame(cursorLoop);
+        })();
+
+        document.querySelectorAll('a, button, [onclick], article, .tilt-card').forEach(function(el) {
+            el.addEventListener('mouseenter', function() { ring.classList.add('hovered'); });
+            el.addEventListener('mouseleave', function() { ring.classList.remove('hovered'); });
+        });
+        document.addEventListener('mousedown', function() { ring.classList.add('clicking'); });
+        document.addEventListener('mouseup', function() { ring.classList.remove('clicking'); });
+    } else {
+        ['cursor-dot','cursor-ring','cursor-glow'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+    }
+
+    /* ============ PARTICLES ============ */
+    var container = document.getElementById('particles');
+    var count = isMobile ? 8 : 16;
+    for (var p = 0; p < count; p++) {
+        var el = document.createElement('div');
+        el.className = 'particle';
+        var size = Math.random() * 6 + 3;
+        el.style.cssText = 'width:' + size + 'px;height:' + size + 'px;left:' + Math.random() * 100 + '%;animation-duration:' + (Math.random() * 10 + 8) + 's;animation-delay:' + (Math.random() * 8) + 's;';
+        container.appendChild(el);
+    }
+
+    /* ============ SPARKLE ON CARD HOVER ============ */
+    if (!isReducedMotion) {
+        document.querySelectorAll('.sparkle-wrap').forEach(function(wrap) {
+            var timer = null;
+            wrap.addEventListener('mouseenter', function() {
+                timer = setInterval(function() {
+                    var s = document.createElement('div');
+                    s.className = 'sparkle';
+                    var angle = Math.random() * Math.PI * 2;
+                    var dist = 30 + Math.random() * 60;
+                    s.style.setProperty('--sx', Math.cos(angle) * dist + 'px');
+                    s.style.setProperty('--sy', Math.sin(angle) * dist + 'px');
+                    s.style.left = (20 + Math.random() * 60) + '%';
+                    s.style.top = (20 + Math.random() * 60) + '%';
+                    s.style.width = (3 + Math.random() * 5) + 'px';
+                    s.style.height = s.style.width;
+                    s.style.background = ['#4caf50','#81c784','#a5d6a7','#fff'][Math.floor(Math.random()*4)];
+                    wrap.appendChild(s);
+                    s.addEventListener('animationend', function() { s.remove(); });
+                }, 120);
+            });
+            wrap.addEventListener('mouseleave', function() { clearInterval(timer); });
+        });
+    }
+
+    /* ============ INTERSECTION OBSERVER ============ */
+    var observerOpts = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
             if (entry.isIntersecting) {
-                const element = entry.target;
-                const aosType = element.getAttribute('data-aos');
-                let animationClass = 'animate-slide-up';
-                
-                if (aosType === 'fade-right') animationClass = 'animate-slide-right';
-                else if (aosType === 'fade-up') animationClass = 'animate-slide-up';
-                else if (aosType === 'fade-in') animationClass = 'animate-scale-in';
-                
-                element.classList.add(animationClass);
-                element.style.opacity = 1;
-                observer.unobserve(element);
+                var el = entry.target;
+                var aosType = el.getAttribute('data-aos');
+                var cls = aosType === 'fade-right' ? 'animate-slide-right' : aosType === 'fade-in' ? 'animate-scale-in' : 'animate-slide-up';
+                el.classList.add(cls);
+                el.style.opacity = 1;
+                observer.unobserve(el);
             }
         });
-    }, observerOptions);
-    document.querySelectorAll('[data-aos]').forEach(el => observer.observe(el));
+    }, observerOpts);
+    document.querySelectorAll('[data-aos]').forEach(function(el) { observer.observe(el); });
 
-    const counterElements = document.querySelectorAll('.counter');
-    counterElements.forEach(counter => {
-        const target = parseInt(counter.getAttribute('data-target'));
-        const duration = 2000;
-        const increment = target / (duration / 16);
-        
-        const observerCounter = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !counter.classList.contains('counted')) {
-                    counter.classList.add('counted');
-                    let current = 0;
-                    const timer = setInterval(() => {
-                        current += increment;
-                        if (current >= target) {
-                            counter.textContent = target;
-                            clearInterval(timer);
-                        } else {
-                            counter.textContent = Math.floor(current);
-                        }
-                    }, 16);
-                }
+    /* ============ COUNTER ANIMATION ============ */
+    var counterObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (!entry.isIntersecting) return;
+            var counter = entry.target;
+            if (counter.classList.contains('counted')) return;
+            counter.classList.add('counted');
+            var target = parseInt(counter.getAttribute('data-target'));
+            var duration = 2000, inc = target / (duration / 16), cur = 0;
+            var timer = setInterval(function() {
+                cur += inc;
+                if (cur >= target) { counter.textContent = target; clearInterval(timer); }
+                else { counter.textContent = Math.floor(cur); }
+            }, 16);
+            var bar = counter.closest('.flex') && counter.closest('.flex').querySelector('.stat-bar-fill');
+            if (bar) bar.style.width = bar.getAttribute('data-width') + '%';
+            counterObs.unobserve(counter);
+        });
+    }, observerOpts);
+    document.querySelectorAll('.counter').forEach(function(el) { counterObs.observe(el); });
+
+    /* ============ HIGHLIGHT WORDS ============ */
+    var hlObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                var ulId = {
+                    'hl-ramsar': 'ul-ramsar',
+                    'hl-seu': 'ul-seu',
+                    'hl-sinh': 'ul-sinh'
+                }[entry.target.id];
+                var bar = document.getElementById(ulId);
+                if (bar) bar.style.width = window.innerWidth < 768 ? '64px' : '96px';
+            }
+        });
+    }, { threshold: 0.5 });
+    ['hl-ramsar','hl-seu','hl-sinh'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) hlObserver.observe(el);
+    });
+
+    /* ============ RIPPLE EFFECT ============ */
+    function addRipple(e) {
+        var el = e.currentTarget;
+        var rect = el.getBoundingClientRect();
+        var x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        var y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+        var size = Math.max(rect.width, rect.height) * 1.2;
+        var ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        ripple.style.cssText = 'width:' + size + 'px;height:' + size + 'px;top:' + (y - size/2) + 'px;left:' + (x - size/2) + 'px;';
+        el.appendChild(ripple);
+        ripple.addEventListener('animationend', function() { ripple.remove(); });
+    }
+    document.querySelectorAll('.ripple-container').forEach(function(el) {
+        el.addEventListener('click', addRipple);
+        el.addEventListener('touchstart', addRipple, { passive: true });
+    });
+
+    /* ============ 3D TILT (desktop only) ============ */
+    if (!isMobile && !isReducedMotion) {
+        document.querySelectorAll('.tilt-card').forEach(function(card) {
+            card.addEventListener('mousemove', function(e) {
+                var r = card.getBoundingClientRect();
+                var x = e.clientX - r.left, y = e.clientY - r.top;
+                var rx = ((y - r.height/2) / r.height) * -10;
+                var ry = ((x - r.width/2) / r.width) * 10;
+                card.style.transform = 'perspective(1000px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) scale3d(1.02,1.02,1.02)';
             });
-        }, observerOptions);
-        observerCounter.observe(counter);
-    });
-
-    const tiltCards = document.querySelectorAll('.tilt-card');
-    tiltCards.forEach(card => {
-        card.addEventListener('mousemove', e => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = ((y - centerY) / centerY) * -10; 
-            const rotateY = ((x - centerX) / centerX) * 10;
-            
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            card.addEventListener('mouseleave', function() {
+                card.style.transition = 'transform 0.5s ease';
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
+                setTimeout(function() { card.style.transition = 'transform 0.1s ease'; }, 500);
+            });
         });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-            card.style.transition = `transform 0.5s ease`;
-            setTimeout(() => { card.style.transition = `transform 0.1s ease`; }, 500);
-        });
-    });
+    }
 
-    let ticking = false;
+    /* ============ MAGNETIC BUTTON ============ */
+    if (!isMobile) {
+        document.querySelectorAll('.magnetic-btn').forEach(function(btn) {
+            btn.addEventListener('mousemove', function(e) {
+                var r = btn.getBoundingClientRect();
+                var dx = e.clientX - (r.left + r.width/2);
+                var dy = e.clientY - (r.top + r.height/2);
+                btn.style.transform = 'translate(' + dx*0.3 + 'px,' + dy*0.3 + 'px) scale(1.05)';
+            });
+            btn.addEventListener('mouseleave', function() { btn.style.transform = ''; });
+        });
+    }
+
+    /* ============ MOUSE PARALLAX ON HERO ============ */
+    if (!isMobile && !isReducedMotion) {
+        var heroSection = document.querySelector('section');
+        if (heroSection) {
+            heroSection.addEventListener('mousemove', function(e) {
+                var rect = heroSection.getBoundingClientRect();
+                var cx = (e.clientX - rect.left) / rect.width - 0.5;
+                var cy = (e.clientY - rect.top) / rect.height - 0.5;
+                heroSection.querySelectorAll('.blob-bg').forEach(function(b) {
+                    b.style.transform = 'translate(' + cx * 20 + 'px,' + cy * 20 + 'px)';
+                });
+            });
+        }
+    }
+
+    /* ============ MOBILE HERO PARALLAX ============ */
+    if (isMobile) {
+        var heroImg = document.getElementById('hero-img');
+        if (heroImg) {
+            window.addEventListener('scroll', function() {
+                heroImg.style.transform = 'scale(1.08) translateY(' + window.scrollY * 0.08 + 'px)';
+            }, { passive: true });
+        }
+    }
+
+    /* ============ OPTIMIZED SCROLL ============ */
+    var ticking = false;
     window.addEventListener('scroll', function() {
         if (!ticking) {
             window.requestAnimationFrame(function() {
-                let winScroll = window.scrollY || document.documentElement.scrollTop;
-                
-                const parallaxBg = document.getElementById('parallax-bg');
-                if (parallaxBg) {
-                    parallaxBg.style.transform = `translateY(${winScroll * 0.5}px)`;
+                var winScroll = window.scrollY;
+                var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                var pct = winScroll / height;
+
+                if (!isMobile) {
+                    var pb = document.getElementById('parallax-bg');
+                    if (pb) pb.style.transform = 'translateY(' + winScroll * 0.3 + 'px)';
                 }
 
-                let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                let scrolled = (winScroll / height) * 100;
-                document.getElementById("progress-bar").style.width = scrolled + "%";
-                
-                const header = document.getElementById('main-header');
+                document.getElementById('progress-bar').style.width = (pct * 100) + '%';
+
+                var slf = document.getElementById('scroll-line-fill');
+                if (slf) slf.style.height = (pct * 100) + '%';
+
+                var header = document.getElementById('main-header');
                 if (winScroll > 80) {
                     header.classList.remove('bg-white');
                     header.classList.add('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
@@ -362,12 +1081,343 @@
                     header.classList.add('bg-white');
                     header.classList.remove('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
                 }
-                
+
+                document.getElementById('scroll-top').classList.toggle('visible', winScroll > 300);
+
                 ticking = false;
             });
             ticking = true;
         }
+    }, { passive: true });
+
+})();
+</script>
+
+<!-- ====== SOUND SYSTEM (Web Audio API) ====== -->
+<script>
+(function () {
+  'use strict';
+
+  let ctx = null, masterGain = null, ambientNodes = [], isMuted = false;
+  let isAmbientOn = false, birdLoop = null, isInitialized = false;
+
+  function getCtx() {
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = ctx.createGain();
+      masterGain.gain.setValueAtTime(0.7, ctx.currentTime);
+      masterGain.connect(ctx.destination);
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+
+  function playHover() {
+    if (isMuted) return;
+    const c = getCtx(), t = c.currentTime;
+    const osc = c.createOscillator(), g = c.createGain(), filter = c.createBiquadFilter();
+    osc.type = 'sine'; osc.frequency.setValueAtTime(880, t); osc.frequency.exponentialRampToValueAtTime(1200, t + 0.12);
+    filter.type = 'bandpass'; filter.frequency.value = 1000; filter.Q.value = 2;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.08, t + 0.02); g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+    osc.connect(filter); filter.connect(g); g.connect(masterGain);
+    osc.start(t); osc.stop(t + 0.3);
+  }
+
+  function playClick() {
+    if (isMuted) return;
+    const c = getCtx(), t = c.currentTime;
+    const osc = c.createOscillator(), g = c.createGain();
+    osc.type = 'triangle'; osc.frequency.setValueAtTime(320, t); osc.frequency.exponentialRampToValueAtTime(80, t + 0.1);
+    g.gain.setValueAtTime(0.25, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    osc.connect(g); g.connect(masterGain); osc.start(t); osc.stop(t + 0.15);
+    const osc2 = c.createOscillator(), g2 = c.createGain();
+    osc2.type = 'square'; osc2.frequency.setValueAtTime(1800, t);
+    g2.gain.setValueAtTime(0.06, t); g2.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+    osc2.connect(g2); g2.connect(masterGain); osc2.start(t); osc2.stop(t + 0.05);
+  }
+
+  function playTransition() {
+    if (isMuted) return;
+    const c = getCtx(), t = c.currentTime;
+    const bufSize = c.sampleRate * 0.6, buf = c.createBuffer(1, bufSize, c.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufSize, 2);
+    const src = c.createBufferSource(); src.buffer = buf;
+    const filter = c.createBiquadFilter(); filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(400, t); filter.frequency.exponentialRampToValueAtTime(4000, t + 0.3); filter.Q.value = 1;
+    const g = c.createGain(); g.gain.setValueAtTime(0.4, t); g.gain.linearRampToValueAtTime(0, t + 0.55);
+    src.connect(filter); filter.connect(g); g.connect(masterGain); src.start(t);
+    const osc = c.createOscillator(), g2 = c.createGain();
+    osc.type = 'sine'; osc.frequency.setValueAtTime(600, t); osc.frequency.exponentialRampToValueAtTime(200, t + 0.4);
+    g2.gain.setValueAtTime(0.18, t); g2.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+    osc.connect(g2); g2.connect(masterGain); osc.start(t); osc.stop(t + 0.5);
+  }
+
+  function playLoadComplete() {
+    if (isMuted) return;
+    const c = getCtx();
+    [523.25, 659.25, 783.99, 1046.5].forEach(function(freq, i) {
+      const t = c.currentTime + i * 0.15;
+      const osc = c.createOscillator(), g = c.createGain();
+      osc.type = 'sine'; osc.frequency.value = freq;
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.18, t + 0.03); g.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+      osc.connect(g); g.connect(masterGain); osc.start(t); osc.stop(t + 0.7);
     });
+  }
+
+  function playReveal() {
+    if (isMuted) return;
+    const c = getCtx(), t = c.currentTime;
+    const osc = c.createOscillator(), g = c.createGain();
+    const vib = c.createOscillator(), vibGain = c.createGain();
+    vib.frequency.value = 6; vibGain.gain.value = 15; vib.connect(vibGain); vibGain.connect(osc.frequency);
+    osc.type = 'sine'; osc.frequency.setValueAtTime(440, t); osc.frequency.linearRampToValueAtTime(660, t + 0.2);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.12, t + 0.04); g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+    osc.connect(g); g.connect(masterGain);
+    vib.start(t); vib.stop(t + 0.5); osc.start(t); osc.stop(t + 0.5);
+  }
+
+  let lastScrollSound = 0;
+  function playScrollTick() {
+    if (isMuted) return;
+    const now = Date.now();
+    if (now - lastScrollSound < 180) return;
+    lastScrollSound = now;
+    const c = getCtx(), t = c.currentTime;
+    const osc = c.createOscillator(), g = c.createGain();
+    osc.type = 'sine'; osc.frequency.value = 200 + Math.random() * 100;
+    g.gain.setValueAtTime(0.04, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+    osc.connect(g); g.connect(masterGain); osc.start(t); osc.stop(t + 0.07);
+  }
+
+  function playCounterTick() {
+    if (isMuted) return;
+    const c = getCtx(), t = c.currentTime;
+    const osc = c.createOscillator(), g = c.createGain();
+    osc.type = 'square'; osc.frequency.value = 400 + Math.random() * 200;
+    g.gain.setValueAtTime(0.035, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+    osc.connect(g); g.connect(masterGain); osc.start(t); osc.stop(t + 0.05);
+  }
+
+  function createAmbientLayer() {
+    const c = getCtx();
+    const bufSize = c.sampleRate * 3, buf = c.createBuffer(2, bufSize, c.sampleRate);
+    for (let ch = 0; ch < 2; ch++) { const d = buf.getChannelData(ch); for (let i = 0; i < bufSize; i++) d[i] = Math.random() * 2 - 1; }
+    const noise = c.createBufferSource(); noise.buffer = buf; noise.loop = true; noise.loopEnd = 3;
+    const lpf = c.createBiquadFilter(); lpf.type = 'lowpass'; lpf.frequency.value = 600; lpf.Q.value = 0.5;
+    const hpf = c.createBiquadFilter(); hpf.type = 'highpass'; hpf.frequency.value = 80;
+    const lfo = c.createOscillator(), lfoGain = c.createGain();
+    lfo.type = 'sine'; lfo.frequency.value = 0.15; lfoGain.gain.value = 0.3; lfo.connect(lfoGain);
+    const ambGain = c.createGain(); ambGain.gain.value = 0.12; lfoGain.connect(ambGain.gain);
+    noise.connect(lpf); lpf.connect(hpf); hpf.connect(ambGain); ambGain.connect(masterGain);
+    noise.start(); lfo.start();
+    ambientNodes.push(noise, lfo, ambGain);
+  }
+
+  function createBirdChirps() {
+    const c = getCtx();
+    function chirp() {
+      if (!isAmbientOn || isMuted) return;
+      const t = c.currentTime;
+      const numNotes = 2 + Math.floor(Math.random() * 4);
+      const baseFreq = 1800 + Math.random() * 1400;
+      for (let i = 0; i < numNotes; i++) {
+        const delay = i * (0.06 + Math.random() * 0.08);
+        const freq = baseFreq * (0.9 + Math.random() * 0.4);
+        const osc = c.createOscillator(), g = c.createGain();
+        const vib = c.createOscillator(), vibG = c.createGain();
+        vib.type = 'sine'; vib.frequency.value = 12 + Math.random() * 8; vibG.gain.value = freq * 0.04;
+        vib.connect(vibG); vibG.connect(osc.frequency);
+        osc.type = 'sine'; osc.frequency.setValueAtTime(freq, t + delay);
+        osc.frequency.linearRampToValueAtTime(freq * 1.15, t + delay + 0.04);
+        osc.frequency.exponentialRampToValueAtTime(freq * 0.9, t + delay + 0.12);
+        const vol = 0.06 + Math.random() * 0.06;
+        g.gain.setValueAtTime(0, t + delay); g.gain.linearRampToValueAtTime(vol, t + delay + 0.02); g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.14);
+        const panner = c.createStereoPanner(); panner.pan.value = (Math.random() * 2 - 1) * 0.7;
+        vib.start(t + delay); vib.stop(t + delay + 0.2);
+        osc.connect(g); g.connect(panner); panner.connect(masterGain); osc.start(t + delay); osc.stop(t + delay + 0.2);
+      }
+      birdLoop = setTimeout(chirp, (2 + Math.random() * 4) * 1000);
+    }
+    chirp();
+  }
+
+  function createCrickets() {
+    const c = getCtx();
+    function cricket() {
+      if (!isAmbientOn || isMuted) return;
+      const t = c.currentTime, freq = 4200 + Math.random() * 800;
+      for (let i = 0; i < 8; i++) {
+        const osc = c.createOscillator(), g = c.createGain(), delay = i * 0.05;
+        osc.type = 'square'; osc.frequency.value = freq;
+        g.gain.setValueAtTime(0, t + delay); g.gain.linearRampToValueAtTime(0.02, t + delay + 0.01); g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.04);
+        const lpf = c.createBiquadFilter(); lpf.type = 'lowpass'; lpf.frequency.value = 5000;
+        const panner = c.createStereoPanner(); panner.pan.value = (Math.random() * 2 - 1) * 0.9;
+        osc.connect(lpf); lpf.connect(g); g.connect(panner); panner.connect(masterGain); osc.start(t + delay); osc.stop(t + delay + 0.05);
+      }
+      birdLoop = setTimeout(cricket, (0.8 + Math.random() * 3) * 1000);
+    }
+    setTimeout(cricket, 2500);
+  }
+
+  function startAmbient() { if (isAmbientOn) return; isAmbientOn = true; createAmbientLayer(); createBirdChirps(); createCrickets(); }
+  function stopAmbient() {
+    isAmbientOn = false; clearTimeout(birdLoop);
+    ambientNodes.forEach(function(n) { try { n.stop && n.stop(); n.disconnect && n.disconnect(); } catch(e){} });
+    ambientNodes = [];
+  }
+
+  function playToggle(on) {
+    const c = getCtx(), t = c.currentTime;
+    const freqs = on ? [440, 554, 659] : [659, 554, 440];
+    freqs.forEach(function(freq, i) {
+      const st = t + i * 0.1, osc = c.createOscillator(), g = c.createGain();
+      osc.type = 'sine'; osc.frequency.value = freq;
+      g.gain.setValueAtTime(0, st); g.gain.linearRampToValueAtTime(0.15, st + 0.02); g.gain.exponentialRampToValueAtTime(0.001, st + 0.5);
+      osc.connect(g); g.connect(masterGain); osc.start(st); osc.stop(st + 0.6);
+    });
+  }
+
+  function createSoundPanel() {
+    const panel = document.createElement('div');
+    panel.id = 'sound-panel';
+    panel.innerHTML = `
+      <style>
+        #sound-panel { position:fixed; bottom:84px; right:20px; z-index:200; display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+        #sound-toggle-btn { width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,#1b5e20,#4caf50); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(76,175,80,0.5); transition:transform 0.2s ease,box-shadow 0.2s ease; position:relative; overflow:hidden; }
+        #sound-toggle-btn:hover { transform:scale(1.1); box-shadow:0 6px 28px rgba(76,175,80,0.7); }
+        #sound-toggle-btn:active { transform:scale(0.92); }
+        #sound-toggle-btn svg { width:22px; height:22px; fill:white; transition:opacity 0.2s; }
+        #sound-toggle-btn.muted svg { opacity:0.5; }
+        #sound-toggle-btn.ambient-active::before, #sound-toggle-btn.ambient-active::after { content:''; position:absolute; inset:-4px; border-radius:50%; border:2px solid rgba(129,199,132,0.6); animation:sound-pulse 2s ease-out infinite; }
+        #sound-toggle-btn.ambient-active::after { animation-delay:1s; }
+        @keyframes sound-pulse { 0% { transform:scale(1); opacity:1; } 100% { transform:scale(1.7); opacity:0; } }
+        #sound-submenu { display:none; flex-direction:column; gap:6px; align-items:flex-end; animation:fadeSlideUp 0.25s ease forwards; }
+        #sound-submenu.open { display:flex; }
+        @keyframes fadeSlideUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .sound-sub-btn { display:flex; align-items:center; gap:8px; background:white; border:1.5px solid rgba(27,94,32,0.2); border-radius:24px; padding:6px 14px 6px 10px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#1b5e20; cursor:pointer; white-space:nowrap; box-shadow:0 2px 12px rgba(0,0,0,0.08); transition:all 0.2s ease; }
+        .sound-sub-btn:hover { background:#f0fdf4; border-color:#4caf50; transform:translateX(-4px); }
+        .sound-sub-btn.active { background:linear-gradient(135deg,#1b5e20,#4caf50); color:white; border-color:transparent; box-shadow:0 4px 16px rgba(76,175,80,0.4); }
+        .sound-sub-btn svg { width:16px; height:16px; flex-shrink:0; }
+        .sound-sub-btn.active svg { fill:white; }
+        .sound-sub-btn:not(.active) svg { fill:#1b5e20; }
+        #volume-row { display:flex; align-items:center; gap:8px; background:white; border:1.5px solid rgba(27,94,32,0.15); border-radius:24px; padding:6px 14px; box-shadow:0 2px 12px rgba(0,0,0,0.08); }
+        #volume-row svg { width:14px; height:14px; fill:#4caf50; flex-shrink:0; }
+        #vol-slider { -webkit-appearance:none; width:80px; height:3px; border-radius:2px; background:linear-gradient(90deg,#4caf50 var(--pct,70%),#d1d5db var(--pct,70%)); outline:none; cursor:pointer; }
+        #vol-slider::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:#1b5e20; box-shadow:0 1px 4px rgba(0,0,0,0.2); cursor:pointer; }
+        #eq-bars { display:flex; gap:2px; align-items:flex-end; height:16px; }
+        .eq-bar { width:3px; border-radius:1px; background:white; animation:eq-dance 0.6s ease-in-out infinite alternate; }
+        .eq-bar:nth-child(1) { height:6px; animation-delay:0s; }
+        .eq-bar:nth-child(2) { height:12px; animation-delay:0.1s; }
+        .eq-bar:nth-child(3) { height:8px; animation-delay:0.2s; }
+        .eq-bar:nth-child(4) { height:14px; animation-delay:0.05s; }
+        @keyframes eq-dance { from { transform:scaleY(0.3); } to { transform:scaleY(1); } }
+        .eq-bar.paused { animation-play-state:paused; transform:scaleY(0.2); }
+      </style>
+      <div id="sound-submenu">
+        <div id="volume-row">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          <input type="range" id="vol-slider" min="0" max="100" value="70">
+        </div>
+        <button class="sound-sub-btn" id="btn-ambient">
+          <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 19.5 3.82 19.5 2 23 8 20c1.85-.93 3.33-2.5 4.52-4.36C15.36 14.5 19 16 19 16c-3-4-2-8-2-8z"/></svg>
+          Tiếng thiên nhiên
+        </button>
+        <button class="sound-sub-btn" id="btn-mute">
+          <svg viewBox="0 0 24 24" id="mute-icon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM19 12c0 2.26-1.28 4.22-3.16 5.19l1.42 1.42C19.51 17.26 21 14.8 21 12c0-2.8-1.49-5.26-3.74-6.61l-1.42 1.42C17.72 7.78 19 9.74 19 12z"/></svg>
+          Tắt âm thanh
+        </button>
+      </div>
+      <button id="sound-toggle-btn" title="Âm thanh">
+        <div id="eq-bars"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>
+      </button>
+    `;
+    document.body.appendChild(panel);
+
+    let menuOpen = false;
+    const mainBtn = document.getElementById('sound-toggle-btn');
+    const submenu = document.getElementById('sound-submenu');
+    const btnAmbient = document.getElementById('btn-ambient');
+    const btnMute = document.getElementById('btn-mute');
+    const volSlider = document.getElementById('vol-slider');
+    const eqBars = document.querySelectorAll('.eq-bar');
+
+    mainBtn.addEventListener('click', function() { menuOpen = !menuOpen; submenu.classList.toggle('open', menuOpen); playClick(); });
+
+    btnAmbient.addEventListener('click', function() {
+      getCtx();
+      if (!isAmbientOn) { startAmbient(); btnAmbient.classList.add('active'); mainBtn.classList.add('ambient-active'); playToggle(true); }
+      else { stopAmbient(); btnAmbient.classList.remove('active'); mainBtn.classList.remove('ambient-active'); playToggle(false); }
+    });
+
+    btnMute.addEventListener('click', function() {
+      isMuted = !isMuted;
+      masterGain && (masterGain.gain.value = isMuted ? 0 : parseFloat(volSlider.value) / 100);
+      btnMute.classList.toggle('active', isMuted);
+      mainBtn.classList.toggle('muted', isMuted);
+      eqBars.forEach(b => b.classList.toggle('paused', isMuted));
+      document.getElementById('mute-icon').innerHTML = isMuted
+        ? '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>'
+        : '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM19 12c0 2.26-1.28 4.22-3.16 5.19l1.42 1.42C19.51 17.26 21 14.8 21 12c0-2.8-1.49-5.26-3.74-6.61l-1.42 1.42C17.72 7.78 19 9.74 19 12z"/>';
+    });
+
+    volSlider.addEventListener('input', function() {
+      const v = parseFloat(this.value) / 100;
+      if (!isMuted && masterGain) masterGain.gain.value = v;
+      this.style.setProperty('--pct', this.value + '%');
+      isMuted = false; btnMute.classList.remove('active'); mainBtn.classList.remove('muted');
+    });
+
+    document.addEventListener('click', function(e) { if (!panel.contains(e.target) && menuOpen) { menuOpen = false; submenu.classList.remove('open'); } });
+  }
+
+  function init() {
+    if (isInitialized) return;
+    isInitialized = true;
+    getCtx();
+    document.querySelectorAll('a, button, article, .magnetic-btn, .neon-link, .tilt-card').forEach(function(el) {
+      if (el.id && el.id.startsWith('sound')) return;
+      el.addEventListener('mouseenter', function() { playHover(); });
+    });
+    document.querySelectorAll('a, button, article').forEach(function(el) {
+      el.addEventListener('click', function() { playClick(); });
+    });
+    window.addEventListener('scroll', function() { playScrollTick(); }, { passive: true });
+    const revealObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) { if (entry.isIntersecting) { playReveal(); revealObserver.unobserve(entry.target); } });
+    }, { threshold: 0.2 });
+    document.querySelectorAll('article').forEach(function(el) { revealObserver.observe(el); });
+    const _orig = window.navigateTo;
+    window.navigateTo = function(href) { playTransition(); setTimeout(function() { if (_orig) _orig(href); else window.location.href = href; }, 120); };
+  }
+
+  function patchCounters() {
+    document.querySelectorAll('.counter').forEach(function(counter) {
+      let orig = counter.textContent;
+      new MutationObserver(function() { if (counter.textContent !== orig) { playCounterTick(); orig = counter.textContent; } }).observe(counter, { characterData: true, childList: true });
+    });
+  }
+
+  function boot() {
+    createSoundPanel();
+    patchCounters();
+    function firstGesture() {
+      init();
+      setTimeout(function() { playLoadComplete(); }, 200);
+      document.removeEventListener('click', firstGesture);
+      document.removeEventListener('touchstart', firstGesture);
+      document.removeEventListener('keydown', firstGesture);
+    }
+    document.addEventListener('click', firstGesture);
+    document.addEventListener('touchstart', firstGesture, { passive: true });
+    document.addEventListener('keydown', firstGesture);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+
+  window.DongThapSound = { playClick, playHover, playReveal, playTransition, playLoadComplete, startAmbient, stopAmbient };
+})();
 </script>
 
 </body>

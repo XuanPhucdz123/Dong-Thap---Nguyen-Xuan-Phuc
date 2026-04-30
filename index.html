@@ -1149,6 +1149,132 @@
 
 })();
 </script>
+<!-- ===== AUDIO PLAYER ===== -->
+<style>
+  .audio-fab {
+    position: fixed; bottom: 28px; right: 24px; z-index: 9999;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+    font-family: 'Inter', sans-serif;
+  }
+  .audio-panel {
+    background: rgba(27, 94, 32, 0.97);
+    border: 0.5px solid rgba(76,175,80,0.4);
+    border-radius: 16px; padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 10px; width: 230px;
+    opacity: 0; transform: translateY(10px) scale(0.96);
+    pointer-events: none; transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .audio-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: all; }
+  .panel-title { font-size: 11px; font-weight: 500; color: rgba(200,255,200,0.7); letter-spacing: 0.08em; text-transform: uppercase; }
+  .track-list { display: flex; flex-direction: column; gap: 6px; }
+  .track-btn {
+    background: rgba(255,255,255,0.07); border: 0.5px solid rgba(255,255,255,0.15);
+    border-radius: 8px; padding: 7px 10px;
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer; transition: background 0.15s;
+    color: #e8f5e9; font-size: 12px; font-weight: 500; text-align: left;
+  }
+  .track-btn:hover { background: rgba(255,255,255,0.14); }
+  .track-btn.active { background: rgba(76,175,80,0.3); border-color: rgba(76,175,80,0.5); }
+  .track-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+  .vol-row { display: flex; align-items: center; gap: 8px; }
+  .vol-row span { font-size: 13px; }
+  .vol-row input[type=range] { flex: 1; accent-color: #66bb6a; height: 3px; }
+  .fab-btn {
+    width: 50px; height: 50px; border-radius: 50%;
+    background: #1b5e20; border: 2px solid rgba(76,175,80,0.5);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25); position: relative;
+  }
+  .fab-btn:hover { background: #2e7d32; transform: scale(1.05); }
+  .fab-btn svg { width: 22px; height: 22px; }
+  .ripple {
+    position: absolute; border-radius: 50%;
+    border: 2px solid rgba(76,175,80,0.5);
+    width: 100%; height: 100%;
+    animation: ripple-anim 2s ease-out infinite; pointer-events: none;
+  }
+  .ripple:nth-child(2) { animation-delay: 0.7s; }
+  @keyframes ripple-anim { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(2.2); opacity: 0; } }
+  .eq-bars { display: none; gap: 2px; align-items: flex-end; height: 14px; }
+  .eq-bars.playing { display: flex; }
+  .eq-bar { width: 3px; background: #81c784; border-radius: 1px; animation: eq-bounce 0.8s ease-in-out infinite alternate; }
+  .eq-bar:nth-child(1){height:6px;animation-delay:0s}.eq-bar:nth-child(2){height:11px;animation-delay:.15s}
+  .eq-bar:nth-child(3){height:8px;animation-delay:.3s}.eq-bar:nth-child(4){height:13px;animation-delay:.1s}
+  .eq-bar:nth-child(5){height:5px;animation-delay:.25s}
+  @keyframes eq-bounce { from { transform: scaleY(0.4); } to { transform: scaleY(1); } }
+</style>
 
+<div class="audio-fab">
+  <div class="audio-panel" id="audioPanel">
+    <div class="panel-title">Âm thanh thiên nhiên</div>
+    <div class="track-list" id="trackList"></div>
+    <div class="vol-row">
+      <span>🔈</span>
+      <input type="range" min="0" max="1" step="0.01" value="0.5" id="volSlider">
+      <span>🔊</span>
+    </div>
+  </div>
+  <div class="fab-btn" id="fabBtn" title="Âm thanh thiên nhiên">
+    <div class="ripple" id="ripple1"></div>
+    <div class="ripple" id="ripple2"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#a5d6a7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+    </svg>
+    <div class="eq-bars" id="eqBars">
+      <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+      <div class="eq-bar"></div><div class="eq-bar"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const tracks = [
+  { id: 'birds', label: 'Chim hót buổi sáng', icon: '🐦', url: 'https://cdn.pixabay.com/audio/2022/03/10/audio_270f84a8a0.mp3' },
+  { id: 'water', label: 'Tiếng nước chảy', icon: '💧', url: 'https://cdn.pixabay.com/audio/2022/10/28/audio_946ae3d5e9.mp3' },
+  { id: 'nature', label: 'Tiếng gió & đồng quê', icon: '🌿', url: 'https://cdn.pixabay.com/audio/2022/08/04/audio_2dde668d05.mp3' },
+];
+let currentAudio = null, currentId = null, panelOpen = false;
+const panel = document.getElementById('audioPanel');
+const fabBtn = document.getElementById('fabBtn');
+const trackList = document.getElementById('trackList');
+const volSlider = document.getElementById('volSlider');
+const eqBars = document.getElementById('eqBars');
+const ripple1 = document.getElementById('ripple1');
+const ripple2 = document.getElementById('ripple2');
+ripple1.style.display = 'none'; ripple2.style.display = 'none';
+
+function renderTracks() {
+  trackList.innerHTML = '';
+  tracks.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'track-btn' + (currentId === t.id ? ' active' : '');
+    btn.innerHTML = `<span class="track-icon">${t.icon}</span><span>${t.label}</span>`;
+    btn.addEventListener('click', () => playTrack(t));
+    trackList.appendChild(btn);
+  });
+}
+function playTrack(t) {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if (currentId === t.id) {
+    currentId = null; eqBars.classList.remove('playing');
+    ripple1.style.display = 'none'; ripple2.style.display = 'none';
+    renderTracks(); return;
+  }
+  currentId = t.id;
+  const audio = new Audio(t.url);
+  audio.loop = true; audio.volume = parseFloat(volSlider.value);
+  audio.play().catch(() => {});
+  currentAudio = audio;
+  eqBars.classList.add('playing');
+  ripple1.style.display = ''; ripple2.style.display = '';
+  renderTracks();
+}
+volSlider.addEventListener('input', () => { if (currentAudio) currentAudio.volume = parseFloat(volSlider.value); });
+fabBtn.addEventListener('click', () => { panelOpen = !panelOpen; panel.classList.toggle('open', panelOpen); });
+renderTracks();
+</script>
+<!-- ===== END AUDIO PLAYER ===== -->
 </body>
 </html>

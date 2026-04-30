@@ -169,6 +169,13 @@
             background-size: 32px 32px;
         }
 
+        /* ========== GRADIENT BG ========== */
+        .gradient-bg {
+            background: linear-gradient(-45deg, #1b5e20, #4caf50, #004d40, #2e7d32);
+            background-size: 400% 400%;
+            animation: gradient-shift 10s ease infinite;
+        }
+
         /* ========== GRADIENT TEXT ========== */
         .gradient-text {
             background: linear-gradient(135deg, #1b5e20, #4caf50, #81c784, #1b5e20);
@@ -307,20 +314,31 @@
             100% { transform: translateY(-20px) scale(0.5); opacity: 0; }
         }
 
-        /* ========== NEON UNDERLINE ========== */
-        .neon-link {
-            position: relative; text-decoration: none;
+        /* ========== ORBITING RINGS ========== */
+        .orbit-wrap { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: 2rem; }
+        .orbit-ring {
+            position: absolute; border-radius: 50%;
+            border: 1px solid rgba(129,199,132,0.15);
+            animation: orbit-spin linear infinite;
         }
+        .orbit-ring::after {
+            content: ''; position: absolute; width: 6px; height: 6px; border-radius: 50%;
+            background: rgba(129,199,132,0.6); top: -3px; left: 50%; margin-left: -3px;
+        }
+        .orbit-ring:nth-child(1) { width: 180px; height: 180px; top: -30px; right: 80px; animation-duration: 12s; }
+        .orbit-ring:nth-child(2) { width: 280px; height: 280px; top: -80px; right: 40px; animation-duration: 20s; animation-direction: reverse; }
+        .orbit-ring:nth-child(3) { width: 140px; height: 140px; bottom: -20px; left: 30px; animation-duration: 9s; }
+        @keyframes orbit-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* ========== NEON UNDERLINE ========== */
+        .neon-link { position: relative; text-decoration: none; }
         .neon-link::after {
             content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
             background: linear-gradient(90deg, #4caf50, #81c784);
             box-shadow: 0 0 8px rgba(76,175,80,0.8);
-            transition: width 0.35s ease;
-            border-radius: 1px;
+            transition: width 0.35s ease; border-radius: 1px;
         }
         .neon-link:hover::after { width: 100%; }
-        /* Active neon link style for current page */
-        .neon-link.active::after { width: 100%; }
 
         /* ========== SCROLL TO TOP ========== */
         #scroll-top {
@@ -334,6 +352,19 @@
         #scroll-top.visible { opacity: 1; transform: translateY(0) scale(1); }
         #scroll-top:active { transform: scale(0.9); }
         #scroll-top svg { width: 20px; height: 20px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* ========== PULSE RING ON ICONS ========== */
+        .pulse-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+        .pulse-wrap::before, .pulse-wrap::after {
+            content: ''; position: absolute; inset: -6px; border-radius: 50%;
+            border: 2px solid rgba(129, 199, 132, 0.5);
+            animation: pulse-ring-anim 2.5s ease-out infinite;
+        }
+        .pulse-wrap::after { animation-delay: 1.25s; }
+        @keyframes pulse-ring-anim {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
 
         /* ========== TYPEWRITER ========== */
         .typewriter-cursor::after { content: '|'; animation: blink 0.8s step-start infinite; color: #4caf50; }
@@ -386,25 +417,30 @@
             75% { border-radius: 40% 60% 60% 30% / 60% 40% 50% 60%; }
         }
 
-        /* ========== MOBILE SCROLL SNAP for cards ========== */
-        @media (max-width: 767px) {
-            .cards-scroll-snap { display: flex; overflow-x: auto; gap: 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 12px; }
-            .cards-scroll-snap::-webkit-scrollbar { display: none; }
-            .cards-scroll-snap > div { scroll-snap-align: start; flex: 0 0 82vw; }
+        /* ========== STATS PROGRESS BAR ========== */
+        .stat-bar { height: 3px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; margin-top: 8px; }
+        .stat-bar-fill { height: 100%; background: linear-gradient(90deg, #81c784, #fff); border-radius: 2px; width: 0; transition: width 1.5s cubic-bezier(0.4,0,0.2,1); }
+
+        /* ========== SECTION NUMBER ========== */
+        .section-number {
+            font-size: 120px; font-weight: 900; position: absolute; right: -10px; top: -40px;
+            color: rgba(76,175,80,0.06); line-height: 1; pointer-events: none; user-select: none;
+            letter-spacing: -8px;
         }
+
+        /* ========== FOOTER GLOW LINK ========== */
+        .glow-link { text-shadow: 0 0 12px rgba(74,222,128,0.5); }
 
         /* ========== SCROLL INDICATOR LINE ========== */
         .scroll-line {
             position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
             width: 2px; height: 80px; background: rgba(27,94,32,0.1);
-            z-index: 50; border-radius: 2px; overflow: hidden;
-            display: none;
+            z-index: 50; border-radius: 2px; overflow: hidden; display: none;
         }
         @media (min-width: 1280px) { .scroll-line { display: block; } }
         .scroll-line-fill {
             width: 100%; background: linear-gradient(180deg, #1b5e20, #4caf50);
-            border-radius: 2px; height: 0;
-            transition: height 0.2s ease;
+            border-radius: 2px; height: 0; transition: height 0.2s ease;
         }
 
         /* ========== HOVER CARD LABEL ========== */
@@ -413,10 +449,26 @@
             background: linear-gradient(to top, rgba(27,94,32,0.9) 0%, transparent 100%);
             color: white; padding: 20px 16px 12px;
             transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-            font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
-            z-index: 15;
+            font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; z-index: 15;
         }
         .group:hover .card-hover-label { transform: translateY(0); }
+
+        /* ========== ARTICLE SECTION DIVIDER ========== */
+        .section-divider {
+            width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(76,175,80,0.3), transparent);
+            margin: 0;
+        }
+
+        /* ========== HIGHLIGHT BOX ========== */
+        .highlight-box {
+            border-left: 4px solid #4caf50;
+            background: linear-gradient(90deg, rgba(76,175,80,0.08), transparent);
+            padding: 16px 20px; border-radius: 0 12px 12px 0;
+        }
+
+        /* ========== CARD ACTIVE STATE (mobile tap) ========== */
+        article:active { transform: scale(0.97); transition: transform 0.15s ease; }
 
         /* ========== REDUCED MOTION ========== */
         @media (prefers-reduced-motion: reduce) {
@@ -474,7 +526,7 @@
             <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="/">Trang chủ</a>
             <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="tramchim">Sinh thái</a>
             <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="ditichlichsu">Lịch sử</a>
-            <a class="text-green-700 border-b-2 border-green-700 pb-1 neon-link active" href="danhlam">Danh Lam</a>
+            <a class="text-green-700 border-b-2 border-green-700 pb-1 neon-link" href="danhlam">Danh Lam</a>
         </nav>
     </div>
 </header>
@@ -491,7 +543,7 @@
             
             <!-- Hero image with reveal -->
             <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-0">
-                <img alt="Danh Lam Thắng Cảnh" class="w-full h-full object-cover brightness-50 img-reveal" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" id="hero-img"/>
+                <img alt="Danh Lam Đồng Tháp" class="w-full h-full object-cover brightness-50 img-reveal" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" id="hero-img"/>
                 <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
                 <!-- Scanline overlay -->
                 <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px);"></div>
@@ -530,11 +582,68 @@
         </svg>
     </div>
 
-    <!-- ====== DETAIL SECTION ====== -->
-    <section id="explore" class="max-w-7xl mx-auto px-6 py-16 md:py-24 space-y-16 md:space-y-32">
-        <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12 relative" data-aos="fade-up">
+    <!-- ====== STATS SECTION ====== -->
+    <section class="max-w-7xl mx-auto px-6 py-12 md:py-20" data-aos="fade-up">
+        <div class="gradient-bg rounded-[2rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden border border-green-400/30">
+            <!-- Orbiting rings -->
+            <div class="orbit-wrap" aria-hidden="true">
+                <div class="orbit-ring"></div>
+                <div class="orbit-ring"></div>
+                <div class="orbit-ring"></div>
+            </div>
+            <!-- Blob inside stats -->
+            <div class="blob-bg w-72 h-72 absolute -bottom-10 -left-10 opacity-40"></div>
+            <div class="absolute -top-24 -right-24 text-white/10" aria-hidden="true">
+                <span class="material-symbols-outlined" style="font-size: 300px;">local_florist</span>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center relative z-10">
+                <!-- Stat 1 -->
+                <div class="flex flex-col items-center gap-2">
+                    <div class="pulse-wrap">
+                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">local_florist</span>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="400">0</span>+</div>
+                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Loài Hoa Kiểng</div>
+                    <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="85"></div></div>
+                </div>
+                <!-- Stat 2 -->
+                <div class="flex flex-col items-center gap-2">
+                    <div class="pulse-wrap">
+                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">nature_people</span>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="2000">0</span>+</div>
+                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Hộ Nông Dân</div>
+                    <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="90"></div></div>
+                </div>
+                <!-- Stat 3 -->
+                <div class="flex flex-col items-center gap-2">
+                    <div class="pulse-wrap">
+                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">forest</span>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="1600">0</span></div>
+                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Hecta Rừng Gáo Giồng</div>
+                    <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="65"></div></div>
+                </div>
+                <!-- Stat 4 -->
+                <div class="flex flex-col items-center gap-2">
+                    <div class="pulse-wrap">
+                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">water</span>
+                    </div>
+                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="3">0</span></div>
+                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Điểm Tham Quan Nổi Bật</div>
+                    <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="50"></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== EXPLORE SECTION ====== -->
+    <section id="explore" class="max-w-7xl mx-auto px-6 pb-12 md:pb-16">
+        <!-- Section heading -->
+        <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-12 md:mb-16 relative" data-aos="fade-up">
             <div class="relative">
-                <h3 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight split-heading">
+                <div class="section-number" aria-hidden="true">01</div>
+                <h3 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">
                     <span class="highlight-word" id="hl-danhlam">Danh Lam</span>
                     Tiêu Biểu
                 </h3>
@@ -542,18 +651,23 @@
             </div>
         </div>
 
-        <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center" data-aos="fade-up">
-            <div class="w-full md:w-1/2 relative group z-0 tilt-card sparkle-wrap cursor-pointer">
-                <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10 tilt-content">
-                    <img src="kinh-nghiem-lang-hoa-sa-dec-2.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-110"/>
+        <!-- ====== ARTICLE 1: LÀNG HOA SA ĐÉC ====== -->
+        <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center mb-16 md:mb-32" data-aos="fade-up">
+            <div class="w-full md:w-1/2 relative group z-0 sparkle-wrap">
+                <!-- Glow blur behind card -->
+                <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
+                    <img src="kinh-nghiem-lang-hoa-sa-dec-2.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-110" loading="lazy" alt=""/>
                 </div>
-                <div class="relative tilt-card card-glow card-shine card-border-glow bg-white rounded-2xl overflow-hidden h-full z-10 border-animate">
-                    <img src="kinh-nghiem-lang-hoa-sa-dec-2.jpg" alt="Làng hoa Sa Đéc" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl transition-transform duration-500 group-hover:-translate-y-2 grayscale-[20%] group-hover:grayscale-0 img-reveal tilt-content"/>
-                    <div class="absolute top-3 left-3 z-20">
-                        <span class="eco-badge bg-white/80 text-green-800 border-green-300">
-                            <span class="material-symbols-outlined" style="font-size:10px;">local_florist</span>
-                            Làng hoa
-                        </span>
+                <div class="relative tilt-card card-glow card-shine card-border-glow border-animate rounded-2xl overflow-hidden bg-white z-10">
+                    <div class="relative overflow-hidden">
+                        <img src="kinh-nghiem-lang-hoa-sa-dec-2.jpg" alt="Làng hoa Sa Đéc" class="w-full h-64 md:h-96 object-cover transition-all duration-700 group-hover:scale-110 grayscale-[20%] group-hover:grayscale-0 img-reveal tilt-content"/>
+                        <div class="absolute top-3 left-3 z-20">
+                            <span class="eco-badge bg-white/80 text-green-800 border-green-300">
+                                <span class="material-symbols-outlined" style="font-size:10px;">local_florist</span>
+                                Làng hoa
+                            </span>
+                        </div>
+                        <div class="card-hover-label">Điểm đến nổi bật →</div>
                     </div>
                 </div>
             </div>
@@ -563,29 +677,43 @@
                     <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl float-icon">local_florist</span>
                     <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Làng hoa Sa Đéc</h2>
                 </div>
-                <div class="space-y-4 text-base md:text-lg text-gray-600 leading-relaxed text-justify">
+                <div class="highlight-box">
+                    <p class="text-xs md:text-sm font-bold text-green-700 uppercase tracking-widest">Vựa hoa kiểng lớn nhất miền Tây</p>
+                </div>
+                <div class="space-y-4 text-sm md:text-base text-gray-600 leading-relaxed text-justify">
                     <p>
-                        <strong>Làng hoa Sa Đéc</strong> không chỉ là vựa hoa kiểng lớn nhất miền Tây Nam Bộ mà còn là một minh chứng sống động cho sự sáng tạo trong lao động sản xuất. Điểm độc đáo mang tính biểu tượng ở đây là kỹ thuật canh tác "hoa trên giàn", giúp người dân thích nghi hoàn hảo với chu kỳ nước nổi hàng năm.
+                        <strong>Làng hoa Sa Đéc</strong> không chỉ là vựa hoa kiểng lớn nhất miền Tây Nam Bộ mà còn là một minh chứng sống động cho sự sáng tạo trong lao động sản xuất. Điểm độc đáo mang tính biểu tượng ở đây là kỹ thuật canh tác <em>"hoa trên giàn"</em>, giúp người dân thích nghi hoàn hảo với chu kỳ nước nổi hàng năm.
                     </p>
                     <p>
                         Dưới góc độ giáo dục, đây là mô hình học tập thực tế quý giá. Các bạn có cơ hội trực tiếp quan sát các phương pháp lai tạo giống, kỹ thuật chăm sóc thực vật và hiểu rõ hơn về tác động của điều kiện thủy văn đến nông nghiệp vùng Đồng bằng sông Cửu Long.
                     </p>
                 </div>
+                <div class="flex flex-wrap gap-3 mt-2">
+                    <span class="eco-badge"><span class="material-symbols-outlined" style="font-size:10px;">palette</span> 400+ loài hoa</span>
+                    <span class="eco-badge"><span class="material-symbols-outlined" style="font-size:10px;">groups</span> 2.000+ hộ nông dân</span>
+                    <span class="eco-badge"><span class="material-symbols-outlined" style="font-size:10px;">calendar_month</span> Tết Nguyên Đán</span>
+                </div>
             </div>
         </article>
 
-        <article class="flex flex-col md:flex-row-reverse gap-8 md:gap-16 items-center" data-aos="fade-up">
-            <div class="w-full md:w-1/2 relative group z-0 tilt-card sparkle-wrap cursor-pointer">
-                <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10 tilt-content">
-                    <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125"/>
+        <div class="section-divider mb-16 md:mb-32"></div>
+
+        <!-- ====== ARTICLE 2: HỆ SINH THÁI NGẬP NƯỚC ====== -->
+        <article class="flex flex-col md:flex-row-reverse gap-8 md:gap-16 items-center mb-16 md:mb-32" data-aos="fade-up">
+            <div class="w-full md:w-1/2 relative group z-0 sparkle-wrap">
+                <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
+                    <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy" alt=""/>
                 </div>
-                <div class="relative tilt-card card-glow card-shine card-border-glow bg-white rounded-2xl overflow-hidden h-full z-10 border-animate">
-                    <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" alt="Hệ sinh thái ngập nước" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl transition-transform duration-500 group-hover:-translate-y-2 grayscale-[20%] group-hover:grayscale-0 img-reveal tilt-content"/>
-                    <div class="absolute top-3 left-3 z-20">
-                        <span class="eco-badge bg-white/80 text-green-800 border-green-300">
-                            <span class="material-symbols-outlined" style="font-size:10px;">water_drop</span>
-                            Sinh thái
-                        </span>
+                <div class="relative tilt-card card-glow card-shine card-border-glow border-animate rounded-2xl overflow-hidden bg-white z-10">
+                    <div class="relative overflow-hidden">
+                        <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" alt="Hệ sinh thái ngập nước Đồng Tháp" class="w-full h-64 md:h-96 object-cover transition-all duration-700 group-hover:scale-110 grayscale-[20%] group-hover:grayscale-0 img-reveal tilt-content"/>
+                        <div class="absolute top-3 left-3 z-20">
+                            <span class="eco-badge bg-white/80 text-green-800 border-green-300">
+                                <span class="material-symbols-outlined" style="font-size:10px;">water_drop</span>
+                                Sinh thái
+                            </span>
+                        </div>
+                        <div class="card-hover-label">Thiên nhiên trù phú →</div>
                     </div>
                 </div>
             </div>
@@ -595,29 +723,43 @@
                     <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight text-left md:text-right">Hệ sinh thái ngập nước</h2>
                     <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl float-icon" style="animation-delay: 0.5s;">water_drop</span>
                 </div>
-                <div class="space-y-4 text-base md:text-lg text-gray-600 leading-relaxed text-justify">
+                <div class="highlight-box">
+                    <p class="text-xs md:text-sm font-bold text-green-700 uppercase tracking-widest">"Thư viện xanh" của vùng sông nước</p>
+                </div>
+                <div class="space-y-4 text-sm md:text-base text-gray-600 leading-relaxed text-justify">
                     <p>
                         Đồng Tháp sở hữu những vùng đất ngập nước hoang sơ mang đậm dấu ấn của Đồng Tháp Mười thuở sơ khai. Sự kết hợp giữa các quần xã thực vật đa dạng, từ đồng cỏ ngập nước, rừng tràm đến đầm sen bát ngát tạo nên một hệ thống sinh thái hoàn chỉnh và bền vững.
                     </p>
                     <p>
-                        Được ví như "thư viện xanh" của vùng sông nước, hệ sinh thái này đóng vai trò cốt lõi trong việc điều hòa vi khí hậu và bảo tồn các loài động thực vật hoang dã. Việc tìm hiểu về môi trường này giúp định hình ý thức bảo vệ thiên nhiên và tình yêu quê hương đất nước cho các bạn trẻ.
+                        Được ví như <em>"thư viện xanh"</em> của vùng sông nước, hệ sinh thái này đóng vai trò cốt lõi trong việc điều hòa vi khí hậu và bảo tồn các loài động thực vật hoang dã. Việc tìm hiểu về môi trường này giúp định hình ý thức bảo vệ thiên nhiên và tình yêu quê hương đất nước.
                     </p>
+                </div>
+                <div class="flex flex-wrap gap-3 mt-2 md:justify-end">
+                    <span class="eco-badge"><span class="material-symbols-outlined" style="font-size:10px;">spa</span> Đầm sen bát ngát</span>
+                    <span class="eco-badge"><span class="material-symbols-outlined" style="font-size:10px;">forest</span> Rừng tràm đặc hữu</span>
+                    <span class="eco-badge"><span class="material-symbols-outlined" style="font-size:10px;">eco</span> Hệ sinh thái bền vững</span>
                 </div>
             </div>
         </article>
 
-        <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center" data-aos="fade-up">
-            <div class="w-full md:w-1/2 relative group z-0 tilt-card sparkle-wrap cursor-pointer">
-                <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10 tilt-content">
-                    <img src="gao-giong.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125"/>
+        <div class="section-divider mb-16 md:mb-32"></div>
+
+        <!-- ====== ARTICLE 3: GÁO GIỒNG ====== -->
+        <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center mb-16 md:mb-32" data-aos="fade-up">
+            <div class="w-full md:w-1/2 relative group z-0 sparkle-wrap">
+                <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
+                    <img src="gao-giong.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy" alt=""/>
                 </div>
-                <div class="relative tilt-card card-glow card-shine card-border-glow bg-white rounded-2xl overflow-hidden h-full z-10 border-animate">
-                    <img src="gao-giong.jpg" alt="Gáo Giồng" class="w-full h-64 md:h-96 object-cover rounded-2xl md:rounded-3xl shadow-xl transition-transform duration-500 group-hover:-translate-y-2 grayscale-[20%] group-hover:grayscale-0 img-reveal tilt-content"/>
-                    <div class="absolute top-3 left-3 z-20">
-                        <span class="eco-badge bg-white/80 text-green-800 border-green-300">
-                            <span class="material-symbols-outlined" style="font-size:10px;">park</span>
-                            Khu sinh thái
-                        </span>
+                <div class="relative tilt-card card-glow card-shine card-border-glow border-animate rounded-2xl overflow-hidden bg-white z-10">
+                    <div class="relative overflow-hidden">
+                        <img src="gao-giong.jpg" alt="Khu sinh thái Gáo Giồng" class="w-full h-64 md:h-96 object-cover transition-all duration-700 group-hover:scale-110 grayscale-[20%] group-hover:grayscale-0 img-reveal tilt-content"/>
+                        <div class="absolute top-3 left-3 z-20">
+                            <span class="eco-badge bg-white/80 text-green-800 border-green-300">
+                                <span class="material-symbols-outlined" style="font-size:10px;">park</span>
+                                Khu sinh thái
+                            </span>
+                        </div>
+                        <div class="card-hover-label">Ốc đảo xanh →</div>
                     </div>
                 </div>
             </div>
@@ -627,13 +769,21 @@
                     <span class="material-symbols-outlined text-green-600 text-3xl md:text-4xl float-icon" style="animation-delay: 1s;">park</span>
                     <h2 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Khu sinh thái Gáo Giồng</h2>
                 </div>
-                <div class="space-y-4 text-base md:text-lg text-gray-600 leading-relaxed text-justify">
+                <div class="highlight-box">
+                    <p class="text-xs md:text-sm font-bold text-green-700 uppercase tracking-widest">"Ốc đảo xanh" giữa lòng Đồng Tháp Mười</p>
+                </div>
+                <div class="space-y-4 text-sm md:text-base text-gray-600 leading-relaxed text-justify">
                     <p>
-                        Được mệnh danh là "ốc đảo xanh" giữa lòng Đồng Tháp Mười, <strong>Khu sinh thái Gáo Giồng</strong> là một ví dụ điển hình về công tác quy hoạch và bảo vệ tài nguyên rừng. Nơi đây duy trì môi trường sống tự nhiên cho hàng chục loài chim nước và các loài thủy sản bản địa.
+                        Được mệnh danh là <em>"ốc đảo xanh"</em> giữa lòng Đồng Tháp Mười, <strong>Khu sinh thái Gáo Giồng</strong> là một ví dụ điển hình về công tác quy hoạch và bảo vệ tài nguyên rừng. Nơi đây duy trì môi trường sống tự nhiên cho hàng chục loài chim nước và các loài thủy sản bản địa.
                     </p>
                     <p>
-                        Từ góc nhìn nghiên cứu, đài quan sát tại Gáo Giồng cung cấp một tầm nhìn toàn cảnh, hỗ trợ tốt cho việc ghi chép và phân tích tập tính sinh hoạt của các bầy chim chao lượn. Đây là không gian lý tưởng để các bạn tổ chức các hoạt động ngoại khóa, khơi dậy niềm đam mê sinh học và khoa học môi trường.
+                        Từ góc nhìn nghiên cứu, đài quan sát tại Gáo Giồng cung cấp một tầm nhìn toàn cảnh, hỗ trợ tốt cho việc ghi chép và phân tích tập tính sinh hoạt của các bầy chim chao lượn. Đây là không gian lý tưởng để tổ chức các hoạt động ngoại khóa, khơi dậy niềm đam mê sinh học và khoa học môi trường.
                     </p>
+                </div>
+                <div class="flex flex-wrap gap-3 mt-2">
+                    <span class="eco-badge"><span class="material-symbols-outlined" style="font-size:10px;">forest</span> 1.600 hecta rừng</span>
+                    <span class="eco-badge"><span class="material-symbols-outlined" style="font-size:10px;">visibility</span> Đài quan sát</span>
+                    <span class="eco-badge"><span class="material-symbols-outlined" style="font-size:10px;">sailing</span> Du thuyền sinh thái</span>
                 </div>
             </div>
         </article>
@@ -643,6 +793,7 @@
     <!-- ====== REFERENCES ====== -->
     <section class="max-w-7xl mx-auto px-6 py-8 border-t border-gray-200 mt-8 mb-8" data-aos="fade-up">
         <div class="bg-green-50/50 rounded-2xl p-6 md:p-8 border border-green-100 shadow-sm relative overflow-hidden">
+            <div class="section-number" aria-hidden="true">02</div>
             <h4 class="text-green-800 font-black text-lg mb-4 flex items-center gap-2 uppercase tracking-tight">
                 <span class="material-symbols-outlined text-green-600">verified</span>
                 <span class="text-shimmer">Nguồn dữ liệu tham khảo chính thống</span>
@@ -689,52 +840,13 @@
     </div>
 </footer>
 
+<!-- ====== MAIN INTERACTION SCRIPT ====== -->
 <script>
 (function() {
     'use strict';
     var isMobile = window.innerWidth < 768;
     var isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var isTouch = !window.matchMedia('(pointer: fine)').matches;
-
-    /* ============ AUDIO SETUP ============ */
-    let soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
-    let audioContext = null;
-
-    function initAudioContext() {
-        if (!audioContext) {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        return audioContext;
-    }
-
-    function playTone(frequency, duration, type = 'triangle') {
-        if (!soundEnabled) return;
-        try {
-            const ctx = initAudioContext();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.type = type;
-            osc.frequency.setValueAtTime(frequency, ctx.currentTime);
-            gain.gain.setValueAtTime(0.1, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-            osc.start(ctx.currentTime);
-            osc.stop(ctx.currentTime + duration);
-        } catch (e) {
-            console.log('Audio error');
-        }
-    }
-
-    function playHoverSound() {
-        playTone(400, 0.05, 'triangle');
-        setTimeout(() => playTone(450, 0.05, 'triangle'), 30);
-    }
-
-    function playClickSound() {
-        playTone(300, 0.1, 'triangle');
-        setTimeout(() => playTone(600, 0.1, 'triangle'), 70);
-    }
 
     /* ============ LOADING SCREEN ============ */
     window.addEventListener('load', function() {
@@ -765,7 +877,7 @@
         }
     });
 
-    /* ============ CUSTOM CURSOR ============ */
+    /* ============ CUSTOM CURSOR (desktop/pointer fine only) ============ */
     if (!isTouch) {
         var dot = document.getElementById('cursor-dot');
         var ring = document.getElementById('cursor-ring');
@@ -786,7 +898,7 @@
         })();
 
         document.querySelectorAll('a, button, [onclick], article').forEach(function(el) {
-            el.addEventListener('mouseenter', function() { ring.classList.add('hovered'); playHoverSound(); });
+            el.addEventListener('mouseenter', function() { ring.classList.add('hovered'); });
             el.addEventListener('mouseleave', function() { ring.classList.remove('hovered'); });
         });
         document.addEventListener('mousedown', function() { ring.classList.add('clicking'); });
@@ -863,6 +975,27 @@
     }, observerOpts);
     document.querySelectorAll('[data-aos]').forEach(function(el) { observer.observe(el); });
 
+    /* ============ COUNTER ANIMATION ============ */
+    var counterObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (!entry.isIntersecting) return;
+            var counter = entry.target;
+            if (counter.classList.contains('counted')) return;
+            counter.classList.add('counted');
+            var target = parseInt(counter.getAttribute('data-target'));
+            var duration = 2000, inc = target / (duration / 16), cur = 0;
+            var timer = setInterval(function() {
+                cur += inc;
+                if (cur >= target) { counter.textContent = target; clearInterval(timer); }
+                else { counter.textContent = Math.floor(cur); }
+            }, 16);
+            var bar = counter.closest('.flex').querySelector('.stat-bar-fill');
+            if (bar) bar.style.width = bar.getAttribute('data-width') + '%';
+            counterObs.unobserve(counter);
+        });
+    }, observerOpts);
+    document.querySelectorAll('.counter').forEach(function(el) { counterObs.observe(el); });
+
     /* ============ HIGHLIGHT WORDS ON SCROLL ============ */
     var hlObserver = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
@@ -873,10 +1006,8 @@
             }
         });
     }, { threshold: 0.5 });
-    ['hl-danhlam'].forEach(function(id) {
-        var el = document.getElementById(id);
-        if (el) hlObserver.observe(el);
-    });
+    var hlEl = document.getElementById('hl-danhlam');
+    if (hlEl) hlObserver.observe(hlEl);
 
     /* ============ RIPPLE EFFECT ============ */
     function addRipple(e) {
@@ -890,7 +1021,6 @@
         ripple.style.cssText = 'width:' + size + 'px;height:' + size + 'px;top:' + (y - size/2) + 'px;left:' + (x - size/2) + 'px;';
         el.appendChild(ripple);
         ripple.addEventListener('animationend', function() { ripple.remove(); });
-        playClickSound();
     }
     document.querySelectorAll('.ripple-container').forEach(function(el) {
         el.addEventListener('click', addRipple);
@@ -956,7 +1086,6 @@
                 }
 
                 document.getElementById('scroll-top').classList.toggle('visible', winScroll > 300);
-
                 ticking = false;
             });
             ticking = true;
@@ -993,6 +1122,548 @@
         }
     }
 
+})();
+</script>
+
+<!-- ============ ĐỒNG THÁP SOUND SYSTEM (WEB AUDIO API) ============ -->
+<script>
+/**
+ * 🌿 ĐỒNG THÁP SOUND SYSTEM
+ * Web Audio API - Không cần file ngoài, tổng hợp 100% trong trình duyệt
+ * Version 2.0 — Full Immersive Edition
+ */
+(function () {
+  'use strict';
+
+  let ctx = null;
+  let masterGain = null;
+  let ambientNodes = [];
+  let isMuted = false;
+  let isAmbientOn = false;
+  let ambientLoop = null;
+  let birdLoop = null;
+  let isInitialized = false;
+
+  function getCtx() {
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = ctx.createGain();
+      masterGain.gain.setValueAtTime(0.7, ctx.currentTime);
+      masterGain.connect(ctx.destination);
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+
+  function dbToGain(db) { return Math.pow(10, db / 20); }
+
+  /* ─── 1. HOVER CHIME ─────────────────────────────────────── */
+  function playHover() {
+    if (isMuted) return;
+    const c = getCtx(), t = c.currentTime;
+    const osc = c.createOscillator(), g = c.createGain(), filter = c.createBiquadFilter();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, t);
+    osc.frequency.exponentialRampToValueAtTime(1200, t + 0.12);
+    filter.type = 'bandpass'; filter.frequency.value = 1000; filter.Q.value = 2;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.08, t + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+    osc.connect(filter); filter.connect(g); g.connect(masterGain);
+    osc.start(t); osc.stop(t + 0.3);
+  }
+
+  /* ─── 2. CLICK POP ───────────────────────────────────────── */
+  function playClick() {
+    if (isMuted) return;
+    const c = getCtx(), t = c.currentTime;
+    const osc = c.createOscillator(), g = c.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(320, t);
+    osc.frequency.exponentialRampToValueAtTime(80, t + 0.1);
+    g.gain.setValueAtTime(0.25, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    osc.connect(g); g.connect(masterGain);
+    osc.start(t); osc.stop(t + 0.15);
+
+    const osc2 = c.createOscillator(), g2 = c.createGain();
+    osc2.type = 'square';
+    osc2.frequency.setValueAtTime(1800, t);
+    g2.gain.setValueAtTime(0.06, t);
+    g2.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+    osc2.connect(g2); g2.connect(masterGain);
+    osc2.start(t); osc2.stop(t + 0.05);
+  }
+
+  /* ─── 3. PAGE TRANSITION WHOOSH ─────────────────────────── */
+  function playTransition() {
+    if (isMuted) return;
+    const c = getCtx(), t = c.currentTime;
+    const bufSize = c.sampleRate * 0.6;
+    const buf = c.createBuffer(1, bufSize, c.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufSize, 2);
+    const src = c.createBufferSource(); src.buffer = buf;
+    const filter = c.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(400, t);
+    filter.frequency.exponentialRampToValueAtTime(4000, t + 0.3);
+    filter.Q.value = 1;
+    const g = c.createGain();
+    g.gain.setValueAtTime(0.4, t);
+    g.gain.linearRampToValueAtTime(0, t + 0.55);
+    src.connect(filter); filter.connect(g); g.connect(masterGain);
+    src.start(t);
+
+    const osc = c.createOscillator(), g2 = c.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, t);
+    osc.frequency.exponentialRampToValueAtTime(200, t + 0.4);
+    g2.gain.setValueAtTime(0.18, t);
+    g2.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+    osc.connect(g2); g2.connect(masterGain);
+    osc.start(t); osc.stop(t + 0.5);
+  }
+
+  /* ─── 4. LOAD COMPLETE CHIME ─────────────────────────────── */
+  function playLoadComplete() {
+    if (isMuted) return;
+    const c = getCtx();
+    const notes = [523.25, 659.25, 783.99, 1046.5];
+    notes.forEach(function(freq, i) {
+      const t = c.currentTime + i * 0.15;
+      const osc = c.createOscillator(), g = c.createGain();
+      osc.type = 'sine'; osc.frequency.value = freq;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.18, t + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+      osc.connect(g); g.connect(masterGain);
+      osc.start(t); osc.stop(t + 0.7);
+    });
+  }
+
+  /* ─── 5. CARD REVEAL ─────────────────────────────────────── */
+  function playReveal() {
+    if (isMuted) return;
+    const c = getCtx(), t = c.currentTime;
+    const osc = c.createOscillator(), g = c.createGain();
+    const vib = c.createOscillator(), vibGain = c.createGain();
+    vib.frequency.value = 6; vibGain.gain.value = 15;
+    vib.connect(vibGain); vibGain.connect(osc.frequency);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(440, t);
+    osc.frequency.linearRampToValueAtTime(660, t + 0.2);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.12, t + 0.04);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+    osc.connect(g); g.connect(masterGain);
+    vib.start(t); vib.stop(t + 0.5);
+    osc.start(t); osc.stop(t + 0.5);
+  }
+
+  /* ─── 6. SCROLL TICK ─────────────────────────────────────── */
+  let lastScrollSound = 0;
+  function playScrollTick() {
+    if (isMuted) return;
+    const now = Date.now();
+    if (now - lastScrollSound < 180) return;
+    lastScrollSound = now;
+    const c = getCtx(), t = c.currentTime;
+    const osc = c.createOscillator(), g = c.createGain();
+    osc.type = 'sine'; osc.frequency.value = 200 + Math.random() * 100;
+    g.gain.setValueAtTime(0.04, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+    osc.connect(g); g.connect(masterGain);
+    osc.start(t); osc.stop(t + 0.07);
+  }
+
+  /* ─── 7. COUNTER TICK ────────────────────────────────────── */
+  function playCounterTick() {
+    if (isMuted) return;
+    const c = getCtx(), t = c.currentTime;
+    const osc = c.createOscillator(), g = c.createGain();
+    osc.type = 'square'; osc.frequency.value = 400 + Math.random() * 200;
+    g.gain.setValueAtTime(0.035, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+    osc.connect(g); g.connect(masterGain);
+    osc.start(t); osc.stop(t + 0.05);
+  }
+
+  /* ─── 8. AMBIENT NATURE SOUNDSCAPE ──────────────────────── */
+  function createAmbientLayer() {
+    const c = getCtx();
+    const bufSize = c.sampleRate * 3;
+    const buf = c.createBuffer(2, bufSize, c.sampleRate);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = buf.getChannelData(ch);
+      for (let i = 0; i < bufSize; i++) d[i] = Math.random() * 2 - 1;
+    }
+    const noise = c.createBufferSource();
+    noise.buffer = buf; noise.loop = true; noise.loopStart = 0; noise.loopEnd = 3;
+    const lpf = c.createBiquadFilter(); lpf.type = 'lowpass'; lpf.frequency.value = 600; lpf.Q.value = 0.5;
+    const hpf = c.createBiquadFilter(); hpf.type = 'highpass'; hpf.frequency.value = 80;
+    const lfo = c.createOscillator(), lfoGain = c.createGain();
+    lfo.type = 'sine'; lfo.frequency.value = 0.15; lfoGain.gain.value = 0.3;
+    lfo.connect(lfoGain);
+    const ambGain = c.createGain(); ambGain.gain.value = 0.12;
+    lfoGain.connect(ambGain.gain);
+    noise.connect(lpf); lpf.connect(hpf); hpf.connect(ambGain); ambGain.connect(masterGain);
+    noise.start(); lfo.start();
+    ambientNodes.push(noise, lfo, ambGain);
+    return ambGain;
+  }
+
+  function createBirdChirps() {
+    const c = getCtx();
+    function chirp() {
+      if (!isAmbientOn || isMuted) return;
+      const t = c.currentTime;
+      const numNotes = 2 + Math.floor(Math.random() * 4);
+      const baseFreq = 1800 + Math.random() * 1400;
+      for (let i = 0; i < numNotes; i++) {
+        const delay = i * (0.06 + Math.random() * 0.08);
+        const freq = baseFreq * (0.9 + Math.random() * 0.4);
+        const osc = c.createOscillator(), g = c.createGain();
+        const vib = c.createOscillator(), vibG = c.createGain();
+        vib.type = 'sine'; vib.frequency.value = 12 + Math.random() * 8;
+        vibG.gain.value = freq * 0.04;
+        vib.connect(vibG); vibG.connect(osc.frequency);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, t + delay);
+        osc.frequency.linearRampToValueAtTime(freq * 1.15, t + delay + 0.04);
+        osc.frequency.exponentialRampToValueAtTime(freq * 0.9, t + delay + 0.12);
+        const vol = 0.06 + Math.random() * 0.06;
+        g.gain.setValueAtTime(0, t + delay);
+        g.gain.linearRampToValueAtTime(vol, t + delay + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.14);
+        const panner = c.createStereoPanner(); panner.pan.value = (Math.random() * 2 - 1) * 0.7;
+        vib.start(t + delay); vib.stop(t + delay + 0.2);
+        osc.connect(g); g.connect(panner); panner.connect(masterGain);
+        osc.start(t + delay); osc.stop(t + delay + 0.2);
+      }
+      birdLoop = setTimeout(chirp, (2 + Math.random() * 4) * 1000);
+    }
+    chirp();
+  }
+
+  function createCrickets() {
+    const c = getCtx();
+    function cricket() {
+      if (!isAmbientOn || isMuted) return;
+      const t = c.currentTime;
+      const freq = 4200 + Math.random() * 800;
+      for (let i = 0; i < 8; i++) {
+        const osc = c.createOscillator(), g = c.createGain();
+        const delay = i * 0.05;
+        osc.type = 'square'; osc.frequency.value = freq;
+        g.gain.setValueAtTime(0, t + delay);
+        g.gain.linearRampToValueAtTime(0.02, t + delay + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.04);
+        const lpf = c.createBiquadFilter(); lpf.type = 'lowpass'; lpf.frequency.value = 5000;
+        const panner = c.createStereoPanner(); panner.pan.value = (Math.random() * 2 - 1) * 0.9;
+        osc.connect(lpf); lpf.connect(g); g.connect(panner); panner.connect(masterGain);
+        osc.start(t + delay); osc.stop(t + delay + 0.05);
+      }
+      birdLoop = setTimeout(cricket, (0.8 + Math.random() * 3) * 1000);
+    }
+    setTimeout(cricket, 2500);
+  }
+
+  function startAmbient() {
+    if (isAmbientOn) return;
+    isAmbientOn = true;
+    createAmbientLayer(); createBirdChirps(); createCrickets();
+  }
+
+  function stopAmbient() {
+    isAmbientOn = false;
+    clearTimeout(birdLoop);
+    ambientNodes.forEach(function(n) {
+      try { n.stop && n.stop(); n.disconnect && n.disconnect(); } catch(e) {}
+    });
+    ambientNodes = [];
+  }
+
+  /* ─── 9. AMBIENT TOGGLE CHIME ───────────────────────────── */
+  function playToggle(on) {
+    const c = getCtx(), t = c.currentTime;
+    const freqs = on ? [440, 554, 659] : [659, 554, 440];
+    freqs.forEach(function(freq, i) {
+      const osc = c.createOscillator(), g = c.createGain();
+      const st = t + i * 0.1;
+      osc.type = 'sine'; osc.frequency.value = freq;
+      g.gain.setValueAtTime(0, st);
+      g.gain.linearRampToValueAtTime(0.15, st + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, st + 0.5);
+      osc.connect(g); g.connect(masterGain);
+      osc.start(st); osc.stop(st + 0.6);
+    });
+  }
+
+  /* ─── UI: SOUND CONTROL PANEL ───────────────────────────── */
+  function createSoundPanel() {
+    const panel = document.createElement('div');
+    panel.id = 'sound-panel';
+    panel.innerHTML = `
+      <style>
+        #sound-panel {
+          position: fixed; bottom: 84px; right: 20px; z-index: 200;
+          display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+        }
+        #sound-toggle-btn {
+          width: 48px; height: 48px; border-radius: 50%;
+          background: linear-gradient(135deg, #1b5e20, #4caf50);
+          border: none; cursor: pointer;
+          display: flex; align-items: center; justify-content: center;
+          box-shadow: 0 4px 20px rgba(76,175,80,0.5);
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          position: relative; overflow: hidden;
+        }
+        #sound-toggle-btn:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(76,175,80,0.7); }
+        #sound-toggle-btn:active { transform: scale(0.92); }
+        #sound-toggle-btn svg { width: 22px; height: 22px; fill: white; transition: opacity 0.2s; }
+        #sound-toggle-btn.muted svg { opacity: 0.5; }
+
+        #sound-toggle-btn.ambient-active::before,
+        #sound-toggle-btn.ambient-active::after {
+          content: ''; position: absolute; inset: -4px; border-radius: 50%;
+          border: 2px solid rgba(129,199,132,0.6);
+          animation: sound-pulse 2s ease-out infinite;
+        }
+        #sound-toggle-btn.ambient-active::after { animation-delay: 1s; }
+        @keyframes sound-pulse {
+          0% { transform: scale(1); opacity: 1; }
+          100% { transform: scale(1.7); opacity: 0; }
+        }
+
+        #sound-submenu {
+          display: none; flex-direction: column; gap: 6px; align-items: flex-end;
+          animation: fadeSlideUp 0.25s ease forwards;
+        }
+        #sound-submenu.open { display: flex; }
+        @keyframes fadeSlideUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .sound-sub-btn {
+          display: flex; align-items: center; gap: 8px;
+          background: white; border: 1.5px solid rgba(27,94,32,0.2);
+          border-radius: 24px; padding: 6px 14px 6px 10px;
+          font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+          color: #1b5e20; cursor: pointer; white-space: nowrap;
+          box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+          transition: all 0.2s ease;
+        }
+        .sound-sub-btn:hover { background: #f0fdf4; border-color: #4caf50; transform: translateX(-4px); }
+        .sound-sub-btn.active {
+          background: linear-gradient(135deg, #1b5e20, #4caf50);
+          color: white; border-color: transparent;
+          box-shadow: 0 4px 16px rgba(76,175,80,0.4);
+        }
+        .sound-sub-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+        .sound-sub-btn.active svg { fill: white; }
+        .sound-sub-btn:not(.active) svg { fill: #1b5e20; }
+
+        #volume-row {
+          display: flex; align-items: center; gap: 8px;
+          background: white; border: 1.5px solid rgba(27,94,32,0.15);
+          border-radius: 24px; padding: 6px 14px;
+          box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        #volume-row svg { width: 14px; height: 14px; fill: #4caf50; flex-shrink: 0; }
+        #vol-slider {
+          -webkit-appearance: none; width: 80px; height: 3px; border-radius: 2px;
+          background: linear-gradient(90deg, #4caf50 var(--pct, 70%), #d1d5db var(--pct, 70%));
+          outline: none; cursor: pointer;
+        }
+        #vol-slider::-webkit-slider-thumb {
+          -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+          background: #1b5e20; box-shadow: 0 1px 4px rgba(0,0,0,0.2); cursor: pointer;
+        }
+        #vol-slider::-moz-range-thumb {
+          width: 14px; height: 14px; border-radius: 50%; background: #1b5e20; border: none;
+        }
+
+        #eq-bars { display: flex; gap: 2px; align-items: flex-end; height: 16px; }
+        .eq-bar {
+          width: 3px; border-radius: 1px; background: white;
+          animation: eq-dance 0.6s ease-in-out infinite alternate;
+        }
+        .eq-bar:nth-child(1) { height: 6px; animation-delay: 0s; }
+        .eq-bar:nth-child(2) { height: 12px; animation-delay: 0.1s; }
+        .eq-bar:nth-child(3) { height: 8px; animation-delay: 0.2s; }
+        .eq-bar:nth-child(4) { height: 14px; animation-delay: 0.05s; }
+        @keyframes eq-dance { from { transform: scaleY(0.3); } to { transform: scaleY(1); } }
+        .eq-bar.paused { animation-play-state: paused; transform: scaleY(0.2); }
+      </style>
+
+      <div id="sound-submenu">
+        <div id="volume-row">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          <input type="range" id="vol-slider" min="0" max="100" value="70">
+        </div>
+        <button class="sound-sub-btn" id="btn-ambient">
+          <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 19.5 3.82 19.5 2 23 8 20c1.85-.93 3.33-2.5 4.52-4.36C15.36 14.5 19 16 19 16c-3-4-2-8-2-8z"/></svg>
+          Tiếng thiên nhiên
+        </button>
+        <button class="sound-sub-btn" id="btn-mute">
+          <svg viewBox="0 0 24 24" id="mute-icon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM19 12c0 2.26-1.28 4.22-3.16 5.19l1.42 1.42C19.51 17.26 21 14.8 21 12c0-2.8-1.49-5.26-3.74-6.61l-1.42 1.42C17.72 7.78 19 9.74 19 12z"/></svg>
+          Tắt âm thanh
+        </button>
+      </div>
+
+      <button id="sound-toggle-btn" title="Âm thanh">
+        <div id="eq-bars">
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+        </div>
+      </button>
+    `;
+
+    document.body.appendChild(panel);
+
+    let menuOpen = false;
+    const mainBtn = document.getElementById('sound-toggle-btn');
+    const submenu = document.getElementById('sound-submenu');
+    const btnAmbient = document.getElementById('btn-ambient');
+    const btnMute = document.getElementById('btn-mute');
+    const volSlider = document.getElementById('vol-slider');
+    const eqBars = document.querySelectorAll('.eq-bar');
+
+    mainBtn.addEventListener('click', function() {
+      menuOpen = !menuOpen;
+      submenu.classList.toggle('open', menuOpen);
+      playClick();
+    });
+
+    btnAmbient.addEventListener('click', function() {
+      getCtx();
+      if (!isAmbientOn) {
+        startAmbient();
+        btnAmbient.classList.add('active');
+        mainBtn.classList.add('ambient-active');
+        playToggle(true);
+      } else {
+        stopAmbient();
+        btnAmbient.classList.remove('active');
+        mainBtn.classList.remove('ambient-active');
+        playToggle(false);
+      }
+    });
+
+    btnMute.addEventListener('click', function() {
+      isMuted = !isMuted;
+      masterGain && (masterGain.gain.value = isMuted ? 0 : (parseFloat(volSlider.value) / 100));
+      btnMute.classList.toggle('active', isMuted);
+      mainBtn.classList.toggle('muted', isMuted);
+      eqBars.forEach(b => b.classList.toggle('paused', isMuted));
+      document.getElementById('mute-icon').innerHTML = isMuted
+        ? '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>'
+        : '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM19 12c0 2.26-1.28 4.22-3.16 5.19l1.42 1.42C19.51 17.26 21 14.8 21 12c0-2.8-1.49-5.26-3.74-6.61l-1.42 1.42C17.72 7.78 19 9.74 19 12z"/>';
+    });
+
+    volSlider.addEventListener('input', function() {
+      const v = parseFloat(this.value) / 100;
+      if (!isMuted && masterGain) masterGain.gain.value = v;
+      this.style.setProperty('--pct', this.value + '%');
+      isMuted = false;
+      btnMute.classList.remove('active');
+      mainBtn.classList.remove('muted');
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!panel.contains(e.target) && menuOpen) {
+        menuOpen = false;
+        submenu.classList.remove('open');
+      }
+    });
+  }
+
+  /* ─── HOOK INTO PAGE EVENTS ─────────────────────────────── */
+  function init() {
+    if (isInitialized) return;
+    isInitialized = true;
+    getCtx();
+
+    const hoverTargets = 'a, button, article, .magnetic-btn, .neon-link, .sound-sub-btn';
+    document.querySelectorAll(hoverTargets).forEach(function(el) {
+      if (el.id && el.id.startsWith('sound')) return;
+      el.addEventListener('mouseenter', function() { playHover(); });
+    });
+
+    document.querySelectorAll('a, button, article').forEach(function(el) {
+      el.addEventListener('click', function() { playClick(); });
+    });
+
+    window.addEventListener('scroll', function() { playScrollTick(); }, { passive: true });
+
+    const revealObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          playReveal();
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    document.querySelectorAll('article').forEach(function(el) { revealObserver.observe(el); });
+
+    const _origNavigateTo = window.navigateTo;
+    window.navigateTo = function(href) {
+      playTransition();
+      setTimeout(function() {
+        if (_origNavigateTo) _origNavigateTo(href);
+        else window.location.href = href;
+      }, 120);
+    };
+  }
+
+  /* ─── PATCH COUNTER FOR TICK SOUNDS ─────────────────────── */
+  function patchCounters() {
+    document.querySelectorAll('.counter').forEach(function(counter) {
+      var orig = counter.textContent;
+      var observer = new MutationObserver(function() {
+        if (counter.textContent !== orig) {
+          playCounterTick();
+          orig = counter.textContent;
+        }
+      });
+      observer.observe(counter, { characterData: true, childList: true });
+    });
+  }
+
+  /* ─── BOOT ───────────────────────────────────────────────── */
+  function boot() {
+    createSoundPanel();
+    patchCounters();
+
+    function firstGesture() {
+      init();
+      setTimeout(function() { playLoadComplete(); }, 200);
+      document.removeEventListener('click', firstGesture);
+      document.removeEventListener('touchstart', firstGesture);
+      document.removeEventListener('keydown', firstGesture);
+    }
+
+    document.addEventListener('click', firstGesture);
+    document.addEventListener('touchstart', firstGesture, { passive: true });
+    document.addEventListener('keydown', firstGesture);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+
+  window.DongThapSound = {
+    playClick, playHover, playReveal, playTransition, playLoadComplete,
+    startAmbient, stopAmbient,
+    mute: function() { isMuted = true; masterGain && (masterGain.gain.value = 0); },
+    unmute: function() { isMuted = false; masterGain && (masterGain.gain.value = 0.7); },
+  };
 })();
 </script>
 

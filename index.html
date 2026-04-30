@@ -1150,5 +1150,787 @@
 })();
 </script>
 
+<!-- ============ DONG THAP SOUND SYSTEM (WEB AUDIO API) ============ -->
+<script>
+/**
+ * 🌿 ĐỒNG THÁP SOUND SYSTEM
+ * Web Audio API - Không cần file ngoài, tổng hợp 100% trong trình duyệt
+ * Version 2.0 — Full Immersive Edition
+ */
+(function () {
+  'use strict';
+
+  // ─── Context & State ────────────────────────────────────────────────────────
+  let ctx = null;
+  let masterGain = null;
+  let ambientNodes = [];
+  let isMuted = false;
+  let isAmbientOn = false;
+  let ambientLoop = null;
+  let birdLoop = null;
+  let isInitialized = false;
+
+  function getCtx() {
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = ctx.createGain();
+      masterGain.gain.setValueAtTime(0.7, ctx.currentTime);
+      masterGain.connect(ctx.destination);
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+
+  // ─── Utility ─────────────────────────────────────────────────────────────────
+  function dbToGain(db) { return Math.pow(10, db / 20); }
+
+  function createEnvelope(gainNode, attack, decay, sustain, release, now) {
+    gainNode.gain.setValueAtTime(0, now);
+    gainNode.gain.linearRampToValueAtTime(1, now + attack);
+    gainNode.gain.linearRampToValueAtTime(sustain, now + attack + decay);
+    gainNode.gain.linearRampToValueAtTime(0, now + attack + decay + release);
+  }
+
+  // ─── 1. HOVER CHIME ──────────────────────────────────────────────────────────
+  function playHover() {
+    if (isMuted) return;
+    const c = getCtx();
+    const t = c.currentTime;
+
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    const filter = c.createBiquadFilter();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, t);
+    osc.frequency.exponentialRampToValueAtTime(1200, t + 0.12);
+
+    filter.type = 'bandpass';
+    filter.frequency.value = 1000;
+    filter.Q.value = 2;
+
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.08, t + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+
+    osc.connect(filter);
+    filter.connect(g);
+    g.connect(masterGain);
+
+    osc.start(t);
+    osc.stop(t + 0.3);
+  }
+
+  // ─── 2. CLICK POP ────────────────────────────────────────────────────────────
+  function playClick() {
+    if (isMuted) return;
+    const c = getCtx();
+    const t = c.currentTime;
+
+    // Body thud
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(320, t);
+    osc.frequency.exponentialRampToValueAtTime(80, t + 0.1);
+    g.gain.setValueAtTime(0.25, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    osc.connect(g); g.connect(masterGain);
+    osc.start(t); osc.stop(t + 0.15);
+
+    // High click
+    const osc2 = c.createOscillator();
+    const g2 = c.createGain();
+    osc2.type = 'square';
+    osc2.frequency.setValueAtTime(1800, t);
+    g2.gain.setValueAtTime(0.06, t);
+    g2.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+    osc2.connect(g2); g2.connect(masterGain);
+    osc2.start(t); osc2.stop(t + 0.05);
+  }
+
+  // ─── 3. PAGE TRANSITION WHOOSH ────────────────────────────────────────────────
+  function playTransition() {
+    if (isMuted) return;
+    const c = getCtx();
+    const t = c.currentTime;
+
+    // Whoosh
+    const bufSize = c.sampleRate * 0.6;
+    const buf = c.createBuffer(1, bufSize, c.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufSize, 2);
+
+    const src = c.createBufferSource();
+    src.buffer = buf;
+
+    const filter = c.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(400, t);
+    filter.frequency.exponentialRampToValueAtTime(4000, t + 0.3);
+    filter.Q.value = 1;
+
+    const g = c.createGain();
+    g.gain.setValueAtTime(0.4, t);
+    g.gain.linearRampToValueAtTime(0, t + 0.55);
+
+    src.connect(filter); filter.connect(g); g.connect(masterGain);
+    src.start(t);
+
+    // Descending tone
+    const osc = c.createOscillator();
+    const g2 = c.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, t);
+    osc.frequency.exponentialRampToValueAtTime(200, t + 0.4);
+    g2.gain.setValueAtTime(0.18, t);
+    g2.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+    osc.connect(g2); g2.connect(masterGain);
+    osc.start(t); osc.stop(t + 0.5);
+  }
+
+  // ─── 4. LOAD COMPLETE CHIME ───────────────────────────────────────────────────
+  function playLoadComplete() {
+    if (isMuted) return;
+    const c = getCtx();
+    const notes = [523.25, 659.25, 783.99, 1046.5]; // C5 E5 G5 C6
+    notes.forEach(function (freq, i) {
+      const t = c.currentTime + i * 0.15;
+      const osc = c.createOscillator();
+      const g = c.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.18, t + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+      osc.connect(g); g.connect(masterGain);
+      osc.start(t); osc.stop(t + 0.7);
+    });
+  }
+
+  // ─── 5. CARD FLIP / REVEAL ────────────────────────────────────────────────────
+  function playReveal() {
+    if (isMuted) return;
+    const c = getCtx();
+    const t = c.currentTime;
+
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    const vib = c.createOscillator();
+    const vibGain = c.createGain();
+
+    vib.frequency.value = 6;
+    vibGain.gain.value = 15;
+    vib.connect(vibGain);
+    vibGain.connect(osc.frequency);
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(440, t);
+    osc.frequency.linearRampToValueAtTime(660, t + 0.2);
+
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.12, t + 0.04);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+
+    vib.connect(vibGain); vibGain.connect(osc.frequency);
+    osc.connect(g); g.connect(masterGain);
+
+    vib.start(t); vib.stop(t + 0.5);
+    osc.start(t); osc.stop(t + 0.5);
+  }
+
+  // ─── 6. SCROLL TICK ───────────────────────────────────────────────────────────
+  let lastScrollSound = 0;
+  function playScrollTick() {
+    if (isMuted) return;
+    const now = Date.now();
+    if (now - lastScrollSound < 180) return;
+    lastScrollSound = now;
+
+    const c = getCtx();
+    const t = c.currentTime;
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = 200 + Math.random() * 100;
+    g.gain.setValueAtTime(0.04, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+    osc.connect(g); g.connect(masterGain);
+    osc.start(t); osc.stop(t + 0.07);
+  }
+
+  // ─── 7. COUNTER TICK ─────────────────────────────────────────────────────────
+  function playCounterTick() {
+    if (isMuted) return;
+    const c = getCtx();
+    const t = c.currentTime;
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    osc.type = 'square';
+    osc.frequency.value = 400 + Math.random() * 200;
+    g.gain.setValueAtTime(0.035, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+    osc.connect(g); g.connect(masterGain);
+    osc.start(t); osc.stop(t + 0.05);
+  }
+
+  // ─── 8. AMBIENT NATURE SOUNDSCAPE ─────────────────────────────────────────────
+  function createAmbientLayer() {
+    const c = getCtx();
+
+    // Water/wind noise layer
+    const bufSize = c.sampleRate * 3;
+    const buf = c.createBuffer(2, bufSize, c.sampleRate);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = buf.getChannelData(ch);
+      for (let i = 0; i < bufSize; i++) d[i] = Math.random() * 2 - 1;
+    }
+
+    const noise = c.createBufferSource();
+    noise.buffer = buf;
+    noise.loop = true;
+    noise.loopStart = 0;
+    noise.loopEnd = 3;
+
+    // Shape the noise to sound like water/wind
+    const lpf = c.createBiquadFilter();
+    lpf.type = 'lowpass';
+    lpf.frequency.value = 600;
+    lpf.Q.value = 0.5;
+
+    const hpf = c.createBiquadFilter();
+    hpf.type = 'highpass';
+    hpf.frequency.value = 80;
+
+    // Slow amplitude modulation (ripple effect)
+    const lfo = c.createOscillator();
+    const lfoGain = c.createGain();
+    lfo.type = 'sine';
+    lfo.frequency.value = 0.15;
+    lfoGain.gain.value = 0.3;
+    lfo.connect(lfoGain);
+
+    const ambGain = c.createGain();
+    ambGain.gain.value = 0.12;
+    lfoGain.connect(ambGain.gain);
+
+    noise.connect(lpf);
+    lpf.connect(hpf);
+    hpf.connect(ambGain);
+    ambGain.connect(masterGain);
+
+    noise.start();
+    lfo.start();
+
+    ambientNodes.push(noise, lfo, ambGain);
+    return ambGain;
+  }
+
+  function createBirdChirps() {
+    const c = getCtx();
+
+    function chirp() {
+      if (!isAmbientOn || isMuted) return;
+      const t = c.currentTime;
+
+      // Random bird call pattern
+      const numNotes = 2 + Math.floor(Math.random() * 4);
+      const baseFreq = 1800 + Math.random() * 1400;
+
+      for (let i = 0; i < numNotes; i++) {
+        const delay = i * (0.06 + Math.random() * 0.08);
+        const freq = baseFreq * (0.9 + Math.random() * 0.4);
+
+        const osc = c.createOscillator();
+        const g = c.createGain();
+        const vib = c.createOscillator();
+        const vibG = c.createGain();
+
+        vib.type = 'sine';
+        vib.frequency.value = 12 + Math.random() * 8;
+        vibG.gain.value = freq * 0.04;
+        vib.connect(vibG);
+        vibG.connect(osc.frequency);
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, t + delay);
+        osc.frequency.linearRampToValueAtTime(freq * 1.15, t + delay + 0.04);
+        osc.frequency.exponentialRampToValueAtTime(freq * 0.9, t + delay + 0.12);
+
+        const vol = 0.06 + Math.random() * 0.06;
+        g.gain.setValueAtTime(0, t + delay);
+        g.gain.linearRampToValueAtTime(vol, t + delay + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.14);
+
+        // Pan birds left/right randomly
+        const panner = c.createStereoPanner();
+        panner.pan.value = (Math.random() * 2 - 1) * 0.7;
+
+        vib.start(t + delay); vib.stop(t + delay + 0.2);
+        osc.connect(g);
+        g.connect(panner);
+        panner.connect(masterGain);
+        osc.start(t + delay); osc.stop(t + delay + 0.2);
+      }
+
+      // Schedule next chirp
+      const nextDelay = (2 + Math.random() * 4) * 1000;
+      birdLoop = setTimeout(chirp, nextDelay);
+    }
+
+    chirp();
+  }
+
+  function createCrickets() {
+    const c = getCtx();
+
+    function cricket() {
+      if (!isAmbientOn || isMuted) return;
+      const t = c.currentTime;
+      const freq = 4200 + Math.random() * 800;
+
+      for (let i = 0; i < 8; i++) {
+        const osc = c.createOscillator();
+        const g = c.createGain();
+        const delay = i * 0.05;
+        osc.type = 'square';
+        osc.frequency.value = freq;
+        g.gain.setValueAtTime(0, t + delay);
+        g.gain.linearRampToValueAtTime(0.02, t + delay + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.04);
+
+        const lpf = c.createBiquadFilter();
+        lpf.type = 'lowpass';
+        lpf.frequency.value = 5000;
+
+        const panner = c.createStereoPanner();
+        panner.pan.value = (Math.random() * 2 - 1) * 0.9;
+
+        osc.connect(lpf); lpf.connect(g); g.connect(panner); panner.connect(masterGain);
+        osc.start(t + delay); osc.stop(t + delay + 0.05);
+      }
+
+      birdLoop = setTimeout(cricket, (0.8 + Math.random() * 3) * 1000);
+    }
+
+    setTimeout(cricket, 2500);
+  }
+
+  function startAmbient() {
+    if (isAmbientOn) return;
+    isAmbientOn = true;
+    createAmbientLayer();
+    createBirdChirps();
+    createCrickets();
+  }
+
+  function stopAmbient() {
+    isAmbientOn = false;
+    clearTimeout(birdLoop);
+    ambientNodes.forEach(function (n) {
+      try {
+        n.stop && n.stop();
+        n.disconnect && n.disconnect();
+      } catch (e) {}
+    });
+    ambientNodes = [];
+  }
+
+  // ─── 9. BUTTON PRESS DEEP THUD ───────────────────────────────────────────────
+  function playButtonPress() {
+    if (isMuted) return;
+    const c = getCtx();
+    const t = c.currentTime;
+
+    // Low thud
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(180, t);
+    osc.frequency.exponentialRampToValueAtTime(40, t + 0.15);
+    g.gain.setValueAtTime(0.3, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+    osc.connect(g); g.connect(masterGain);
+    osc.start(t); osc.stop(t + 0.2);
+
+    // Sparkle overtone
+    const osc2 = c.createOscillator();
+    const g2 = c.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(1200, t);
+    osc2.frequency.linearRampToValueAtTime(1800, t + 0.1);
+    g2.gain.setValueAtTime(0.07, t);
+    g2.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+    osc2.connect(g2); g2.connect(masterGain);
+    osc2.start(t); osc2.stop(t + 0.35);
+  }
+
+  // ─── 10. AMBIENT TOGGLE CHIME ─────────────────────────────────────────────────
+  function playToggle(on) {
+    const c = getCtx();
+    const t = c.currentTime;
+    const freqs = on ? [440, 554, 659] : [659, 554, 440];
+    freqs.forEach(function (freq, i) {
+      const osc = c.createOscillator();
+      const g = c.createGain();
+      const st = t + i * 0.1;
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      g.gain.setValueAtTime(0, st);
+      g.gain.linearRampToValueAtTime(0.15, st + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, st + 0.5);
+      osc.connect(g); g.connect(masterGain);
+      osc.start(st); osc.stop(st + 0.6);
+    });
+  }
+
+  // ─── UI: SOUND CONTROL PANEL ─────────────────────────────────────────────────
+  function createSoundPanel() {
+    const panel = document.createElement('div');
+    panel.id = 'sound-panel';
+    panel.innerHTML = `
+      <style>
+        #sound-panel {
+          position: fixed;
+          bottom: 84px;
+          right: 20px;
+          z-index: 200;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 8px;
+        }
+        #sound-toggle-btn {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #1b5e20, #4caf50);
+          border: none;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 20px rgba(76,175,80,0.5);
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          position: relative;
+          overflow: hidden;
+        }
+        #sound-toggle-btn:hover {
+          transform: scale(1.1);
+          box-shadow: 0 6px 28px rgba(76,175,80,0.7);
+        }
+        #sound-toggle-btn:active { transform: scale(0.92); }
+        #sound-toggle-btn svg { width: 22px; height: 22px; fill: white; transition: opacity 0.2s; }
+        #sound-toggle-btn.muted svg { opacity: 0.5; }
+
+        /* Ripple pulse when ambient on */
+        #sound-toggle-btn.ambient-active::before,
+        #sound-toggle-btn.ambient-active::after {
+          content: '';
+          position: absolute;
+          inset: -4px;
+          border-radius: 50%;
+          border: 2px solid rgba(129,199,132,0.6);
+          animation: sound-pulse 2s ease-out infinite;
+        }
+        #sound-toggle-btn.ambient-active::after { animation-delay: 1s; }
+        @keyframes sound-pulse {
+          0% { transform: scale(1); opacity: 1; }
+          100% { transform: scale(1.7); opacity: 0; }
+        }
+
+        #sound-submenu {
+          display: none;
+          flex-direction: column;
+          gap: 6px;
+          align-items: flex-end;
+          animation: fadeSlideUp 0.25s ease forwards;
+        }
+        #sound-submenu.open { display: flex; }
+        @keyframes fadeSlideUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .sound-sub-btn {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          background: white;
+          border: 1.5px solid rgba(27,94,32,0.2);
+          border-radius: 24px;
+          padding: 6px 14px 6px 10px;
+          font-size: 10px;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          color: #1b5e20;
+          cursor: pointer;
+          white-space: nowrap;
+          box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+          transition: all 0.2s ease;
+        }
+        .sound-sub-btn:hover {
+          background: #f0fdf4;
+          border-color: #4caf50;
+          transform: translateX(-4px);
+        }
+        .sound-sub-btn.active {
+          background: linear-gradient(135deg, #1b5e20, #4caf50);
+          color: white;
+          border-color: transparent;
+          box-shadow: 0 4px 16px rgba(76,175,80,0.4);
+        }
+        .sound-sub-btn svg {
+          width: 16px; height: 16px;
+          flex-shrink: 0;
+        }
+        .sound-sub-btn.active svg { fill: white; }
+        .sound-sub-btn:not(.active) svg { fill: #1b5e20; }
+
+        #volume-row {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          background: white;
+          border: 1.5px solid rgba(27,94,32,0.15);
+          border-radius: 24px;
+          padding: 6px 14px;
+          box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        #volume-row svg { width: 14px; height: 14px; fill: #4caf50; flex-shrink: 0; }
+        #vol-slider {
+          -webkit-appearance: none;
+          width: 80px;
+          height: 3px;
+          border-radius: 2px;
+          background: linear-gradient(90deg, #4caf50 var(--pct, 70%), #d1d5db var(--pct, 70%));
+          outline: none;
+          cursor: pointer;
+        }
+        #vol-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 14px; height: 14px;
+          border-radius: 50%;
+          background: #1b5e20;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+          cursor: pointer;
+        }
+        #vol-slider::-moz-range-thumb {
+          width: 14px; height: 14px;
+          border-radius: 50%;
+          background: #1b5e20;
+          border: none;
+        }
+
+        /* Equalizer bars animation */
+        #eq-bars {
+          display: flex;
+          gap: 2px;
+          align-items: flex-end;
+          height: 16px;
+        }
+        .eq-bar {
+          width: 3px;
+          border-radius: 1px;
+          background: white;
+          animation: eq-dance 0.6s ease-in-out infinite alternate;
+        }
+        .eq-bar:nth-child(1) { height: 6px; animation-delay: 0s; }
+        .eq-bar:nth-child(2) { height: 12px; animation-delay: 0.1s; }
+        .eq-bar:nth-child(3) { height: 8px; animation-delay: 0.2s; }
+        .eq-bar:nth-child(4) { height: 14px; animation-delay: 0.05s; }
+        @keyframes eq-dance {
+          from { transform: scaleY(0.3); }
+          to { transform: scaleY(1); }
+        }
+        .eq-bar.paused { animation-play-state: paused; transform: scaleY(0.2); }
+      </style>
+
+      <div id="sound-submenu">
+        <!-- Volume -->
+        <div id="volume-row">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          <input type="range" id="vol-slider" min="0" max="100" value="70">
+        </div>
+
+        <!-- Ambient toggle -->
+        <button class="sound-sub-btn" id="btn-ambient">
+          <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 19.5 3.82 19.5 2 23 8 20c1.85-.93 3.33-2.5 4.52-4.36C15.36 14.5 19 16 19 16c-3-4-2-8-2-8z"/></svg>
+          Tiếng thiên nhiên
+        </button>
+
+        <!-- Mute all -->
+        <button class="sound-sub-btn" id="btn-mute">
+          <svg viewBox="0 0 24 24" id="mute-icon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM19 12c0 2.26-1.28 4.22-3.16 5.19l1.42 1.42C19.51 17.26 21 14.8 21 12c0-2.8-1.49-5.26-3.74-6.61l-1.42 1.42C17.72 7.78 19 9.74 19 12z"/></svg>
+          Tắt âm thanh
+        </button>
+      </div>
+
+      <!-- Main toggle button -->
+      <button id="sound-toggle-btn" title="Âm thanh">
+        <div id="eq-bars">
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+        </div>
+      </button>
+    `;
+
+    document.body.appendChild(panel);
+
+    // ── Events ──
+    let menuOpen = false;
+    const mainBtn = document.getElementById('sound-toggle-btn');
+    const submenu = document.getElementById('sound-submenu');
+    const btnAmbient = document.getElementById('btn-ambient');
+    const btnMute = document.getElementById('btn-mute');
+    const volSlider = document.getElementById('vol-slider');
+    const eqBars = document.querySelectorAll('.eq-bar');
+
+    mainBtn.addEventListener('click', function () {
+      menuOpen = !menuOpen;
+      submenu.classList.toggle('open', menuOpen);
+      playClick();
+    });
+
+    btnAmbient.addEventListener('click', function () {
+      getCtx(); // ensure context
+      if (!isAmbientOn) {
+        startAmbient();
+        btnAmbient.classList.add('active');
+        mainBtn.classList.add('ambient-active');
+        playToggle(true);
+      } else {
+        stopAmbient();
+        btnAmbient.classList.remove('active');
+        mainBtn.classList.remove('ambient-active');
+        playToggle(false);
+      }
+    });
+
+    btnMute.addEventListener('click', function () {
+      isMuted = !isMuted;
+      masterGain && (masterGain.gain.value = isMuted ? 0 : (parseFloat(volSlider.value) / 100));
+      btnMute.classList.toggle('active', isMuted);
+      mainBtn.classList.toggle('muted', isMuted);
+      eqBars.forEach(b => b.classList.toggle('paused', isMuted));
+      document.getElementById('mute-icon').innerHTML = isMuted
+        ? '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>'
+        : '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM19 12c0 2.26-1.28 4.22-3.16 5.19l1.42 1.42C19.51 17.26 21 14.8 21 12c0-2.8-1.49-5.26-3.74-6.61l-1.42 1.42C17.72 7.78 19 9.74 19 12z"/>';
+    });
+
+    volSlider.addEventListener('input', function () {
+      const v = parseFloat(this.value) / 100;
+      if (!isMuted && masterGain) masterGain.gain.value = v;
+      this.style.setProperty('--pct', this.value + '%');
+      isMuted = false;
+      btnMute.classList.remove('active');
+      mainBtn.classList.remove('muted');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function (e) {
+      if (!panel.contains(e.target) && menuOpen) {
+        menuOpen = false;
+        submenu.classList.remove('open');
+      }
+    });
+  }
+
+  // ─── HOOK INTO PAGE EVENTS ─────────────────────────────────────────────────────
+  function init() {
+    if (isInitialized) return;
+    isInitialized = true;
+    getCtx();
+
+    // Hook hover sounds
+    const hoverTargets = 'a, button, article, .magnetic-btn, .neon-link, .sound-sub-btn';
+    document.querySelectorAll(hoverTargets).forEach(function (el) {
+      if (el.id && el.id.startsWith('sound')) return; // skip sound panel
+      el.addEventListener('mouseenter', function () { playHover(); });
+    });
+
+    // Hook click sounds
+    document.querySelectorAll('a, button, article').forEach(function (el) {
+      el.addEventListener('click', function () { playClick(); });
+    });
+
+    // Scroll tick
+    window.addEventListener('scroll', function () { playScrollTick(); }, { passive: true });
+
+    // Card reveals
+    const revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          playReveal();
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    document.querySelectorAll('article').forEach(function (el) { revealObserver.observe(el); });
+
+    // Counter tick patch — wrap navigateTo
+    var _origNavigateTo = window.navigateTo;
+    window.navigateTo = function (href) {
+      playTransition();
+      setTimeout(function () {
+        if (_origNavigateTo) _origNavigateTo(href);
+        else window.location.href = href;
+      }, 120);
+    };
+  }
+
+  // ─── PATCH COUNTER FOR TICK SOUNDS ────────────────────────────────────────────
+  function patchCounters() {
+    document.querySelectorAll('.counter').forEach(function (counter) {
+      var orig = counter.textContent;
+      var observer = new MutationObserver(function () {
+        if (counter.textContent !== orig) {
+          playCounterTick();
+          orig = counter.textContent;
+        }
+      });
+      observer.observe(counter, { characterData: true, childList: true });
+    });
+  }
+
+  // ─── BOOT ─────────────────────────────────────────────────────────────────────
+  function boot() {
+    createSoundPanel();
+    patchCounters();
+
+    // Init audio on first user gesture
+    function firstGesture() {
+      init();
+      // Play load complete on page ready
+      setTimeout(function () { playLoadComplete(); }, 200);
+      document.removeEventListener('click', firstGesture);
+      document.removeEventListener('touchstart', firstGesture);
+      document.removeEventListener('keydown', firstGesture);
+    }
+
+    document.addEventListener('click', firstGesture);
+    document.addEventListener('touchstart', firstGesture, { passive: true });
+    document.addEventListener('keydown', firstGesture);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+
+  // Expose for external use
+  window.DongThapSound = {
+    playClick, playHover, playReveal, playTransition, playLoadComplete,
+    startAmbient, stopAmbient,
+    mute: function () { isMuted = true; masterGain && (masterGain.gain.value = 0); },
+    unmute: function () { isMuted = false; masterGain && (masterGain.gain.value = 0.7); },
+  };
+})();
+</script>
+
 </body>
 </html>

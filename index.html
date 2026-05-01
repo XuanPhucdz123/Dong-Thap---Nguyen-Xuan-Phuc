@@ -481,17 +481,21 @@
             .glitch:hover { animation: none !important; }
             .eco-badge, .animate-pop-bounce { animation: none !important; }
             .card-shine::after { display: none !important; }
-            .img-reveal { transition-duration: 0.5s !important; }
             #hero-title { line-height: 1.15 !important; }
             .stat-bar-fill { transition-duration: 1s !important; }
             .card-glow::before, .border-animate::before { display: none !important; }
             .pulse-wrap::after { display: none !important; }
             .pulse-wrap::before { animation-duration: 3s !important; inset: -4px !important; }
-            /* Giảm độ giật của hiệu ứng trượt trên điện thoại */
-            .animate-slide-up { animation: slide-up-mobile 0.6s ease forwards; }
+
+            /* --- FIX LỖI LOẠN CARD TRÊN ĐIỆN THOẠI --- */
+            .group .absolute.-inset-6 { display: none !important; }
+            .card-hover-label { display: none !important; }
+            .img-reveal { transition-duration: 0.5s !important; filter: grayscale(0) !important; }
+            .group:hover img { transform: none !important; filter: grayscale(0) !important; }
+            .animate-slide-up { animation: slide-up-mobile 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important; }
         }
         @keyframes slide-up-mobile {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(60px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
@@ -672,7 +676,7 @@
             </div>
         </div>
 
-        <!-- Cards Container (Đã chỉnh sửa flex-col trên mobile) -->
+        <!-- Cards Container -->
         <div class="flex flex-col md:grid md:grid-cols-3 gap-8 md:gap-10 mt-6" id="cards-container">
 
             <!-- THẺ 1: TRÀM CHIM -->
@@ -940,13 +944,22 @@
     }
 
     /* ============ INTERSECTION OBSERVER ============ */
-    var observerOpts = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    var observerOpts = { threshold: isMobile ? 0.15 : 0.1, rootMargin: isMobile ? '0px 0px -60px 0px' : '0px 0px -50px 0px' };
+    
     var observer = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
             if (entry.isIntersecting) {
                 var el = entry.target;
                 var aosType = el.getAttribute('data-aos');
+                var delay = el.getAttribute('data-aos-delay');
                 var cls = aosType === 'fade-right' ? 'animate-slide-right' : aosType === 'fade-in' ? 'animate-scale-in' : 'animate-slide-up';
+                
+                if (delay && !isMobile) {
+                    el.style.animationDelay = delay + 'ms';
+                } else if (isMobile) {
+                    el.style.animationDelay = '0ms';
+                }
+
                 el.classList.add(cls);
                 el.style.opacity = 1;
                 observer.unobserve(el);

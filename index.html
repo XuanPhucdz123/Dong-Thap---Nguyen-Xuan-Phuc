@@ -109,7 +109,7 @@
             background: linear-gradient(135deg, #4caf50, #81c784);
             border-radius: 50% 50% 50% 0;
             transform-origin: bottom right;
-            animation: petal-spin 1.6s ease-in-out infinite;
+            animation: petal-spin 3s ease-in-out infinite; /* Slower, calmer spin */
             opacity: 0.85;
         }
         .loader-petal:nth-child(1) { --r: 0deg; transform: rotate(0deg); animation-delay: 0s; }
@@ -123,7 +123,7 @@
         }
         .loader-text { color: #4caf50; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; font-weight: 800; animation: loader-pulse 1.2s ease-in-out infinite; }
         .loader-bar-wrap { width: 140px; height: 2px; background: rgba(76,175,80,0.2); border-radius: 2px; margin-top: 16px; overflow: hidden; }
-        .loader-bar-fill { height: 100%; background: linear-gradient(90deg, #1b5e20, #4caf50); width: 0; animation: loader-bar 1s ease forwards 0.3s; border-radius: 2px; }
+        .loader-bar-fill { height: 100%; background: linear-gradient(90deg, #1b5e20, #4caf50); width: 0; animation: loader-bar 1.5s ease forwards 0.3s; border-radius: 2px; }
         @keyframes loader-bar { to { width: 100%; } }
         @keyframes loader-pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
@@ -230,16 +230,6 @@
             animation: shimmer-move 3s linear infinite;
         }
         @keyframes shimmer-move { to { background-position: 200% center; } }
-
-        /* ========== SPLIT TEXT CHARS ========== */
-        .char-split .char {
-            display: inline-block; opacity: 0;
-            animation: char-in 0.5s ease forwards;
-        }
-        @keyframes char-in {
-            from { opacity: 0; transform: translateY(20px) rotateX(-40deg); }
-            to { opacity: 1; transform: translateY(0) rotateX(0deg); }
-        }
 
         /* ========== SPARKLE ========== */
         .sparkle-wrap { position: relative; }
@@ -390,11 +380,6 @@
         /* ========== SCROLL REVEAL BASE ========== */
         [data-aos] { opacity: 0; }
 
-        /* ========== STAGGER ========== */
-        .stagger-1 { animation-delay: 0.1s; }
-        .stagger-2 { animation-delay: 0.2s; }
-        .stagger-3 { animation-delay: 0.3s; }
-
         /* ========== MAGNETIC BTN ========== */
         .magnetic-btn { display: inline-flex; transition: transform 0.2s ease; }
 
@@ -439,32 +424,8 @@
         .stat-bar { height: 3px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; margin-top: 8px; }
         .stat-bar-fill { height: 100%; background: linear-gradient(90deg, #81c784, #fff); border-radius: 2px; width: 0; transition: width 1.5s cubic-bezier(0.4,0,0.2,1); }
 
-        /* ========== SWIPE HINT (mobile) ========== */
-        .swipe-hint {
-            display: none; align-items: center; gap: 6px; color: #6b7280;
-            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-        }
-        @media (max-width: 767px) { .swipe-hint { display: flex; } }
-        .swipe-arrow { animation: swipe-anim 1.5s ease-in-out infinite; }
-        @keyframes swipe-anim {
-            0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); }
-        }
-
-        /* ========== MOBILE DOTS INDICATOR ========== */
-        #cards-dots { display: none; }
-        @media (max-width: 767px) { #cards-dots { display: flex; justify-content: center; gap: 6px; margin-top: 12px; } }
-        .dot-ind { width: 6px; height: 6px; border-radius: 50%; background: rgba(27,94,32,0.2); transition: all 0.3s ease; }
-        .dot-ind.active { background: #1b5e20; width: 20px; border-radius: 3px; }
-
         /* ========== CARD ACTIVE STATE (mobile tap) ========== */
         article:active { transform: scale(0.97); transition: transform 0.15s ease; }
-
-        /* ========== MOBILE SCROLL SNAP for cards ========== */
-        @media (max-width: 767px) {
-            .cards-scroll-snap { display: flex; overflow-x: auto; gap: 16px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: 12px; }
-            .cards-scroll-snap::-webkit-scrollbar { display: none; }
-            .cards-scroll-snap > div { scroll-snap-align: start; flex: 0 0 82vw; }
-        }
 
         /* ========== SECTION NUMBER ========== */
         .section-number {
@@ -507,6 +468,31 @@
         /* ========== REDUCED MOTION ========== */
         @media (prefers-reduced-motion: reduce) {
             *, ::before, ::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+
+        /* ========== MOBILE OPTIMIZATIONS ========== */
+        @media (max-width: 767px) {
+            .float-icon { animation: none !important; }
+            .blob-bg { animation: none !important; border-radius: 50% !important; transform: none !important; }
+            .gradient-bg { animation: none !important; background: linear-gradient(160deg, #1b5e20 0%, #2e7d32 50%, #1b5e20 100%) !important; background-size: 100% 100% !important; }
+            .gradient-text { animation: none !important; background-position: 0% 50% !important; }
+            .text-shimmer { animation: none !important; -webkit-text-fill-color: #1b5e20; color: #1b5e20; background: none; }
+            .orbit-wrap, .section-number, #parallax-bg, #particles, .glitch::before, .glitch::after { display: none !important; }
+            .glitch:hover { animation: none !important; }
+            .eco-badge, .animate-pop-bounce { animation: none !important; }
+            .card-shine::after { display: none !important; }
+            .img-reveal { transition-duration: 0.5s !important; }
+            #hero-title { line-height: 1.15 !important; }
+            .stat-bar-fill { transition-duration: 1s !important; }
+            .card-glow::before, .border-animate::before { display: none !important; }
+            .pulse-wrap::after { display: none !important; }
+            .pulse-wrap::before { animation-duration: 3s !important; inset: -4px !important; }
+            /* Giảm độ giật của hiệu ứng trượt trên điện thoại */
+            .animate-slide-up { animation: slide-up-mobile 0.6s ease forwards; }
+        }
+        @keyframes slide-up-mobile {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -655,7 +641,7 @@
                         <span class="material-symbols-outlined text-4xl mb-2 text-green-200">account_balance</span>
                     </div>
                     <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="39">0</span></div>
-                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Di Tích Lịch Sử QG</div>
+                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Di Tích Lịch Sự QG</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="60"></div></div>
                 </div>
                 <!-- Stat 4 -->
@@ -684,15 +670,10 @@
                 </h3>
                 <div class="w-16 md:w-24 h-1 md:h-1.5 bg-gradient-to-r from-green-600 to-green-400 mt-3" id="title-underline" style="width:0;transition:width 1s ease;"></div>
             </div>
-            <!-- Mobile swipe hint -->
-            <div class="swipe-hint mt-4 md:mt-0">
-                <span>Vuốt để xem</span>
-                <span class="swipe-arrow material-symbols-outlined" style="font-size:18px;">chevron_right</span>
-            </div>
         </div>
 
-        <!-- Cards -->
-        <div class="cards-scroll-snap grid-cols-1 md:grid md:grid-cols-3 gap-6 md:gap-10 mt-6" id="cards-container">
+        <!-- Cards Container (Đã chỉnh sửa flex-col trên mobile) -->
+        <div class="flex flex-col md:grid md:grid-cols-3 gap-8 md:gap-10 mt-6" id="cards-container">
 
             <!-- THẺ 1: TRÀM CHIM -->
             <div class="relative group h-full z-0 sparkle-wrap" data-aos="fade-up" data-aos-delay="100">
@@ -780,13 +761,6 @@
                 </article>
             </div>
 
-        </div>
-
-        <!-- Mobile dots indicator -->
-        <div id="cards-dots">
-            <div class="dot-ind active"></div>
-            <div class="dot-ind"></div>
-            <div class="dot-ind"></div>
         </div>
     </section>
 
@@ -931,7 +905,7 @@
 
     /* ============ PARTICLES ============ */
     var container = document.getElementById('particles');
-    var count = isMobile ? 8 : 16;
+    var count = isMobile ? 0 : 16; /* Tắt trên điện thoại */
     for (var p = 0; p < count; p++) {
         var el = document.createElement('div');
         el.className = 'particle';
@@ -1066,16 +1040,6 @@
         });
     }
 
-    /* ============ MOBILE CARDS DOT INDICATOR ============ */
-    var cardsContainer = document.getElementById('cards-container');
-    if (cardsContainer) {
-        var dots = document.querySelectorAll('.dot-ind');
-        cardsContainer.addEventListener('scroll', function() {
-            var idx = Math.round(cardsContainer.scrollLeft / (cardsContainer.scrollWidth / 3));
-            dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
-        }, { passive: true });
-    }
-
     /* ============ OPTIMIZED SCROLL ============ */
     var ticking = false;
     window.addEventListener('scroll', function() {
@@ -1121,8 +1085,12 @@
     if (isMobile) {
         var heroImg = document.getElementById('hero-img');
         if (heroImg) {
+            var lastY = 0;
             window.addEventListener('scroll', function() {
-                heroImg.style.transform = 'scale(1.08) translateY(' + window.scrollY * 0.08 + 'px)';
+                var y = window.scrollY;
+                if (Math.abs(y - lastY) < 4) return;
+                lastY = y;
+                heroImg.style.transform = 'scale(1.04) translateY(' + (y * 0.04) + 'px)';
             }, { passive: true });
         }
     }
@@ -1929,202 +1897,6 @@
     mute: function () { isMuted = true; masterGain && (masterGain.gain.value = 0); },
     unmute: function () { isMuted = false; masterGain && (masterGain.gain.value = 0.7); },
   };
-})();
-</script>
-<!--
-  ╔══════════════════════════════════════════════════════════╗
-  ║   MOBILE FIX PATCH — dán vào trước thẻ </body>          ║
-  ╚══════════════════════════════════════════════════════════╝
--->
-
-<style id="mobile-patch">
-@media (max-width: 767px) {
-
-  /* ── 1. LOADER: petals xoay chậm lại, mượt hơn ─────────── */
-  .loader-petal {
-    animation-duration: 2.4s !important;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1) !important;
-  }
-  .loader-bar-fill {
-    animation-duration: 1.4s !important;
-  }
-
-  /* ── 2. SLIDE ANIMATIONS: giảm distance từ 30px → 8px ───── */
-  @keyframes slide-up {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0);   }
-  }
-  @keyframes slide-down {
-    from { opacity: 0; transform: translateY(-8px); }
-    to   { opacity: 1; transform: translateY(0);    }
-  }
-  @keyframes slide-left {
-    from { opacity: 0; transform: translateX(8px); }
-    to   { opacity: 1; transform: translateX(0);   }
-  }
-  @keyframes slide-right {
-    from { opacity: 0; transform: translateX(-8px); }
-    to   { opacity: 1; transform: translateX(0);    }
-  }
-  @keyframes scale-in {
-    from { opacity: 0; transform: scale(0.97); }
-    to   { opacity: 1; transform: scale(1);    }
-  }
-
-  /* ── 3. FLOAT ICON: tắt hoàn toàn trong card ────────────── */
-  .float-icon {
-    animation: none !important;
-  }
-
-  /* ── 4. BLOB MORPH: cố định, không bay lung tung ─────────── */
-  .blob-bg {
-    animation: none !important;
-    border-radius: 50% !important;
-    transform: none !important;
-  }
-
-  /* ── 5. GRADIENT BACKGROUND: dừng shift, dùng static ─────── */
-  .gradient-bg {
-    animation: none !important;
-    background: linear-gradient(160deg, #1b5e20 0%, #2e7d32 50%, #1b5e20 100%) !important;
-    background-size: 100% 100% !important;
-  }
-
-  /* ── 6. GRADIENT TEXT: dừng shift ────────────────────────── */
-  .gradient-text {
-    animation: none !important;
-    background-position: 0% 50% !important;
-  }
-
-  /* ── 7. TEXT SHIMMER: dừng ───────────────────────────────── */
-  .text-shimmer {
-    animation: none !important;
-    background-position: 0 !important;
-    -webkit-text-fill-color: #1b5e20;
-    color: #1b5e20;
-    background: none;
-  }
-
-  /* ── 8. ORBIT RINGS: ẩn đi, nặng không cần thiết ─────────── */
-  .orbit-wrap { display: none !important; }
-
-  /* ── 9. PULSE RINGS trên stat icons: giữ 1 vòng, bỏ vòng 2 */
-  .pulse-wrap::after { display: none !important; }
-  .pulse-wrap::before {
-    animation-duration: 3s !important;
-    inset: -4px !important;
-  }
-
-  /* ── 10. SECTION NUMBER: ẩn ─────────────────────────────── */
-  .section-number { display: none !important; }
-
-  /* ── 11. PARALLAX BLUR BG: ẩn (gây flicker + nặng) ──────── */
-  #parallax-bg { display: none !important; }
-
-  /* ── 12. PARTICLES: ẩn trên mobile ──────────────────────── */
-  #particles { display: none !important; }
-
-  /* ── 13. GLITCH EFFECT: tắt trên mobile ─────────────────── */
-  .glitch:hover { animation: none !important; }
-  .glitch::before,
-  .glitch::after  { display: none !important; }
-
-  /* ── 14. BADGE GLOW: animation tắt ──────────────────────── */
-  .eco-badge { animation: none !important; }
-
-  /* ── 15. POP BOUNCE footer: tắt ─────────────────────────── */
-  .animate-pop-bounce { animation: none !important; }
-
-  /* ── 16. CARD SHINE sweep: tắt (không cần trên touch) ────── */
-  .card-shine::after { display: none !important; }
-
-  /* ── 17. IMG REVEAL: transition nhanh hơn ─────────────────── */
-  .img-reveal {
-    transition-duration: 0.5s !important;
-  }
-
-  /* ── 18. HERO title: line-height trên mobile ──────────────── */
-  #hero-title {
-    line-height: 1.15 !important;
-  }
-
-  /* ── 19. SCROLL LINE: ẩn (đã ẩn qua media query gốc) ──────── */
-
-  /* ── 20. STAT BAR FILL: transition ngắn hơn ──────────────── */
-  .stat-bar-fill {
-    transition-duration: 1s !important;
-  }
-
-  /* ── 21. CARD GLOW BEFORE: ẩn (costly paint) ─────────────── */
-  .card-glow::before { display: none !important; }
-
-  /* ── 22. BORDER ANIMATE BEFORE: tắt ─────────────────────── */
-  .border-animate::before { display: none !important; }
-
-  /* ── 23. SCANLINE overlay: ẩn ───────────────────────────── */
-  .absolute.inset-0[style*="repeating-linear-gradient"] {
-    display: none !important;
-  }
-}
-</style>
-
-<script id="mobile-patch-js">
-(function () {
-  'use strict';
-
-  var isMobile = window.innerWidth < 768;
-  if (!isMobile) return;
-
-  /* ── A. Intersection Observer: dùng fade đơn giản thay slide ── */
-  var originalObserver = window.__mobileObserverPatched;
-  if (!originalObserver) {
-    window.__mobileObserverPatched = true;
-
-    var mobileObserver = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        var el = entry.target;
-        el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-        el.style.opacity = '1';
-        el.style.transform = 'translateY(0)';
-        mobileObserver.unobserve(el);
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
-
-    /* Reset trạng thái ban đầu của các phần tử AOS */
-    document.querySelectorAll('[data-aos]').forEach(function (el) {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(6px)';
-      mobileObserver.observe(el);
-    });
-  }
-
-  /* ── B. Tắt sparkle interval trên mobile (đã skip trong gốc) ── */
-  /* Sparkle dùng setInterval, tắt bằng cách không mouseenter ─── */
-  /* (touch device không trigger mouseenter nên đã an toàn) ────── */
-
-  /* ── C. Hero image parallax: giới hạn tốc độ di chuyển ──────── */
-  var heroImg = document.getElementById('hero-img');
-  if (heroImg) {
-    var lastY = 0;
-    window.addEventListener('scroll', function () {
-      var y = window.scrollY;
-      /* Chỉ cập nhật mỗi 2 frame để tránh jank */
-      if (Math.abs(y - lastY) < 4) return;
-      lastY = y;
-      heroImg.style.transform = 'scale(1.04) translateY(' + (y * 0.04) + 'px)';
-    }, { passive: true });
-  }
-
-  /* ── D. Giảm số lượng particles còn 0 trên mobile ───────────── */
-  var particleContainer = document.getElementById('particles');
-  if (particleContainer) {
-    particleContainer.innerHTML = '';
-  }
-
-  /* ── E. Tắt mouse-parallax blob trên hero (không có mouse) ──── */
-  /* (Touch device không trigger mousemove nên không cần patch) ── */
-
 })();
 </script>
     

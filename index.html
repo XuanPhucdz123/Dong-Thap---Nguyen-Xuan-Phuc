@@ -470,6 +470,71 @@
             *, ::before, ::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
         }
 
+
+        /* ========== TOUCH-SAFE OVERRIDES / NO-HOVER MODE ========== */
+        html.touch-device, html.touch-device body {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        html.touch-device * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        html.touch-device .cursor-trail { display: none !important; }
+        html.touch-device .tilt-card { transform: none !important; }
+        html.touch-device .tilt-card:hover,
+        html.touch-device .tilt-card:active {
+            transform: none !important;
+        }
+        html.touch-device .group:hover .card-hover-label,
+        html.touch-device .group:hover img,
+        html.touch-device .group:hover .group-hover\:translate-x-2,
+        html.touch-device .group:hover .group-hover\:scale-110,
+        html.touch-device .group:hover .group-hover\:grayscale-0,
+        html.touch-device .group:hover .group-hover\:opacity-100,
+        html.touch-device .group:hover .group-hover\:blur-\[80px\],
+        html.touch-device .group:hover .group-hover\:scale-110,
+        html.touch-device .group:hover .group-hover\:scale-125,
+        html.touch-device .group:hover .group-hover\:opacity-100 {
+            transform: none !important;
+            filter: none !important;
+            opacity: 1 !important;
+        }
+        html.touch-device .glitch:hover,
+        html.touch-device .card-glow:hover::before,
+        html.touch-device .card-shine:hover::after,
+        html.touch-device .card-shine:active::after,
+        html.touch-device .card-border-glow:hover,
+        html.touch-device .border-animate:hover::before,
+        html.touch-device .neon-link:hover::after {
+            animation: none !important;
+            box-shadow: none !important;
+            width: auto !important;
+            left: auto !important;
+        }
+        html.touch-device .hero-hover-blur,
+        html.touch-device .sparkle,
+        html.touch-device .orbit-wrap,
+        html.touch-device .section-number,
+        html.touch-device #parallax-bg,
+        html.touch-device #particles {
+            display: none !important;
+        }
+        .cursor-trail {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(129, 199, 132, 0.32);
+            pointer-events: none;
+            z-index: 99996;
+            transform: translate(-50%, -50%);
+            filter: blur(1px);
+            will-change: transform;
+            mix-blend-mode: screen;
+        }
+
         /* ========== MOBILE OPTIMIZATIONS ========== */
         @media (max-width: 767px) {
             .float-icon { animation: none !important; }
@@ -821,9 +886,15 @@
 <script>
 (function() {
     'use strict';
-    var isMobile = window.innerWidth < 768;
+    var supportsHover = window.matchMedia('(hover: hover)').matches;
+    var supportsFinePointer = window.matchMedia('(pointer: fine)').matches;
     var isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var isTouch = !window.matchMedia('(pointer: fine)').matches;
+    var isTouch = !supportsHover || !supportsFinePointer;
+    var isMobile = window.innerWidth < 768 || isTouch;
+
+    document.documentElement.classList.toggle('touch-device', isTouch);
+    document.documentElement.classList.toggle('desktop-device', !isTouch);
+    document.documentElement.classList.toggle('reduced-motion', isReducedMotion);
 
     /* ============ LOADING SCREEN ============ */
     window.addEventListener('load', function() {
@@ -864,6 +935,17 @@
         var glow = document.getElementById('cursor-glow');
         var mx = 0, my = 0, rx = 0, ry = 0, gx = 0, gy = 0;
 
+        var trails = [];
+        for (var t = 0; t < 5; t++) {
+            var trailEl = document.createElement('div');
+            trailEl.className = 'cursor-trail';
+            trailEl.style.opacity = String(0.36 - t * 0.05);
+            trailEl.style.width = String(10 - t) + 'px';
+            trailEl.style.height = String(10 - t) + 'px';
+            document.body.appendChild(trailEl);
+            trails.push({ el: trailEl, x: 0, y: 0, delay: 0.18 + t * 0.06 });
+        }
+
         document.addEventListener('mousemove', function(e) {
             mx = e.clientX; my = e.clientY;
         });
@@ -877,6 +959,14 @@
             // Glow lags more
             gx += (mx - gx) * 0.08; gy += (my - gy) * 0.08;
             glow.style.left = gx + 'px'; glow.style.top = gy + 'px';
+
+            trails.forEach(function(trail) {
+                trail.x += (mx - trail.x) * trail.delay;
+                trail.y += (my - trail.y) * trail.delay;
+                trail.el.style.left = trail.x + 'px';
+                trail.el.style.top = trail.y + 'px';
+            });
+
             requestAnimationFrame(cursorLoop);
         })();
 
@@ -909,7 +999,7 @@
 
     /* ============ PARTICLES ============ */
     var container = document.getElementById('particles');
-    var count = isMobile ? 0 : 16; /* Tắt trên điện thoại */
+    var count = isMobile ? 0 : 24; /* Tắt trên điện thoại */
     for (var p = 0; p < count; p++) {
         var el = document.createElement('div');
         el.className = 'particle';
@@ -1021,6 +1111,34 @@
         el.addEventListener('click', addRipple);
         el.addEventListener('touchstart', addRipple, { passive: true });
     });
+
+
+    /* ============ TOUCH TAP SPARKLE BURST ============ */
+    if (isTouch && !isReducedMotion) {
+        document.querySelectorAll('.ripple-container, article, .magnetic-btn').forEach(function(el) {
+            el.addEventListener('pointerdown', function(e) {
+                if (e.pointerType !== 'touch' && e.pointerType !== 'pen') return;
+                var rect = el.getBoundingClientRect();
+                var baseX = (e.clientX || (rect.left + rect.width / 2)) - rect.left;
+                var baseY = (e.clientY || (rect.top + rect.height / 2)) - rect.top;
+                for (var i = 0; i < 5; i++) {
+                    var s = document.createElement('span');
+                    s.className = 'sparkle';
+                    var angle = (Math.PI * 2 * i) / 5 + Math.random() * 0.3;
+                    var dist = 20 + Math.random() * 24;
+                    s.style.setProperty('--sx', Math.cos(angle) * dist + 'px');
+                    s.style.setProperty('--sy', Math.sin(angle) * dist + 'px');
+                    s.style.left = baseX + 'px';
+                    s.style.top = baseY + 'px';
+                    s.style.width = (3 + Math.random() * 3) + 'px';
+                    s.style.height = s.style.width;
+                    s.style.background = ['#4caf50', '#81c784', '#a5d6a7', '#ffffff'][i % 4];
+                    el.appendChild(s);
+                    s.addEventListener('animationend', function() { s.remove(); });
+                }
+            }, { passive: true });
+        });
+    }
 
     /* ============ 3D TILT (desktop only) ============ */
     if (!isMobile && !isReducedMotion) {

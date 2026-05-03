@@ -474,6 +474,38 @@
         @media (prefers-reduced-motion: reduce) {
             *, ::before, ::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
         }
+
+        /* ========== MOBILE / TOUCH SAFETY PATCH ========== */
+        @media (hover: none), (pointer: coarse) {
+            html, body { overscroll-behavior-x: none; }
+            body { -webkit-tap-highlight-color: transparent; cursor: auto; }
+            #cursor-dot, #cursor-ring, #cursor-glow, .scroll-line { display: none !important; }
+            #particles { display: none !important; }
+            .orbit-wrap, .section-number, .card-hover-label,
+            .glitch::before, .glitch::after,
+            .card-shine::after, .card-glow::before, .border-animate::before,
+            .group:hover .absolute.-inset-6 { display: none !important; }
+            .group:hover .card-hover-label { transform: none !important; }
+            .tilt-card, .tilt-content, .magnetic-btn { transform: none !important; }
+            .float-icon, .blob-bg, .gradient-bg, .gradient-text, .text-shimmer { animation: none !important; }
+            .blob-bg { filter: blur(18px) !important; }
+            .gradient-text, .text-shimmer {
+                -webkit-text-fill-color: #1b5e20 !important;
+                color: #1b5e20 !important;
+                background: none !important;
+            }
+            .img-reveal { clip-path: inset(0 0 0 0) !important; transition-duration: 0.55s !important; }
+            .eco-badge, .pulse-wrap::before, .pulse-wrap::after { animation-duration: 3s !important; }
+            #sound-panel { bottom: 16px !important; right: 12px !important; }
+            #sound-toggle-btn:hover { transform: none !important; box-shadow: 0 4px 20px rgba(76,175,80,0.5) !important; }
+            main article { transform: none !important; }
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            main article { transition: transform 0.35s ease, filter 0.35s ease; }
+            main article:hover { transform: translateY(-8px); }
+            main article:hover .highlight-box { filter: brightness(1.04); }
+        }
     </style>
 </head>
 <body class="pt-20 md:pt-24">
@@ -844,9 +876,9 @@
 <script>
 (function() {
     'use strict';
-    var isMobile = window.innerWidth < 768;
+    var isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    var isMobile = window.innerWidth < 768 || isTouch;
     var isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var isTouch = !window.matchMedia('(pointer: fine)').matches;
 
     /* ============ LOADING SCREEN ============ */
     window.addEventListener('load', function() {
@@ -925,7 +957,7 @@
 
     /* ============ PARTICLES ============ */
     var container = document.getElementById('particles');
-    var count = isMobile ? 8 : 16;
+    var count = isMobile ? 4 : 16;
     for (var p = 0; p < count; p++) {
         var el = document.createElement('div');
         el.className = 'particle';

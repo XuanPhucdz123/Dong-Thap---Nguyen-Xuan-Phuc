@@ -400,6 +400,52 @@
         .wave-divider { line-height: 0; }
         .wave-divider svg { display: block; }
 
+        /* TOUCH / MOBILE SAFETY LAYER */
+        @media (hover: none), (pointer: coarse) {
+            .float-icon,
+            .eco-badge,
+            .gradient-text,
+            .text-shimmer {
+                animation: none !important;
+            }
+
+            .blob-bg,
+            .orbit-wrap,
+            #particles,
+            .section-number,
+            .card-hover-label {
+                display: none !important;
+            }
+
+            .card-glow::before,
+            .card-shine::after,
+            .border-animate::before {
+                display: none !important;
+            }
+
+            .group:hover .card-hover-label,
+            .group:active .card-hover-label {
+                transform: translateY(100%) !important;
+            }
+
+            .group:hover img,
+            .group:active img {
+                transform: none !important;
+                filter: none !important;
+            }
+
+            .tilt-card,
+            .tilt-content,
+            .magnetic-btn {
+                transform: none !important;
+            }
+
+            #sound-toggle-btn:hover,
+            .sound-sub-btn:hover {
+                transform: none !important;
+            }
+        }
+
         /* REDUCED MOTION */
         @media (prefers-reduced-motion: reduce) {
             *, ::before, ::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -847,6 +893,8 @@
     var isMobile = window.innerWidth < 768;
     var isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var isTouch = !window.matchMedia('(pointer: fine)').matches;
+    var canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
 
     /* ===== LOADING SCREEN ===== */
     window.addEventListener('load', function () {
@@ -876,7 +924,7 @@
     });
 
     /* ===== CUSTOM CURSOR ===== */
-    if (!isTouch) {
+    if (canHover) {
         var dot = document.getElementById('cursor-dot');
         var ring = document.getElementById('cursor-ring');
         var glow = document.getElementById('cursor-glow');
@@ -918,7 +966,7 @@
 
     /* ===== PARTICLES ===== */
     var container = document.getElementById('particles');
-    var count = isMobile ? 8 : 16;
+    var count = canHover ? 16 : 0;
     for (var p = 0; p < count; p++) {
         var el = document.createElement('div');
         el.className = 'particle';
@@ -928,7 +976,7 @@
     }
 
     /* ===== SPARKLE ON HOVER ===== */
-    if (!isReducedMotion) {
+    if (canHover && !isReducedMotion) {
         document.querySelectorAll('.sparkle-wrap').forEach(function (wrap) {
             var timer = null;
             wrap.addEventListener('mouseenter', function () {
@@ -1019,7 +1067,7 @@
     });
 
     /* ===== 3D TILT ===== */
-    if (!isMobile && !isReducedMotion) {
+    if (canHover && !isReducedMotion) {
         document.querySelectorAll('.tilt-card').forEach(function (card) {
             card.addEventListener('mousemove', function (e) {
                 var r = card.getBoundingClientRect();
@@ -1036,7 +1084,7 @@
     }
 
     /* ===== MAGNETIC BUTTON ===== */
-    if (!isMobile) {
+    if (canHover) {
         document.querySelectorAll('.magnetic-btn').forEach(function (btn) {
             btn.addEventListener('mousemove', function (e) {
                 var r = btn.getBoundingClientRect();
@@ -1049,7 +1097,7 @@
     }
 
     /* ===== MOUSE PARALLAX ON HERO ===== */
-    if (!isMobile && !isReducedMotion) {
+    if (canHover && !isReducedMotion) {
         var heroSection = document.querySelector('section');
         if (heroSection) {
             heroSection.addEventListener('mousemove', function (e) {
@@ -1338,10 +1386,10 @@
         getCtx();
         document.querySelectorAll('a, button, article').forEach(function (el) {
             if (el.id && el.id.startsWith('sound')) return;
-            el.addEventListener('mouseenter', playHover);
+            if (canHover) el.addEventListener('mouseenter', playHover);
             el.addEventListener('click', playClick);
         });
-        window.addEventListener('scroll', playScrollTick, { passive: true });
+        if (canHover) window.addEventListener('scroll', playScrollTick, { passive: true });
         const revealObs = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
                 if (entry.isIntersecting) { playReveal(); revealObs.unobserve(entry.target); }

@@ -462,6 +462,34 @@
         /* ========== ACTIVE STATE (mobile tap) ========== */
         article:active { transform: scale(0.97); transition: transform 0.15s ease; }
 
+        /* ========== TOUCH / MOBILE OPTIMIZATIONS ========== */
+        @media (hover: none), (pointer: coarse) {
+            .sparkle-wrap .sparkle { display: none !important; }
+            .card-hover-label { display: none !important; }
+            .card-shine::after,
+            .card-glow::before,
+            .border-animate::before { display: none !important; }
+            .tilt-card,
+            .tilt-content { transform: none !important; }
+            .group:hover .card-hover-label,
+            .card-shine:hover::after,
+            .card-border-glow:hover,
+            .card-glow:hover::before,
+            .border-animate:hover::before { box-shadow: none !important; left: auto !important; opacity: 0 !important; }
+            .orbit-wrap,
+            .section-number,
+            .scroll-line,
+            #particles { display: none !important; }
+            .blob-bg { animation: none !important; filter: none !important; opacity: 0.22 !important; }
+            .gradient-text,
+            .text-shimmer { animation: none !important; background-position: 0 50% !important; }
+            .float-icon,
+            .eco-badge,
+            .pulse-wrap::before,
+            .pulse-wrap::after { animation-duration: 4s !important; }
+            #sound-panel { display: none !important; }
+        }
+
         /* ========== REDUCED MOTION ========== */
         @media (prefers-reduced-motion: reduce) {
             *, ::before, ::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -824,7 +852,8 @@
     'use strict';
     var isMobile = window.innerWidth < 768;
     var isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var isTouch = !window.matchMedia('(pointer: fine)').matches;
+    var isHoverCapable = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var isTouch = !isHoverCapable;
 
     /* ============ LOADING SCREEN ============ */
     window.addEventListener('load', function() {
@@ -857,7 +886,7 @@
     });
 
     /* ============ CUSTOM CURSOR ============ */
-    if (!isTouch) {
+    if (isHoverCapable) {
         var dot = document.getElementById('cursor-dot');
         var ring = document.getElementById('cursor-ring');
         var glow = document.getElementById('cursor-glow');
@@ -899,7 +928,7 @@
     }
 
     /* ============ SPARKLE ON CARD HOVER ============ */
-    if (!isReducedMotion) {
+    if (isHoverCapable && !isReducedMotion) {
         document.querySelectorAll('.sparkle-wrap').forEach(function(wrap) {
             var timer = null;
             wrap.addEventListener('mouseenter', function() {
@@ -999,7 +1028,7 @@
     });
 
     /* ============ 3D TILT (desktop only) ============ */
-    if (!isMobile && !isReducedMotion) {
+    if (isHoverCapable && !isMobile && !isReducedMotion) {
         document.querySelectorAll('.tilt-card').forEach(function(card) {
             card.addEventListener('mousemove', function(e) {
                 var r = card.getBoundingClientRect();
@@ -1017,7 +1046,7 @@
     }
 
     /* ============ MAGNETIC BUTTON ============ */
-    if (!isMobile) {
+    if (isHoverCapable && !isMobile) {
         document.querySelectorAll('.magnetic-btn').forEach(function(btn) {
             btn.addEventListener('mousemove', function(e) {
                 var r = btn.getBoundingClientRect();
@@ -1030,7 +1059,7 @@
     }
 
     /* ============ MOUSE PARALLAX ON HERO ============ */
-    if (!isMobile && !isReducedMotion) {
+    if (isHoverCapable && !isMobile && !isReducedMotion) {
         var heroSection = document.querySelector('section');
         if (heroSection) {
             heroSection.addEventListener('mousemove', function(e) {
@@ -1049,7 +1078,8 @@
         var heroImg = document.getElementById('hero-img');
         if (heroImg) {
             window.addEventListener('scroll', function() {
-                heroImg.style.transform = 'scale(1.08) translateY(' + window.scrollY * 0.08 + 'px)';
+                var y = Math.min(window.scrollY * 0.03, 18);
+                heroImg.style.transform = 'scale(1.03) translateY(' + y + 'px)';
             }, { passive: true });
         }
     }
@@ -1063,7 +1093,7 @@
                 var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
                 var pct = winScroll / height;
 
-                if (!isMobile) {
+                if (isHoverCapable && !isMobile) {
                     var pb = document.getElementById('parallax-bg');
                     if (pb) pb.style.transform = 'translateY(' + winScroll * 0.3 + 'px)';
                 }
@@ -1374,15 +1404,19 @@
   function init() {
     if (isInitialized) return;
     isInitialized = true;
-    getCtx();
-    document.querySelectorAll('a, button, article, .magnetic-btn, .neon-link, .tilt-card').forEach(function(el) {
-      if (el.id && el.id.startsWith('sound')) return;
-      el.addEventListener('mouseenter', function() { playHover(); });
-    });
+    if (isHoverCapable) getCtx();
+    if (isHoverCapable) {
+      document.querySelectorAll('a, button, article, .magnetic-btn, .neon-link, .tilt-card').forEach(function(el) {
+        if (el.id && el.id.startsWith('sound')) return;
+        el.addEventListener('mouseenter', function() { playHover(); });
+      });
+    }
     document.querySelectorAll('a, button, article').forEach(function(el) {
       el.addEventListener('click', function() { playClick(); });
     });
-    window.addEventListener('scroll', function() { playScrollTick(); }, { passive: true });
+    if (isHoverCapable) {
+      window.addEventListener('scroll', function() { playScrollTick(); }, { passive: true });
+    }
     const revealObserver = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) { if (entry.isIntersecting) { playReveal(); revealObserver.unobserve(entry.target); } });
     }, { threshold: 0.2 });
@@ -1399,11 +1433,11 @@
   }
 
   function boot() {
-    createSoundPanel();
+    if (isHoverCapable) createSoundPanel();
     patchCounters();
     function firstGesture() {
       init();
-      setTimeout(function() { playLoadComplete(); }, 200);
+      if (isHoverCapable) setTimeout(function() { playLoadComplete(); }, 200);
       document.removeEventListener('click', firstGesture);
       document.removeEventListener('touchstart', firstGesture);
       document.removeEventListener('keydown', firstGesture);

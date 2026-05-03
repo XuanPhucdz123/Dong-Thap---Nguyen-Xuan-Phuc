@@ -104,23 +104,32 @@
         }
         #loading-screen.hidden { opacity: 0; visibility: hidden; }
         .loader-lotus { width: 60px; height: 60px; position: relative; margin-bottom: 24px; }
+
+        /* FIX #1: Loader petals - dùng individual keyframes thay vì CSS variable trong animation
+           Lý do: var(--r) bên trong @keyframes không được hỗ trợ nhất quán trên mobile Safari/Android,
+           khiến tất cả cánh hoa về góc 0deg và chồng lên nhau gây "rối loạn" */
         .loader-petal {
             position: absolute; width: 20px; height: 30px;
             background: linear-gradient(135deg, #4caf50, #81c784);
             border-radius: 50% 50% 50% 0;
             transform-origin: bottom right;
-            animation: petal-spin 3s ease-in-out infinite; /* Slower, calmer spin */
+            animation-duration: 3s;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
             opacity: 0.85;
         }
-        .loader-petal:nth-child(1) { --r: 0deg; transform: rotate(0deg); animation-delay: 0s; }
-        .loader-petal:nth-child(2) { --r: 72deg; transform: rotate(72deg); animation-delay: 0.2s; }
-        .loader-petal:nth-child(3) { --r: 144deg; transform: rotate(144deg); animation-delay: 0.4s; }
-        .loader-petal:nth-child(4) { --r: 216deg; transform: rotate(216deg); animation-delay: 0.6s; }
-        .loader-petal:nth-child(5) { --r: 288deg; transform: rotate(288deg); animation-delay: 0.8s; }
-        @keyframes petal-spin {
-            0%, 100% { opacity: 0.3; transform: rotate(var(--r, 0deg)) scale(0.8); }
-            50% { opacity: 1; transform: rotate(var(--r, 0deg)) scale(1.1); }
-        }
+        .loader-petal:nth-child(1) { animation-name: petal-spin-0;   animation-delay: 0s; }
+        .loader-petal:nth-child(2) { animation-name: petal-spin-72;  animation-delay: 0.2s; }
+        .loader-petal:nth-child(3) { animation-name: petal-spin-144; animation-delay: 0.4s; }
+        .loader-petal:nth-child(4) { animation-name: petal-spin-216; animation-delay: 0.6s; }
+        .loader-petal:nth-child(5) { animation-name: petal-spin-288; animation-delay: 0.8s; }
+
+        @keyframes petal-spin-0   { 0%,100%{opacity:.3;transform:rotate(0deg) scale(.8)}   50%{opacity:1;transform:rotate(0deg) scale(1.1)} }
+        @keyframes petal-spin-72  { 0%,100%{opacity:.3;transform:rotate(72deg) scale(.8)}  50%{opacity:1;transform:rotate(72deg) scale(1.1)} }
+        @keyframes petal-spin-144 { 0%,100%{opacity:.3;transform:rotate(144deg) scale(.8)} 50%{opacity:1;transform:rotate(144deg) scale(1.1)} }
+        @keyframes petal-spin-216 { 0%,100%{opacity:.3;transform:rotate(216deg) scale(.8)} 50%{opacity:1;transform:rotate(216deg) scale(1.1)} }
+        @keyframes petal-spin-288 { 0%,100%{opacity:.3;transform:rotate(288deg) scale(.8)} 50%{opacity:1;transform:rotate(288deg) scale(1.1)} }
+
         .loader-text { color: #4caf50; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; font-weight: 800; animation: loader-pulse 1.2s ease-in-out infinite; }
         .loader-bar-wrap { width: 140px; height: 2px; background: rgba(76,175,80,0.2); border-radius: 2px; margin-top: 16px; overflow: hidden; }
         .loader-bar-fill { height: 100%; background: linear-gradient(90deg, #1b5e20, #4caf50); width: 0; animation: loader-bar 1.5s ease forwards 0.3s; border-radius: 2px; }
@@ -157,6 +166,7 @@
         }
 
         /* ========== GRAIN OVERLAY ========== */
+        /* FIX #7: Dùng position:absolute thay vì fixed trên mobile để tránh repaint liên tục */
         body::before {
             content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.03;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
@@ -244,9 +254,18 @@
             100% { opacity: 0; transform: translate(var(--sx, 0px), var(--sy, 0px)) scale(0); }
         }
 
-        /* ========== CLIP-PATH IMAGE REVEAL ========== */
-        .img-reveal { clip-path: inset(0 100% 0 0); transition: clip-path 1s cubic-bezier(0.77,0,0.175,1); }
-        .img-reveal.revealed { clip-path: inset(0 0% 0 0); }
+        /* FIX #2a: img-reveal - thêm -webkit-clip-path prefix để đảm bảo hoạt động trên Safari/iOS
+           Thêm will-change để báo cho browser chuẩn bị GPU layer trước */
+        .img-reveal {
+            clip-path: inset(0 100% 0 0);
+            -webkit-clip-path: inset(0 100% 0 0);
+            transition: clip-path 1s cubic-bezier(0.77,0,0.175,1), -webkit-clip-path 1s cubic-bezier(0.77,0,0.175,1);
+            will-change: clip-path;
+        }
+        .img-reveal.revealed {
+            clip-path: inset(0 0% 0 0);
+            -webkit-clip-path: inset(0 0% 0 0);
+        }
 
         /* ========== FLOAT ICON ========== */
         .float-icon { animation: float 3s ease-in-out infinite; }
@@ -378,7 +397,9 @@
         .wave-divider svg { display: block; }
 
         /* ========== SCROLL REVEAL BASE ========== */
-        [data-aos] { opacity: 0; }
+        /* FIX #4a: Chỉ ẩn elements [data-aos] khi JS đã sẵn sàng để tránh flash of unstyled content
+           Dùng class .aos-ready trên <html> để control */
+        .aos-ready [data-aos] { opacity: 0; }
 
         /* ========== MAGNETIC BTN ========== */
         .magnetic-btn { display: inline-flex; transition: transform 0.2s ease; }
@@ -470,6 +491,22 @@
             *, ::before, ::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
         }
 
+        /* ========== IMAGE TOUCH PROTECTION ========== */
+        /* FIX #3: Ngăn ảnh biến mất khi nhấn giữ trên iOS/Android
+           -webkit-touch-callout: none → tắt context menu iOS
+           -webkit-user-drag: none → tắt drag ảnh
+           pointer-events: none trên ảnh trong article → click vẫn hoạt động qua parent */
+        img {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        article img,
+        .hero-img-wrap img {
+            pointer-events: none;
+        }
 
         /* ========== TOUCH-SAFE OVERRIDES / NO-HOVER MODE ========== */
         html.touch-device, html.touch-device body {
@@ -480,24 +517,14 @@
             -webkit-tap-highlight-color: transparent;
         }
         html.touch-device .cursor-trail { display: none !important; }
-        html.touch-device .tilt-card { transform: none !important; }
-        html.touch-device .tilt-card:hover,
-        html.touch-device .tilt-card:active {
+        html.touch-device .tilt-card {
             transform: none !important;
+            transform-style: flat !important;
         }
-        html.touch-device .group:hover .card-hover-label,
-        html.touch-device .group:hover img,
-        html.touch-device .group:hover .group-hover\:translate-x-2,
-        html.touch-device .group:hover .group-hover\:scale-110,
-        html.touch-device .group:hover .group-hover\:grayscale-0,
-        html.touch-device .group:hover .group-hover\:opacity-100,
-        html.touch-device .group:hover .group-hover\:blur-\[80px\],
-        html.touch-device .group:hover .group-hover\:scale-110,
-        html.touch-device .group:hover .group-hover\:scale-125,
-        html.touch-device .group:hover .group-hover\:opacity-100 {
+        /* FIX #6: Thay thế escaped Tailwind class selectors bằng class cụ thể
+           Các selector dạng .group-hover\:scale-110 không reliable trên mọi browser */
+        html.touch-device .tilt-content {
             transform: none !important;
-            filter: none !important;
-            opacity: 1 !important;
         }
         html.touch-device .glitch:hover,
         html.touch-device .card-glow:hover::before,
@@ -519,6 +546,12 @@
         html.touch-device #particles {
             display: none !important;
         }
+        /* FIX #6b: Card hover label luôn hiển thị trên touch device */
+        html.touch-device .card-hover-label {
+            transform: translateY(0) !important;
+            background: linear-gradient(to top, rgba(27,94,32,0.7) 0%, transparent 100%);
+        }
+
         .cursor-trail {
             position: fixed;
             left: 0;
@@ -552,16 +585,49 @@
             .pulse-wrap::after { display: none !important; }
             .pulse-wrap::before { animation-duration: 3s !important; inset: -4px !important; }
 
-            /* --- FIX LỖI LOẠN CARD TRÊN ĐIỆN THOẠI --- */
-            .group .absolute.-inset-6 { display: none !important; }
-            .card-hover-label { display: none !important; }
-            .img-reveal { transition-duration: 0.5s !important; filter: grayscale(0) !important; }
-            .group:hover img { transform: none !important; filter: grayscale(0) !important; }
-            .animate-slide-up { animation: slide-up-mobile 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important; }
+            /* FIX #2b: img-reveal trên mobile - dùng opacity fade thay vì clip-path
+               clip-path animate có thể gây jank trên thiết bị yếu, opacity smooth hơn */
+            .img-reveal {
+                clip-path: none !important;
+                -webkit-clip-path: none !important;
+                will-change: opacity !important;
+                opacity: 0;
+                transition: opacity 0.7s ease !important;
+            }
+            .img-reveal.revealed {
+                opacity: 1 !important;
+            }
+
+            /* FIX #5: Card hover label - luôn hiển thị trên mobile thay vì ẩn hoàn toàn */
+            .card-hover-label {
+                transform: translateY(0) !important;
+                background: linear-gradient(to top, rgba(27,94,32,0.65) 0%, transparent 100%);
+                transition: none !important;
+            }
+
+            /* FIX #4b: Đảm bảo elements có data-aos visible sau khi animation chạy */
+            .animate-slide-up,
+            .animate-slide-down,
+            .animate-slide-right,
+            .animate-scale-in {
+                opacity: 1 !important;
+            }
+
+            /* Glow background không cần thiết trên mobile */
+            .absolute.-inset-6 { display: none !important; }
+
+            /* Body decoration không cần trên mobile */
+            body::before, body::after { display: none !important; }
         }
+
+        /* ========== MOBILE ANIMATION KEYFRAMES ========== */
         @keyframes slide-up-mobile {
-            from { opacity: 0; transform: translateY(60px); }
+            from { opacity: 0; transform: translateY(40px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fade-in-mobile {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
@@ -627,12 +693,13 @@
             
             <!-- Parallax glow bg -->
             <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none -z-10" id="parallax-bg">
-                <img alt="Glow" class="w-full h-full object-cover rounded-[3rem] saturate-150" src="sen-27.jpg"/>
+                <img alt="Glow" class="w-full h-full object-cover rounded-[3rem] saturate-150" src="sen-27.jpg" draggable="false"/>
             </div>
             
             <!-- Hero image with reveal -->
-            <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-0">
-                <img alt="Sen" class="w-full h-full object-cover brightness-50 img-reveal" src="sen-27.jpg" id="hero-img"/>
+            <!-- FIX #3b: Thêm class hero-img-wrap để áp dụng pointer-events: none cho ảnh bên trong -->
+            <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-0 hero-img-wrap">
+                <img alt="Sen" class="w-full h-full object-cover brightness-50 img-reveal" src="sen-27.jpg" id="hero-img" draggable="false"/>
                 <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
                 <!-- Scanline overlay -->
                 <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px);"></div>
@@ -647,17 +714,19 @@
             <div class="absolute right-16 top-20 w-4 h-4 border border-green-300/30 rounded-full animate-[float_5s_ease-in-out_infinite_1s]" aria-hidden="true"></div>
 
             <!-- Content -->
-            <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
-                <div class="eco-badge mb-4 pointer-events-auto animate-slide-down" style="animation-delay:0.1s;">
+            <!-- FIX #5b: Hero content không dùng data-aos để không bị ẩn ban đầu
+                 Dùng class is-hero-anim để JS trigger sau khi loading screen ẩn -->
+            <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none" id="hero-content">
+                <div class="eco-badge mb-4 pointer-events-auto is-hero-anim" style="opacity:0;animation:none;">
                     <span class="material-symbols-outlined" style="font-size:12px;">eco</span>
                     Đất Sen Hồng
                 </div>
-                <h1 id="hero-title" class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 uppercase leading-normal tracking-tight pointer-events-auto" style="animation-delay: 0.2s;">
+                <h1 id="hero-title" class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 uppercase leading-normal tracking-tight pointer-events-auto is-hero-anim" style="opacity:0;animation:none;">
                     Tìm Hiểu Về <br>
                     <span class="gradient-text">Đồng Tháp</span>
                 </h1>
-                <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto animate-slide-up" style="animation-delay: 0.4s;" id="hero-subtitle"></p>
-                <a href="#explore" class="magnetic-btn ripple-container w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs pointer-events-auto animate-scale-in" style="animation-delay: 0.6s;">
+                <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto is-hero-anim" style="animation-delay: 0.4s;opacity:0;animation:none;" id="hero-subtitle"></p>
+                <a href="#explore" class="magnetic-btn ripple-container w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs pointer-events-auto is-hero-anim" style="opacity:0;animation:none;">
                     <span class="material-symbols-outlined">auto_stories</span> Khám phá di sản
                 </a>
             </div>
@@ -747,11 +816,11 @@
             <!-- THẺ 1: TRÀM CHIM -->
             <div class="relative group h-full z-0 sparkle-wrap" data-aos="fade-up" data-aos-delay="100">
                 <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
-                    <img src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
+                    <img src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy" draggable="false"/>
                 </div>
                 <article onclick="navigateTo('tramchim')" class="relative tilt-card card-glow card-shine card-border-glow ripple-container bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
                     <div class="h-48 md:h-64 overflow-hidden tilt-content relative">
-                        <img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110 img-reveal" src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" loading="lazy"/>
+                        <img class="w-full h-full object-cover img-reveal" src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" loading="lazy" draggable="false"/>
                         <!-- Tag badge overlay -->
                         <div class="absolute top-3 left-3 z-20">
                             <span class="eco-badge bg-white/80 text-green-800 border-green-300">
@@ -777,11 +846,11 @@
             <!-- THẺ 2: DI TÍCH LỊCH SỬ -->
             <div class="relative group h-full z-0 sparkle-wrap" data-aos="fade-up" data-aos-delay="200">
                 <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
-                    <img src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
+                    <img src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy" draggable="false"/>
                 </div>
                 <article onclick="navigateTo('ditichlichsu')" class="relative tilt-card card-glow card-shine card-border-glow ripple-container bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
                     <div class="h-48 md:h-64 overflow-hidden tilt-content relative">
-                        <img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110 img-reveal" src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" loading="lazy"/>
+                        <img class="w-full h-full object-cover img-reveal" src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" loading="lazy" draggable="false"/>
                         <div class="absolute top-3 left-3 z-20">
                             <span class="eco-badge bg-white/80 text-green-800 border-green-300">
                                 <span class="material-symbols-outlined" style="font-size:10px;">history_edu</span>
@@ -805,11 +874,11 @@
             <!-- THẺ 3: DANH LAM -->
             <div class="relative group h-full z-0 sparkle-wrap" data-aos="fade-up" data-aos-delay="300">
                 <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
-                    <img src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-110" loading="lazy"/>
+                    <img src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-110" loading="lazy" draggable="false"/>
                 </div>
                 <article onclick="navigateTo('danhlam')" class="relative tilt-card card-glow card-shine card-border-glow ripple-container bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
                     <div class="h-48 md:h-64 overflow-hidden tilt-content relative">
-                        <img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110 img-reveal" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" loading="lazy"/>
+                        <img class="w-full h-full object-cover img-reveal" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" loading="lazy" draggable="false"/>
                         <div class="absolute top-3 left-3 z-20">
                             <span class="eco-badge bg-white/80 text-green-800 border-green-300">
                                 <span class="material-symbols-outlined" style="font-size:10px;">local_florist</span>
@@ -896,18 +965,63 @@
     document.documentElement.classList.toggle('desktop-device', !isTouch);
     document.documentElement.classList.toggle('reduced-motion', isReducedMotion);
 
-    /* ============ LOADING SCREEN ============ */
+    // FIX #4c: Thêm class aos-ready sau khi DOM sẵn sàng để [data-aos]{opacity:0} chỉ áp dụng khi cần
+    document.documentElement.classList.add('aos-ready');
+
+    /* ============ LOADING SCREEN & HERO ANIMATION SYNC ============ */
+    // FIX #5: Đồng bộ hero animation với loading screen
+    // Hero elements được ẩn bằng inline style opacity:0, chỉ animate sau khi loading screen ẩn
+    function revealHeroContent() {
+        var heroItems = document.querySelectorAll('.is-hero-anim');
+        var delays = [0, 100, 250, 420]; // stagger delays (ms)
+
+        heroItems.forEach(function(el, i) {
+            var delay = delays[i] || i * 120;
+            setTimeout(function() {
+                if (isMobile) {
+                    // Mobile: dùng fade đơn giản, không cần slide
+                    el.style.transition = 'opacity 0.5s ease';
+                    el.style.opacity = '1';
+                } else {
+                    // Desktop: slide animation
+                    var animName = i === 0 ? 'slide-down' : (i === heroItems.length - 1 ? 'scale-in' : 'slide-up');
+                    el.style.animation = animName + ' 0.6s ease forwards';
+                }
+            }, delay);
+        });
+    }
+
     window.addEventListener('load', function() {
         setTimeout(function() {
+            // Ẩn loading screen
             document.getElementById('loading-screen').classList.add('hidden');
+
+            // Trigger hero content animations ĐÚNG THỜI ĐIỂM loading screen ẩn
+            revealHeroContent();
+
             // Trigger hero image reveal
-            document.querySelector('#hero-img').classList.add('revealed');
-            // Trigger card image reveals after delay
+            var heroImg = document.getElementById('hero-img');
+            if (heroImg) {
+                // Dùng rAF để đảm bảo browser đã paint trước khi bắt đầu transition
+                requestAnimationFrame(function() {
+                    requestAnimationFrame(function() {
+                        heroImg.classList.add('revealed');
+                    });
+                });
+            }
+
+            // Trigger card image reveals với stagger
             setTimeout(function() {
-                document.querySelectorAll('.img-reveal:not(#hero-img)').forEach(function(img, i) {
-                    setTimeout(function() { img.classList.add('revealed'); }, i * 150);
+                var cardImgs = document.querySelectorAll('.img-reveal:not(#hero-img)');
+                cardImgs.forEach(function(img, i) {
+                    setTimeout(function() {
+                        requestAnimationFrame(function() {
+                            img.classList.add('revealed');
+                        });
+                    }, i * 150);
                 });
             }, 400);
+
         }, 1200);
     });
 
@@ -953,10 +1067,8 @@
         // RAF loop for smooth cursor
         (function cursorLoop() {
             dot.style.left = mx + 'px'; dot.style.top = my + 'px';
-            // Ring lags slightly
             rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
             ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-            // Glow lags more
             gx += (mx - gx) * 0.08; gy += (my - gy) * 0.08;
             glow.style.left = gx + 'px'; glow.style.top = gy + 'px';
 
@@ -985,21 +1097,29 @@
     }
 
     /* ============ TYPEWRITER ============ */
+    // FIX #5c: Typewriter chỉ bắt đầu sau khi loading screen ẩn
     var subtitle = document.getElementById('hero-subtitle');
-    var text = 'Cẩm nang giáo dục trực tuyến về vùng Đất Sen Hồng, nơi hội tụ di sản văn hóa hào hùng và hệ sinh thái thiên nhiên trù phú.';
-    var i = 0;
-    subtitle.classList.add('typewriter-cursor');
-    function type() {
-        if (i < text.length) {
-            subtitle.textContent += text[i++];
-            setTimeout(type, 28);
-        } else { subtitle.classList.remove('typewriter-cursor'); }
+    var typewriterText = 'Cẩm nang giáo dục trực tuyến về vùng Đất Sen Hồng, nơi hội tụ di sản văn hóa hào hùng và hệ sinh thái thiên nhiên trù phú.';
+    var typewriterIdx = 0;
+
+    function startTypewriter() {
+        subtitle.classList.add('typewriter-cursor');
+        function type() {
+            if (typewriterIdx < typewriterText.length) {
+                subtitle.textContent += typewriterText[typewriterIdx++];
+                setTimeout(type, isMobile ? 20 : 28); // Nhanh hơn trên mobile
+            } else {
+                subtitle.classList.remove('typewriter-cursor');
+            }
+        }
+        type();
     }
-    setTimeout(type, 1400);
+    // Bắt đầu sau loading screen (1200ms) + delay hero reveal (250ms)
+    setTimeout(startTypewriter, 1500);
 
     /* ============ PARTICLES ============ */
     var container = document.getElementById('particles');
-    var count = isMobile ? 0 : 24; /* Tắt trên điện thoại */
+    var count = isMobile ? 0 : 24;
     for (var p = 0; p < count; p++) {
         var el = document.createElement('div');
         el.className = 'particle';
@@ -1009,7 +1129,7 @@
     }
 
     /* ============ SPARKLE ON CARD HOVER ============ */
-    if (!isReducedMotion) {
+    if (!isReducedMotion && !isTouch) {
         document.querySelectorAll('.sparkle-wrap').forEach(function(wrap) {
             var timer = null;
             wrap.addEventListener('mouseenter', function() {
@@ -1033,30 +1153,71 @@
         });
     }
 
-    /* ============ INTERSECTION OBSERVER ============ */
-    var observerOpts = { threshold: isMobile ? 0.15 : 0.1, rootMargin: isMobile ? '0px 0px -60px 0px' : '0px 0px -50px 0px' };
-    
+    /* ============ INTERSECTION OBSERVER - AOS FIX ============ */
+    // FIX #4d: Sửa lại observer để không conflict opacity với animation
+    var observerOpts = {
+        threshold: isMobile ? 0.1 : 0.1,
+        rootMargin: isMobile ? '0px 0px -40px 0px' : '0px 0px -50px 0px'
+    };
+
+    // Track thứ tự element để tạo stagger tự nhiên trên mobile
+    var aosElements = Array.from(document.querySelectorAll('[data-aos]'));
+    var observedCount = 0;
+
     var observer = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
             if (entry.isIntersecting) {
                 var el = entry.target;
                 var aosType = el.getAttribute('data-aos');
-                var delay = el.getAttribute('data-aos-delay');
-                var cls = aosType === 'fade-right' ? 'animate-slide-right' : aosType === 'fade-in' ? 'animate-scale-in' : 'animate-slide-up';
-                
-                if (delay && !isMobile) {
-                    el.style.animationDelay = delay + 'ms';
-                } else if (isMobile) {
-                    el.style.animationDelay = '0ms';
+                var delay = parseInt(el.getAttribute('data-aos-delay') || '0');
+
+                // Chọn animation class phù hợp
+                var cls = aosType === 'fade-right' ? 'animate-slide-right'
+                        : aosType === 'fade-in' ? 'animate-scale-in'
+                        : 'animate-slide-up';
+
+                // FIX: Tính stagger delay
+                // Desktop: dùng data-aos-delay gốc
+                // Mobile: stagger nhỏ (50ms mỗi element) thay vì 0ms đồng loạt
+                var effectiveDelay;
+                if (!isMobile) {
+                    effectiveDelay = delay;
+                } else {
+                    // Stagger nhẹ trên mobile để tránh tất cả animate cùng lúc
+                    var elIndex = aosElements.indexOf(el);
+                    effectiveDelay = elIndex * 60; // 60ms stagger
                 }
 
-                el.classList.add(cls);
-                el.style.opacity = 1;
+                setTimeout(function() {
+                    // FIX quan trọng: Không set el.style.opacity = 1 trực tiếp
+                    // Thay vào đó, dùng CSS animation fill-mode: forwards để handle opacity
+                    // Chỉ set opacity inline sau khi animation kết thúc (fallback)
+                    if (isMobile) {
+                        // Mobile: animation đơn giản hơn
+                        el.style.cssText += ';animation: slide-up-mobile 0.65s cubic-bezier(0.2,0.8,0.2,1) forwards;';
+                    } else {
+                        el.style.animationDelay = '0ms';
+                        el.classList.add(cls);
+                    }
+
+                    // Fallback: đảm bảo element visible sau animation kết thúc
+                    setTimeout(function() {
+                        el.style.opacity = '1';
+                        el.style.transform = '';
+                        if (isMobile) {
+                            el.style.animation = 'none';
+                            el.style.opacity = '1';
+                        }
+                    }, (isMobile ? 650 : 600) + 50);
+
+                }, effectiveDelay);
+
                 observer.unobserve(el);
             }
         });
     }, observerOpts);
-    document.querySelectorAll('[data-aos]').forEach(function(el) { observer.observe(el); });
+
+    aosElements.forEach(function(el) { observer.observe(el); });
 
     /* ============ COUNTER ANIMATION ============ */
     var counterObs = new IntersectionObserver(function(entries) {
@@ -1066,7 +1227,8 @@
             if (counter.classList.contains('counted')) return;
             counter.classList.add('counted');
             var target = parseInt(counter.getAttribute('data-target'));
-            var duration = 2000, inc = target / (duration / 16), cur = 0;
+            var duration = isMobile ? 1500 : 2000;
+            var inc = target / (duration / 16), cur = 0;
             var timer = setInterval(function() {
                 cur += inc;
                 if (cur >= target) { counter.textContent = target; clearInterval(timer); }
@@ -1076,7 +1238,7 @@
             if (bar) bar.style.width = bar.getAttribute('data-width') + '%';
             counterObs.unobserve(counter);
         });
-    }, observerOpts);
+    }, { threshold: 0.2 });
     document.querySelectorAll('.counter').forEach(function(el) { counterObs.observe(el); });
 
     /* ============ HIGHLIGHT WORDS ON SCROLL ============ */
@@ -1111,7 +1273,6 @@
         el.addEventListener('click', addRipple);
         el.addEventListener('touchstart', addRipple, { passive: true });
     });
-
 
     /* ============ TOUCH TAP SPARKLE BURST ============ */
     if (isTouch && !isReducedMotion) {
@@ -1178,7 +1339,7 @@
             window.requestAnimationFrame(function() {
                 var winScroll = window.scrollY;
                 var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                var pct = winScroll / height;
+                var pct = height > 0 ? winScroll / height : 0;
 
                 // Parallax (desktop only)
                 if (!isMobile) {
@@ -1221,7 +1382,10 @@
                 var y = window.scrollY;
                 if (Math.abs(y - lastY) < 4) return;
                 lastY = y;
-                heroImg.style.transform = 'scale(1.04) translateY(' + (y * 0.04) + 'px)';
+                // FIX: Chỉ apply parallax khi ảnh đã visible (sau reveal)
+                if (heroImg.classList.contains('revealed')) {
+                    heroImg.style.transform = 'scale(1.04) translateY(' + (y * 0.04) + 'px)';
+                }
             }, { passive: true });
         }
     }
@@ -1246,26 +1410,41 @@
         }
     }
 
+    /* ============ FIX: Prevent context menu on long press (iOS) ============ */
+    // FIX #3c: Ngăn context menu xuất hiện khi nhấn giữ ảnh
+    document.addEventListener('contextmenu', function(e) {
+        if (e.target.tagName === 'IMG') {
+            e.preventDefault();
+        }
+    }, { passive: false });
+
+    // Prevent image selection on long press
+    document.querySelectorAll('img').forEach(function(img) {
+        img.addEventListener('touchstart', function(e) {
+            // Không preventDefault ở đây vì sẽ block click, chỉ dùng CSS
+        }, { passive: true });
+        img.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+        });
+    });
+
 })();
 </script>
 
 <!-- ============ DONG THAP SOUND SYSTEM (WEB AUDIO API) ============ -->
 <script>
 /**
- * 🌿 ĐỒNG THÁP SOUND SYSTEM
- * Web Audio API - Không cần file ngoài, tổng hợp 100% trong trình duyệt
- * Version 2.0 — Full Immersive Edition
+ * ĐỒNG THÁP SOUND SYSTEM
+ * Web Audio API - Không cần file ngoài
  */
 (function () {
   'use strict';
 
-  // ─── Context & State ────────────────────────────────────────────────────────
   let ctx = null;
   let masterGain = null;
   let ambientNodes = [];
   let isMuted = false;
   let isAmbientOn = false;
-  let ambientLoop = null;
   let birdLoop = null;
   let isInitialized = false;
 
@@ -1280,53 +1459,30 @@
     return ctx;
   }
 
-  // ─── Utility ─────────────────────────────────────────────────────────────────
-  function dbToGain(db) { return Math.pow(10, db / 20); }
-
-  function createEnvelope(gainNode, attack, decay, sustain, release, now) {
-    gainNode.gain.setValueAtTime(0, now);
-    gainNode.gain.linearRampToValueAtTime(1, now + attack);
-    gainNode.gain.linearRampToValueAtTime(sustain, now + attack + decay);
-    gainNode.gain.linearRampToValueAtTime(0, now + attack + decay + release);
-  }
-
-  // ─── 1. HOVER CHIME ──────────────────────────────────────────────────────────
   function playHover() {
     if (isMuted) return;
     const c = getCtx();
     const t = c.currentTime;
-
     const osc = c.createOscillator();
     const g = c.createGain();
     const filter = c.createBiquadFilter();
-
     osc.type = 'sine';
     osc.frequency.setValueAtTime(880, t);
     osc.frequency.exponentialRampToValueAtTime(1200, t + 0.12);
-
     filter.type = 'bandpass';
     filter.frequency.value = 1000;
     filter.Q.value = 2;
-
     g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(0.08, t + 0.02);
     g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
-
-    osc.connect(filter);
-    filter.connect(g);
-    g.connect(masterGain);
-
-    osc.start(t);
-    osc.stop(t + 0.3);
+    osc.connect(filter); filter.connect(g); g.connect(masterGain);
+    osc.start(t); osc.stop(t + 0.3);
   }
 
-  // ─── 2. CLICK POP ────────────────────────────────────────────────────────────
   function playClick() {
     if (isMuted) return;
     const c = getCtx();
     const t = c.currentTime;
-
-    // Body thud
     const osc = c.createOscillator();
     const g = c.createGain();
     osc.type = 'triangle';
@@ -1337,7 +1493,6 @@
     osc.connect(g); g.connect(masterGain);
     osc.start(t); osc.stop(t + 0.15);
 
-    // High click
     const osc2 = c.createOscillator();
     const g2 = c.createGain();
     osc2.type = 'square';
@@ -1348,35 +1503,26 @@
     osc2.start(t); osc2.stop(t + 0.05);
   }
 
-  // ─── 3. PAGE TRANSITION WHOOSH ────────────────────────────────────────────────
   function playTransition() {
     if (isMuted) return;
     const c = getCtx();
     const t = c.currentTime;
-
-    // Whoosh
     const bufSize = c.sampleRate * 0.6;
     const buf = c.createBuffer(1, bufSize, c.sampleRate);
     const data = buf.getChannelData(0);
     for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufSize, 2);
-
     const src = c.createBufferSource();
     src.buffer = buf;
-
     const filter = c.createBiquadFilter();
     filter.type = 'bandpass';
     filter.frequency.setValueAtTime(400, t);
     filter.frequency.exponentialRampToValueAtTime(4000, t + 0.3);
     filter.Q.value = 1;
-
     const g = c.createGain();
     g.gain.setValueAtTime(0.4, t);
     g.gain.linearRampToValueAtTime(0, t + 0.55);
-
     src.connect(filter); filter.connect(g); g.connect(masterGain);
     src.start(t);
-
-    // Descending tone
     const osc = c.createOscillator();
     const g2 = c.createGain();
     osc.type = 'sine';
@@ -1388,11 +1534,10 @@
     osc.start(t); osc.stop(t + 0.5);
   }
 
-  // ─── 4. LOAD COMPLETE CHIME ───────────────────────────────────────────────────
   function playLoadComplete() {
     if (isMuted) return;
     const c = getCtx();
-    const notes = [523.25, 659.25, 783.99, 1046.5]; // C5 E5 G5 C6
+    const notes = [523.25, 659.25, 783.99, 1046.5];
     notes.forEach(function (freq, i) {
       const t = c.currentTime + i * 0.15;
       const osc = c.createOscillator();
@@ -1407,45 +1552,36 @@
     });
   }
 
-  // ─── 5. CARD FLIP / REVEAL ────────────────────────────────────────────────────
   function playReveal() {
     if (isMuted) return;
     const c = getCtx();
     const t = c.currentTime;
-
     const osc = c.createOscillator();
     const g = c.createGain();
     const vib = c.createOscillator();
     const vibGain = c.createGain();
-
     vib.frequency.value = 6;
     vibGain.gain.value = 15;
     vib.connect(vibGain);
     vibGain.connect(osc.frequency);
-
     osc.type = 'sine';
     osc.frequency.setValueAtTime(440, t);
     osc.frequency.linearRampToValueAtTime(660, t + 0.2);
-
     g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(0.12, t + 0.04);
     g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
-
     vib.connect(vibGain); vibGain.connect(osc.frequency);
     osc.connect(g); g.connect(masterGain);
-
     vib.start(t); vib.stop(t + 0.5);
     osc.start(t); osc.stop(t + 0.5);
   }
 
-  // ─── 6. SCROLL TICK ───────────────────────────────────────────────────────────
   let lastScrollSound = 0;
   function playScrollTick() {
     if (isMuted) return;
     const now = Date.now();
     if (now - lastScrollSound < 180) return;
     lastScrollSound = now;
-
     const c = getCtx();
     const t = c.currentTime;
     const osc = c.createOscillator();
@@ -1458,7 +1594,6 @@
     osc.start(t); osc.stop(t + 0.07);
   }
 
-  // ─── 7. COUNTER TICK ─────────────────────────────────────────────────────────
   function playCounterTick() {
     if (isMuted) return;
     const c = getCtx();
@@ -1473,121 +1608,84 @@
     osc.start(t); osc.stop(t + 0.05);
   }
 
-  // ─── 8. AMBIENT NATURE SOUNDSCAPE ─────────────────────────────────────────────
   function createAmbientLayer() {
     const c = getCtx();
-
-    // Water/wind noise layer
     const bufSize = c.sampleRate * 3;
     const buf = c.createBuffer(2, bufSize, c.sampleRate);
     for (let ch = 0; ch < 2; ch++) {
       const d = buf.getChannelData(ch);
       for (let i = 0; i < bufSize; i++) d[i] = Math.random() * 2 - 1;
     }
-
     const noise = c.createBufferSource();
     noise.buffer = buf;
     noise.loop = true;
     noise.loopStart = 0;
     noise.loopEnd = 3;
-
-    // Shape the noise to sound like water/wind
     const lpf = c.createBiquadFilter();
     lpf.type = 'lowpass';
     lpf.frequency.value = 600;
     lpf.Q.value = 0.5;
-
     const hpf = c.createBiquadFilter();
     hpf.type = 'highpass';
     hpf.frequency.value = 80;
-
-    // Slow amplitude modulation (ripple effect)
     const lfo = c.createOscillator();
     const lfoGain = c.createGain();
     lfo.type = 'sine';
     lfo.frequency.value = 0.15;
     lfoGain.gain.value = 0.3;
     lfo.connect(lfoGain);
-
     const ambGain = c.createGain();
     ambGain.gain.value = 0.12;
     lfoGain.connect(ambGain.gain);
-
-    noise.connect(lpf);
-    lpf.connect(hpf);
-    hpf.connect(ambGain);
-    ambGain.connect(masterGain);
-
-    noise.start();
-    lfo.start();
-
+    noise.connect(lpf); lpf.connect(hpf); hpf.connect(ambGain); ambGain.connect(masterGain);
+    noise.start(); lfo.start();
     ambientNodes.push(noise, lfo, ambGain);
     return ambGain;
   }
 
   function createBirdChirps() {
     const c = getCtx();
-
     function chirp() {
       if (!isAmbientOn || isMuted) return;
       const t = c.currentTime;
-
-      // Random bird call pattern
       const numNotes = 2 + Math.floor(Math.random() * 4);
       const baseFreq = 1800 + Math.random() * 1400;
-
       for (let i = 0; i < numNotes; i++) {
         const delay = i * (0.06 + Math.random() * 0.08);
         const freq = baseFreq * (0.9 + Math.random() * 0.4);
-
         const osc = c.createOscillator();
         const g = c.createGain();
         const vib = c.createOscillator();
         const vibG = c.createGain();
-
         vib.type = 'sine';
         vib.frequency.value = 12 + Math.random() * 8;
         vibG.gain.value = freq * 0.04;
-        vib.connect(vibG);
-        vibG.connect(osc.frequency);
-
+        vib.connect(vibG); vibG.connect(osc.frequency);
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, t + delay);
         osc.frequency.linearRampToValueAtTime(freq * 1.15, t + delay + 0.04);
         osc.frequency.exponentialRampToValueAtTime(freq * 0.9, t + delay + 0.12);
-
         const vol = 0.06 + Math.random() * 0.06;
         g.gain.setValueAtTime(0, t + delay);
         g.gain.linearRampToValueAtTime(vol, t + delay + 0.02);
         g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.14);
-
-        // Pan birds left/right randomly
         const panner = c.createStereoPanner();
         panner.pan.value = (Math.random() * 2 - 1) * 0.7;
-
         vib.start(t + delay); vib.stop(t + delay + 0.2);
-        osc.connect(g);
-        g.connect(panner);
-        panner.connect(masterGain);
+        osc.connect(g); g.connect(panner); panner.connect(masterGain);
         osc.start(t + delay); osc.stop(t + delay + 0.2);
       }
-
-      // Schedule next chirp
-      const nextDelay = (2 + Math.random() * 4) * 1000;
-      birdLoop = setTimeout(chirp, nextDelay);
+      birdLoop = setTimeout(chirp, (2 + Math.random() * 4) * 1000);
     }
-
     chirp();
   }
 
   function createCrickets() {
     const c = getCtx();
-
     function cricket() {
       if (!isAmbientOn || isMuted) return;
       const t = c.currentTime;
       const freq = 4200 + Math.random() * 800;
-
       for (let i = 0; i < 8; i++) {
         const osc = c.createOscillator();
         const g = c.createGain();
@@ -1597,21 +1695,16 @@
         g.gain.setValueAtTime(0, t + delay);
         g.gain.linearRampToValueAtTime(0.02, t + delay + 0.01);
         g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.04);
-
         const lpf = c.createBiquadFilter();
         lpf.type = 'lowpass';
         lpf.frequency.value = 5000;
-
         const panner = c.createStereoPanner();
         panner.pan.value = (Math.random() * 2 - 1) * 0.9;
-
         osc.connect(lpf); lpf.connect(g); g.connect(panner); panner.connect(masterGain);
         osc.start(t + delay); osc.stop(t + delay + 0.05);
       }
-
       birdLoop = setTimeout(cricket, (0.8 + Math.random() * 3) * 1000);
     }
-
     setTimeout(cricket, 2500);
   }
 
@@ -1627,44 +1720,11 @@
     isAmbientOn = false;
     clearTimeout(birdLoop);
     ambientNodes.forEach(function (n) {
-      try {
-        n.stop && n.stop();
-        n.disconnect && n.disconnect();
-      } catch (e) {}
+      try { n.stop && n.stop(); n.disconnect && n.disconnect(); } catch (e) {}
     });
     ambientNodes = [];
   }
 
-  // ─── 9. BUTTON PRESS DEEP THUD ───────────────────────────────────────────────
-  function playButtonPress() {
-    if (isMuted) return;
-    const c = getCtx();
-    const t = c.currentTime;
-
-    // Low thud
-    const osc = c.createOscillator();
-    const g = c.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(180, t);
-    osc.frequency.exponentialRampToValueAtTime(40, t + 0.15);
-    g.gain.setValueAtTime(0.3, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
-    osc.connect(g); g.connect(masterGain);
-    osc.start(t); osc.stop(t + 0.2);
-
-    // Sparkle overtone
-    const osc2 = c.createOscillator();
-    const g2 = c.createGain();
-    osc2.type = 'sine';
-    osc2.frequency.setValueAtTime(1200, t);
-    osc2.frequency.linearRampToValueAtTime(1800, t + 0.1);
-    g2.gain.setValueAtTime(0.07, t);
-    g2.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
-    osc2.connect(g2); g2.connect(masterGain);
-    osc2.start(t); osc2.stop(t + 0.35);
-  }
-
-  // ─── 10. AMBIENT TOGGLE CHIME ─────────────────────────────────────────────────
   function playToggle(on) {
     const c = getCtx();
     const t = c.currentTime;
@@ -1683,52 +1743,32 @@
     });
   }
 
-  // ─── UI: SOUND CONTROL PANEL ─────────────────────────────────────────────────
   function createSoundPanel() {
     const panel = document.createElement('div');
     panel.id = 'sound-panel';
     panel.innerHTML = `
       <style>
         #sound-panel {
-          position: fixed;
-          bottom: 84px;
-          right: 20px;
-          z-index: 200;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          gap: 8px;
+          position: fixed; bottom: 84px; right: 20px; z-index: 200;
+          display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
         }
         #sound-toggle-btn {
-          width: 48px;
-          height: 48px;
-          border-radius: 50%;
+          width: 48px; height: 48px; border-radius: 50%;
           background: linear-gradient(135deg, #1b5e20, #4caf50);
-          border: none;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          border: none; cursor: pointer;
+          display: flex; align-items: center; justify-content: center;
           box-shadow: 0 4px 20px rgba(76,175,80,0.5);
           transition: transform 0.2s ease, box-shadow 0.2s ease;
-          position: relative;
-          overflow: hidden;
+          position: relative; overflow: hidden;
+          -webkit-tap-highlight-color: transparent;
         }
-        #sound-toggle-btn:hover {
-          transform: scale(1.1);
-          box-shadow: 0 6px 28px rgba(76,175,80,0.7);
-        }
+        #sound-toggle-btn:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(76,175,80,0.7); }
         #sound-toggle-btn:active { transform: scale(0.92); }
         #sound-toggle-btn svg { width: 22px; height: 22px; fill: white; transition: opacity 0.2s; }
         #sound-toggle-btn.muted svg { opacity: 0.5; }
-
-        /* Ripple pulse when ambient on */
         #sound-toggle-btn.ambient-active::before,
         #sound-toggle-btn.ambient-active::after {
-          content: '';
-          position: absolute;
-          inset: -4px;
-          border-radius: 50%;
+          content: ''; position: absolute; inset: -4px; border-radius: 50%;
           border: 2px solid rgba(129,199,132,0.6);
           animation: sound-pulse 2s ease-out infinite;
         }
@@ -1737,149 +1777,75 @@
           0% { transform: scale(1); opacity: 1; }
           100% { transform: scale(1.7); opacity: 0; }
         }
-
-        #sound-submenu {
-          display: none;
-          flex-direction: column;
-          gap: 6px;
-          align-items: flex-end;
-          animation: fadeSlideUp 0.25s ease forwards;
-        }
+        #sound-submenu { display: none; flex-direction: column; gap: 6px; align-items: flex-end; animation: fadeSlideUp 0.25s ease forwards; }
         #sound-submenu.open { display: flex; }
-        @keyframes fadeSlideUp {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
+        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .sound-sub-btn {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          background: white;
-          border: 1.5px solid rgba(27,94,32,0.2);
-          border-radius: 24px;
-          padding: 6px 14px 6px 10px;
-          font-size: 10px;
-          font-weight: 800;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          color: #1b5e20;
-          cursor: pointer;
-          white-space: nowrap;
+          display: flex; align-items: center; gap: 8px;
+          background: white; border: 1.5px solid rgba(27,94,32,0.2);
+          border-radius: 24px; padding: 6px 14px 6px 10px;
+          font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+          color: #1b5e20; cursor: pointer; white-space: nowrap;
           box-shadow: 0 2px 12px rgba(0,0,0,0.08);
           transition: all 0.2s ease;
+          -webkit-tap-highlight-color: transparent;
         }
-        .sound-sub-btn:hover {
-          background: #f0fdf4;
-          border-color: #4caf50;
-          transform: translateX(-4px);
-        }
-        .sound-sub-btn.active {
-          background: linear-gradient(135deg, #1b5e20, #4caf50);
-          color: white;
-          border-color: transparent;
-          box-shadow: 0 4px 16px rgba(76,175,80,0.4);
-        }
-        .sound-sub-btn svg {
-          width: 16px; height: 16px;
-          flex-shrink: 0;
-        }
+        .sound-sub-btn:hover { background: #f0fdf4; border-color: #4caf50; transform: translateX(-4px); }
+        .sound-sub-btn.active { background: linear-gradient(135deg, #1b5e20, #4caf50); color: white; border-color: transparent; box-shadow: 0 4px 16px rgba(76,175,80,0.4); }
+        .sound-sub-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
         .sound-sub-btn.active svg { fill: white; }
         .sound-sub-btn:not(.active) svg { fill: #1b5e20; }
-
         #volume-row {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          background: white;
-          border: 1.5px solid rgba(27,94,32,0.15);
-          border-radius: 24px;
-          padding: 6px 14px;
+          display: flex; align-items: center; gap: 8px;
+          background: white; border: 1.5px solid rgba(27,94,32,0.15);
+          border-radius: 24px; padding: 6px 14px;
           box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
         #volume-row svg { width: 14px; height: 14px; fill: #4caf50; flex-shrink: 0; }
         #vol-slider {
-          -webkit-appearance: none;
-          width: 80px;
-          height: 3px;
-          border-radius: 2px;
+          -webkit-appearance: none; width: 80px; height: 3px; border-radius: 2px;
           background: linear-gradient(90deg, #4caf50 var(--pct, 70%), #d1d5db var(--pct, 70%));
-          outline: none;
-          cursor: pointer;
+          outline: none; cursor: pointer;
         }
         #vol-slider::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          width: 14px; height: 14px;
-          border-radius: 50%;
-          background: #1b5e20;
-          box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-          cursor: pointer;
+          -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+          background: #1b5e20; box-shadow: 0 1px 4px rgba(0,0,0,0.2); cursor: pointer;
         }
         #vol-slider::-moz-range-thumb {
-          width: 14px; height: 14px;
-          border-radius: 50%;
-          background: #1b5e20;
-          border: none;
+          width: 14px; height: 14px; border-radius: 50%; background: #1b5e20; border: none;
         }
-
-        /* Equalizer bars animation */
-        #eq-bars {
-          display: flex;
-          gap: 2px;
-          align-items: flex-end;
-          height: 16px;
-        }
-        .eq-bar {
-          width: 3px;
-          border-radius: 1px;
-          background: white;
-          animation: eq-dance 0.6s ease-in-out infinite alternate;
-        }
+        #eq-bars { display: flex; gap: 2px; align-items: flex-end; height: 16px; }
+        .eq-bar { width: 3px; border-radius: 1px; background: white; animation: eq-dance 0.6s ease-in-out infinite alternate; }
         .eq-bar:nth-child(1) { height: 6px; animation-delay: 0s; }
         .eq-bar:nth-child(2) { height: 12px; animation-delay: 0.1s; }
         .eq-bar:nth-child(3) { height: 8px; animation-delay: 0.2s; }
         .eq-bar:nth-child(4) { height: 14px; animation-delay: 0.05s; }
-        @keyframes eq-dance {
-          from { transform: scaleY(0.3); }
-          to { transform: scaleY(1); }
-        }
+        @keyframes eq-dance { from { transform: scaleY(0.3); } to { transform: scaleY(1); } }
         .eq-bar.paused { animation-play-state: paused; transform: scaleY(0.2); }
       </style>
-
       <div id="sound-submenu">
-        <!-- Volume -->
         <div id="volume-row">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
           <input type="range" id="vol-slider" min="0" max="100" value="70">
         </div>
-
-        <!-- Ambient toggle -->
         <button class="sound-sub-btn" id="btn-ambient">
           <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 19.5 3.82 19.5 2 23 8 20c1.85-.93 3.33-2.5 4.52-4.36C15.36 14.5 19 16 19 16c-3-4-2-8-2-8z"/></svg>
           Tiếng thiên nhiên
         </button>
-
-        <!-- Mute all -->
         <button class="sound-sub-btn" id="btn-mute">
           <svg viewBox="0 0 24 24" id="mute-icon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM19 12c0 2.26-1.28 4.22-3.16 5.19l1.42 1.42C19.51 17.26 21 14.8 21 12c0-2.8-1.49-5.26-3.74-6.61l-1.42 1.42C17.72 7.78 19 9.74 19 12z"/></svg>
           Tắt âm thanh
         </button>
       </div>
-
-      <!-- Main toggle button -->
       <button id="sound-toggle-btn" title="Âm thanh">
         <div id="eq-bars">
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
+          <div class="eq-bar"></div><div class="eq-bar"></div>
+          <div class="eq-bar"></div><div class="eq-bar"></div>
         </div>
       </button>
     `;
-
     document.body.appendChild(panel);
 
-    // ── Events ──
     let menuOpen = false;
     const mainBtn = document.getElementById('sound-toggle-btn');
     const submenu = document.getElementById('sound-submenu');
@@ -1895,7 +1861,7 @@
     });
 
     btnAmbient.addEventListener('click', function () {
-      getCtx(); // ensure context
+      getCtx();
       if (!isAmbientOn) {
         startAmbient();
         btnAmbient.classList.add('active');
@@ -1929,7 +1895,6 @@
       mainBtn.classList.remove('muted');
     });
 
-    // Close menu when clicking outside
     document.addEventListener('click', function (e) {
       if (!panel.contains(e.target) && menuOpen) {
         menuOpen = false;
@@ -1938,28 +1903,23 @@
     });
   }
 
-  // ─── HOOK INTO PAGE EVENTS ─────────────────────────────────────────────────────
   function init() {
     if (isInitialized) return;
     isInitialized = true;
     getCtx();
 
-    // Hook hover sounds
     const hoverTargets = 'a, button, article, .magnetic-btn, .neon-link, .sound-sub-btn';
     document.querySelectorAll(hoverTargets).forEach(function (el) {
-      if (el.id && el.id.startsWith('sound')) return; // skip sound panel
+      if (el.id && el.id.startsWith('sound')) return;
       el.addEventListener('mouseenter', function () { playHover(); });
     });
 
-    // Hook click sounds
     document.querySelectorAll('a, button, article').forEach(function (el) {
       el.addEventListener('click', function () { playClick(); });
     });
 
-    // Scroll tick
     window.addEventListener('scroll', function () { playScrollTick(); }, { passive: true });
 
-    // Card reveals
     const revealObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
@@ -1970,7 +1930,6 @@
     }, { threshold: 0.2 });
     document.querySelectorAll('article').forEach(function (el) { revealObserver.observe(el); });
 
-    // Counter tick patch — wrap navigateTo
     var _origNavigateTo = window.navigateTo;
     window.navigateTo = function (href) {
       playTransition();
@@ -1981,7 +1940,6 @@
     };
   }
 
-  // ─── PATCH COUNTER FOR TICK SOUNDS ────────────────────────────────────────────
   function patchCounters() {
     document.querySelectorAll('.counter').forEach(function (counter) {
       var orig = counter.textContent;
@@ -1995,15 +1953,12 @@
     });
   }
 
-  // ─── BOOT ─────────────────────────────────────────────────────────────────────
   function boot() {
     createSoundPanel();
     patchCounters();
 
-    // Init audio on first user gesture
     function firstGesture() {
       init();
-      // Play load complete on page ready
       setTimeout(function () { playLoadComplete(); }, 200);
       document.removeEventListener('click', firstGesture);
       document.removeEventListener('touchstart', firstGesture);
@@ -2021,7 +1976,6 @@
     boot();
   }
 
-  // Expose for external use
   window.DongThapSound = {
     playClick, playHover, playReveal, playTransition, playLoadComplete,
     startAmbient, stopAmbient,

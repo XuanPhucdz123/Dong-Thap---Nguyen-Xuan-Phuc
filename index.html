@@ -613,6 +613,13 @@
                 opacity: 1 !important;
             }
 
+/* Glow background không cần thiết trên mobile */
+/* .absolute.-inset-6 { display: none !important; } */
+
+            /* Body decoration không cần trên mobile */
+            body::before, body::after { display: none !important; }
+        }
+
         /* ========== MOBILE ANIMATION KEYFRAMES ========== */
         @keyframes slide-up-mobile {
             from { opacity: 0; transform: translateY(40px); }

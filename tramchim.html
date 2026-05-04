@@ -4,6 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta name="theme-color" content="#1b5e20">
+    <meta name="darkreader-lock">
     <title>Đồng Tháp - Vườn Quốc gia Tràm Chim</title>
     
     <link rel="icon" type="image/png" href="favicon.png">
@@ -81,7 +82,7 @@
     </script>
 
     <style>
-        :root { --primary-green: #1b5e20; --accent-green: #4caf50; }
+        :root { --primary-green: #1b5e20; --accent-green: #4caf50; color-scheme: light only; }
 
         /* ========== BASE ========== */
         body { background-color: #f4f7f4; font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
@@ -171,7 +172,7 @@
 
         /* ========== GRADIENT BG ========== */
         .gradient-bg {
-            background: linear-gradient(-45deg, #1b5e20, #4caf50, #004d40, #2e7d32);
+            background: linear-gradient(-45deg, #1b5e20, #4caf50, #004d40, #2e7d32) !important;
             background-size: 400% 400%;
             animation: gradient-shift 10s ease infinite;
         }
@@ -245,11 +246,11 @@
         }
 
         /* ========== CLIP-PATH IMAGE REVEAL ========== */
-        .img-reveal { clip-path: inset(0 100% 0 0); transition: clip-path 1s cubic-bezier(0.77,0,0.175,1); }
-        .img-reveal.revealed { clip-path: inset(0 0% 0 0); }
+        .img-reveal { opacity: 0; transform: scale(1.05); transition: opacity 1s cubic-bezier(0.77,0,0.175,1), transform 1s ease; }
+        .img-reveal.revealed { opacity: 1; transform: scale(1); }
 
         /* ========== FLOAT ICON ========== */
-        .float-icon { animation: float 3s ease-in-out infinite; }
+        .float-icon { display: inline-block; animation: float 3s ease-in-out infinite; }
 
         /* ========== CARD EFFECTS ========== */
         .card-glow { position: relative; transition: all 0.3s ease; }
@@ -257,7 +258,7 @@
             content: ''; position: absolute; inset: 0; border-radius: 1rem;
             opacity: 0; transition: opacity 0.3s ease; z-index: -1;
         }
-        .card-glow:hover::before { opacity: 1; box-shadow: 0 0 40px rgba(76, 175, 80, 0.5); }
+        .card-glow:hover::before { opacity: 1; box-shadow: 0 0 60px rgba(76, 175, 80, 0.8); }
 
         /* Shine sweep */
         .card-shine { position: relative; overflow: hidden; }
@@ -331,12 +332,15 @@
         @keyframes orbit-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         /* ========== NEON UNDERLINE ========== */
-        .neon-link { position: relative; text-decoration: none; }
+        .neon-link {
+            position: relative; text-decoration: none;
+        }
         .neon-link::after {
             content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
             background: linear-gradient(90deg, #4caf50, #81c784);
             box-shadow: 0 0 8px rgba(76,175,80,0.8);
-            transition: width 0.35s ease; border-radius: 1px;
+            transition: width 0.35s ease;
+            border-radius: 1px;
         }
         .neon-link:hover::after { width: 100%; }
 
@@ -365,6 +369,14 @@
             0% { transform: scale(0.8); opacity: 1; }
             100% { transform: scale(1.8); opacity: 0; }
         }
+
+        /* ========== TYPEWRITER ========== */
+        .typewriter-cursor::after { content: '|'; animation: blink 0.8s step-start infinite; color: #4caf50; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* ========== WAVE DIVIDER ========== */
+        .wave-divider { line-height: 0; }
+        .wave-divider svg { display: block; }
 
         /* ========== SCROLL REVEAL BASE ========== */
         [data-aos] { opacity: 0; }
@@ -435,7 +447,7 @@
             border-radius: 2px; height: 0; transition: height 0.2s ease;
         }
 
-        /* ========== CARD HOVER LABEL ========== */
+        /* ========== HOVER CARD LABEL ========== */
         .card-hover-label {
             position: absolute; bottom: 0; left: 0; right: 0;
             background: linear-gradient(to top, rgba(27,94,32,0.9) 0%, transparent 100%);
@@ -459,54 +471,90 @@
             line-height: 1.9;
         }
 
-        /* ========== ACTIVE STATE (mobile tap) ========== */
-        article:active { transform: scale(0.97); transition: transform 0.15s ease; }
-
-        /* ========== TOUCH / MOBILE OPTIMIZATIONS ========== */
-        @media (hover: none), (pointer: coarse) {
-            .sparkle-wrap .sparkle { display: none !important; }
-            .card-hover-label { display: none !important; }
-            .card-shine::after,
-            .card-glow::before,
-            .border-animate::before { display: none !important; }
-            .tilt-card,
-            .tilt-content { transform: none !important; }
-            .group:hover .card-hover-label,
-            .card-shine:hover::after,
-            .card-border-glow:hover,
-            .card-glow:hover::before,
-            .border-animate:hover::before { box-shadow: none !important; left: auto !important; opacity: 0 !important; }
-            .orbit-wrap,
-            .section-number,
-            .scroll-line,
-            #particles { display: none !important; }
-            .blob-bg { animation: none !important; filter: none !important; opacity: 0.22 !important; }
-            .gradient-text,
-            .text-shimmer { animation: none !important; background-position: 0 50% !important; }
-            .float-icon,
-            .eco-badge,
-            .pulse-wrap::before,
-            .pulse-wrap::after { animation-duration: 4s !important; }
-            #sound-panel { display: none !important; }
-        }
-
         /* ========== REDUCED MOTION ========== */
         @media (prefers-reduced-motion: reduce) {
             *, ::before, ::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+
+        /* ========== CARD ACTIVE STATE (mobile tap) ========== */
+        article:active { transform: scale(0.97); transition: transform 0.15s ease; }
+
+        /* ========== ĐỒNG BỘ MOBILE OPTIMIZATIONS TỪ TRANG CHỦ ========== */
+        @media (max-width: 767px) {
+            .float-icon { animation: none !important; }
+            .blob-bg { animation: none !important; border-radius: 50% !important; transform: none !important; }
+            .gradient-bg { animation: none !important; background: linear-gradient(160deg, #1b5e20 0%, #2e7d32 50%, #1b5e20 100%) !important; background-size: 100% 100% !important; }
+            .gradient-text { animation: none !important; background-position: 0% 50% !important; }
+            .text-shimmer { animation: none !important; -webkit-text-fill-color: #1b5e20; color: #1b5e20; background: none; }
+            .orbit-wrap, .section-number, #parallax-bg, #particles, .glitch::before, .glitch::after { display: none !important; }
+            .glitch:hover { animation: none !important; }
+            .eco-badge, .animate-pop-bounce { animation: none !important; }
+            .card-shine::after { display: none !important; }
+            .stat-bar-fill { transition-duration: 1s !important; }
+            .card-glow::before, .border-animate::before { display: none !important; }
+            .pulse-wrap::after { display: none !important; }
+            .pulse-wrap::before { animation-duration: 3s !important; inset: -4px !important; }
+
+            /* ĐÓNG BĂNG MÀN HÌNH TẢI HOA SEN TRÊN ĐIỆN THOẠI YÊU CẦU */
+            .loader-petal { animation: none !important; opacity: 1 !important; }
+            .loader-petal:nth-child(1) { transform: rotate(0deg) scale(1) !important; }
+            .loader-petal:nth-child(2) { transform: rotate(72deg) scale(1) !important; }
+            .loader-petal:nth-child(3) { transform: rotate(144deg) scale(1) !important; }
+            .loader-petal:nth-child(4) { transform: rotate(216deg) scale(1) !important; }
+            .loader-petal:nth-child(5) { transform: rotate(288deg) scale(1) !important; }
+            .loader-text { animation: none !important; }
+
+            /* FIX HIỆU ỨNG TỎA MÀU: GIỮ NGUYÊN KHỐI PHÁT SÁNG NHƯNG CHỐNG LAG GIẬT */
+            .group .absolute.-inset-6,
+            .group .absolute.-inset-4 {
+                display: block !important;
+                opacity: 0.85 !important;
+                filter: blur(28px) !important;
+                transform: translateY(12px) scale(1.05) !important;
+                transition: none !important; 
+            }
+            /* Chặn hover effect thay đổi kích thước trên nền phát sáng này */
+            .group:hover .absolute.-inset-6,
+            .group:hover .absolute.-inset-4 {
+                opacity: 0.85 !important;
+                filter: blur(28px) !important;
+                transform: translateY(12px) scale(1.05) !important;
+            }
+
+            /* FIX LỖI CARD 3D BỊ NHẢY LOẠN XẠ */
+            .tilt-card { transform: none !important; transform-style: flat !important; transition: none !important;}
+            .tilt-content { transform: none !important; transition: none !important;}
+            article:active { transform: none !important; }
+            main article { transform: none !important; }
+            
+            /* FIX 100% HIỂN THỊ ẢNH TRÊN ĐIỆN THOẠI (Bỏ qua clip-path bị lỗi) */
+            .img-reveal { transition-duration: 0.5s !important; filter: grayscale(0) !important; opacity: 1 !important; }
+            .group:hover img { transform: none !important; filter: grayscale(0) !important; }
+            .card-hover-label { display: none !important; }
+            
+            .animate-slide-up { animation: slide-up-mobile 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important; }
+        }
+        @keyframes slide-up-mobile {
+            from { opacity: 0; transform: translateY(60px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* HOVER EFFECT CHO CARD NGANG (CHỈ TRÊN DESKTOP) */
+        @media (hover: hover) and (pointer: fine) {
+            main article { transition: transform 0.35s ease, filter 0.35s ease; }
+            main article:hover { transform: translateY(-8px); }
+            main article:hover .highlight-box { filter: brightness(1.04); }
         }
     </style>
 </head>
 <body class="pt-20 md:pt-24">
 
-<!-- ====== PAGE TRANSITION OVERLAY ====== -->
 <div id="page-transition"></div>
 
-<!-- ====== CUSTOM CURSOR (desktop only) ====== -->
 <div id="cursor-dot" aria-hidden="true"></div>
 <div id="cursor-ring" aria-hidden="true"></div>
 <div id="cursor-glow" aria-hidden="true"></div>
 
-<!-- ====== LOADING SCREEN ====== -->
 <div id="loading-screen">
     <div class="loader-lotus">
         <div class="loader-petal"></div>
@@ -519,23 +567,18 @@
     <div class="loader-bar-wrap"><div class="loader-bar-fill"></div></div>
 </div>
 
-<!-- ====== PARTICLES ====== -->
 <div id="particles" aria-hidden="true"></div>
 
-<!-- ====== PROGRESS BAR ====== -->
 <div id="progress-bar"></div>
 
-<!-- ====== SCROLL LINE INDICATOR ====== -->
 <div class="scroll-line" aria-hidden="true">
     <div class="scroll-line-fill" id="scroll-line-fill"></div>
 </div>
 
-<!-- ====== SCROLL TO TOP ====== -->
 <button id="scroll-top" aria-label="Lên đầu trang" onclick="window.scrollTo({top:0,behavior:'smooth'})">
     <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
 
-<!-- ====== HEADER ====== -->
 <header id="main-header" class="bg-white fixed top-0 w-full z-50 border-b border-gray-200">
     <div class="flex justify-between items-center px-4 md:px-6 py-3 md:py-4 max-w-7xl mx-auto">
         <div class="flex items-center gap-2 md:gap-3">
@@ -555,32 +598,25 @@
 </header>
 
 <main>
-    <!-- ====== HERO SECTION ====== -->
     <section class="w-full px-4 max-w-7xl mx-auto mb-8">
-        <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0">
+        <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
             
-            <!-- Parallax glow bg -->
-            <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none -z-10" id="parallax-bg">
-                <img alt="Glow" class="w-full h-full object-cover rounded-[3rem] saturate-150 brightness-110" src="thong_tin_vuon_quoc_gia_tram_chim_dong_thap_co_gi_hay_h1.jpg"/>
+            <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none z-0" id="parallax-bg">
+                <img alt="Glow" class="w-full h-full object-cover saturate-150 brightness-110" src="thong_tin_vuon_quoc_gia_tram_chim_dong_thap_co_gi_hay_h1.jpg"/>
             </div>
 
-            <!-- Hero image -->
-            <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-0">
-                <img alt="Sinh thái Tràm Chim" class="w-full h-full object-cover brightness-50 img-reveal" src="thong_tin_vuon_quoc_gia_tram_chim_dong_thap_co_gi_hay_h1.jpg" id="hero-img"/>
+            <div class="absolute inset-0 z-0 pointer-events-none">
+                <img alt="Sinh thái Tràm Chim" class="absolute inset-0 w-full h-full object-cover brightness-50 img-reveal" src="thong_tin_vuon_quoc_gia_tram_chim_dong_thap_co_gi_hay_h1.jpg" id="hero-img"/>
                 <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
-                <!-- Scanline overlay -->
-                <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px);"></div>
+                <div class="absolute inset-0 opacity-[0.03]" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px);"></div>
             </div>
 
-            <!-- Morphing blob -->
-            <div class="blob-bg w-64 h-64 md:w-96 md:h-96 absolute right-10 top-10 z-1 opacity-60"></div>
+            <div class="hidden md:block blob-bg w-64 h-64 md:w-96 md:h-96 absolute right-10 top-10 z-0 opacity-60"></div>
 
-            <!-- Floating geometric accents -->
-            <div class="absolute right-8 bottom-16 w-3 h-3 border-2 border-green-400/40 rotate-45 animate-[float_4s_ease-in-out_infinite]" aria-hidden="true"></div>
-            <div class="absolute right-24 bottom-32 w-2 h-2 bg-green-400/30 rounded-full animate-[float_3s_ease-in-out_infinite_0.5s]" aria-hidden="true"></div>
-            <div class="absolute right-16 top-20 w-4 h-4 border border-green-300/30 rounded-full animate-[float_5s_ease-in-out_infinite_1s]" aria-hidden="true"></div>
+            <div class="hidden md:block absolute right-8 bottom-16 w-3 h-3 border-2 border-green-400/40 rotate-45 animate-[float_4s_ease-in-out_infinite]" aria-hidden="true"></div>
+            <div class="hidden md:block absolute right-24 bottom-32 w-2 h-2 bg-green-400/30 rounded-full animate-[float_3s_ease-in-out_infinite_0.5s]" aria-hidden="true"></div>
+            <div class="hidden md:block absolute right-16 top-20 w-4 h-4 border border-green-300/30 rounded-full animate-[float_5s_ease-in-out_infinite_1s]" aria-hidden="true"></div>
 
-            <!-- Content -->
             <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
                 <div class="eco-badge mb-4 pointer-events-auto animate-slide-down" style="animation-delay:0.1s;">
                     <span class="material-symbols-outlined" style="font-size:12px;">water</span>
@@ -600,29 +636,24 @@
         </div>
     </section>
 
-    <!-- ====== WAVE DIVIDER ====== -->
     <div aria-hidden="true" style="line-height:0;position:relative;z-index:10;margin-top:-2rem;">
         <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:40px;">
             <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#f4f7f4"/>
         </svg>
     </div>
 
-    <!-- ====== STATS SECTION ====== -->
     <section class="max-w-7xl mx-auto px-6 py-12 md:py-20" data-aos="fade-up">
         <div class="gradient-bg rounded-[2rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden border border-green-400/30">
-            <!-- Orbiting rings -->
             <div class="orbit-wrap" aria-hidden="true">
                 <div class="orbit-ring"></div>
                 <div class="orbit-ring"></div>
                 <div class="orbit-ring"></div>
             </div>
-            <!-- Blob inside stats -->
             <div class="blob-bg w-72 h-72 absolute -bottom-10 -left-10 opacity-40"></div>
             <div class="absolute -top-24 -right-24 text-white/10" aria-hidden="true">
                 <span class="material-symbols-outlined" style="font-size: 300px;">water</span>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center relative z-10">
-                <!-- Stat 1 -->
                 <div class="flex flex-col items-center gap-2">
                     <div class="pulse-wrap">
                         <span class="material-symbols-outlined text-4xl mb-2 text-green-200">forest</span>
@@ -631,7 +662,6 @@
                     <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Hecta diện tích</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="88"></div></div>
                 </div>
-                <!-- Stat 2 -->
                 <div class="flex flex-col items-center gap-2">
                     <div class="pulse-wrap">
                         <span class="material-symbols-outlined text-4xl mb-2 text-green-200">flutter_dash</span>
@@ -640,7 +670,6 @@
                     <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Loài chim nước</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="75"></div></div>
                 </div>
-                <!-- Stat 3 -->
                 <div class="flex flex-col items-center gap-2">
                     <div class="pulse-wrap">
                         <span class="material-symbols-outlined text-4xl mb-2 text-green-200">eco</span>
@@ -649,7 +678,6 @@
                     <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Loài thực vật</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="60"></div></div>
                 </div>
-                <!-- Stat 4 -->
                 <div class="flex flex-col items-center gap-2">
                     <div class="pulse-wrap">
                         <span class="material-symbols-outlined text-4xl mb-2 text-green-200">set_meal</span>
@@ -662,13 +690,10 @@
         </div>
     </section>
 
-    <!-- ====== MAIN CONTENT ====== -->
     <section class="max-w-7xl mx-auto px-6 pb-16 space-y-20 md:space-y-36">
 
-        <!-- ARTICLE 1: Khu Ramsar 2000 -->
         <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center sparkle-wrap" data-aos="fade-up">
             <div class="w-full md:w-1/2 relative group z-0 tilt-card">
-                <!-- Glow blur bg -->
                 <div class="absolute -inset-4 translate-y-4 scale-[1.04] opacity-70 blur-3xl group-hover:opacity-100 group-hover:blur-[70px] group-hover:scale-[1.07] transition-all duration-700 pointer-events-none -z-10 tilt-content">
                     <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
                 </div>
@@ -709,14 +734,12 @@
             </div>
         </article>
 
-        <!-- ARTICLE 2: Sếu Đầu Đỏ -->
         <article class="flex flex-col md:flex-row-reverse gap-8 md:gap-16 items-center sparkle-wrap" data-aos="fade-up">
             <div class="w-full md:w-1/2 relative group z-0 tilt-card">
-                <!-- Glow blur bg using video poster -->
                 <div class="absolute -inset-4 translate-y-4 scale-[1.04] opacity-70 blur-3xl group-hover:opacity-100 group-hover:blur-[70px] group-hover:scale-[1.07] transition-all duration-700 pointer-events-none -z-10 tilt-content">
                     <div class="w-full h-full rounded-3xl" style="background:linear-gradient(135deg,#2d6a4f,#52b788,#1b4332);"></div>
                 </div>
-                <div class="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl bg-black z-10 card-shine card-border-glow tilt-content">
+                <div class="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl bg-black z-10 card-shine card-border-glow border-animate tilt-content">
                     <video src="227085.mp4" autoplay loop muted playsinline
                            class="w-full h-64 md:h-96 object-cover opacity-95 transition-transform duration-700 group-hover:scale-105"></video>
                     <div class="video-badge">
@@ -740,7 +763,7 @@
                     <div class="w-16 h-1 bg-gradient-to-r from-green-600 to-green-400 mt-3 ml-auto md:ml-0 md:mr-0" id="ul-seu" style="width:0;transition:width 1s ease;float:right;"></div>
                     <div style="clear:both;"></div>
                 </div>
-                <div class="article-body space-y-4 text-base md:text-lg text-gray-600 leading-relaxed">
+                <div class="article-body space-y-4 text-base md:text-lg text-gray-600 leading-relaxed md:text-right">
                     <p>
                         Nhắc đến Tràm Chim là nhắc đến <strong>Sếu đầu đỏ (Grus antigone)</strong> — loài chim quý hiếm có tên trong Sách Đỏ thế giới. Sự hiện diện của chúng là chỉ thị sinh học quan trọng, minh chứng cho độ trong lành của môi trường nước và thảm thực vật nơi đây.
                     </p>
@@ -751,7 +774,6 @@
             </div>
         </article>
 
-        <!-- ARTICLE 3: Đa dạng sinh học -->
         <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center sparkle-wrap" data-aos="fade-up">
             <div class="w-full md:w-1/2 relative group z-0 tilt-card">
                 <div class="absolute -inset-4 translate-y-4 scale-[1.04] opacity-70 blur-3xl group-hover:opacity-100 group-hover:blur-[70px] group-hover:scale-[1.07] transition-all duration-700 pointer-events-none -z-10 tilt-content">
@@ -796,7 +818,6 @@
 
     </section>
 
-    <!-- ====== REFERENCES ====== -->
     <section class="max-w-7xl mx-auto px-6 py-8 border-t border-gray-200 mb-8" data-aos="fade-up">
         <div class="bg-green-50/50 rounded-2xl p-6 md:p-8 border border-green-100 shadow-sm relative overflow-hidden">
             <div class="section-number" aria-hidden="true">04</div>
@@ -822,9 +843,7 @@
     </section>
 </main>
 
-<!-- ====== FOOTER ====== -->
 <footer class="bg-[#111811] text-white py-12 md:py-16 px-6 border-t-[6px] border-green-800 relative overflow-hidden">
-    <!-- Animated border top -->
     <div class="absolute top-0 left-0 h-[6px] w-full overflow-hidden" aria-hidden="true">
         <div style="height:100%;width:200%;background:linear-gradient(90deg,#1b5e20,#4caf50,#81c784,#4caf50,#1b5e20);animation:shimmer-move 3s linear infinite;background-size:50% 100%;"></div>
     </div>
@@ -846,14 +865,12 @@
     </div>
 </footer>
 
-<!-- ====== MAIN SCRIPTS ====== -->
 <script>
 (function() {
     'use strict';
     var isMobile = window.innerWidth < 768;
     var isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var isHoverCapable = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    var isTouch = !isHoverCapable;
+    var isTouch = !window.matchMedia('(pointer: fine)').matches;
 
     /* ============ LOADING SCREEN ============ */
     window.addEventListener('load', function() {
@@ -865,7 +882,7 @@
                 document.querySelectorAll('.img-reveal:not(#hero-img)').forEach(function(img, i) {
                     setTimeout(function() { img.classList.add('revealed'); }, i * 200);
                 });
-            }, 400);
+            }, 500);
         }, 1200);
     });
 
@@ -886,7 +903,7 @@
     });
 
     /* ============ CUSTOM CURSOR ============ */
-    if (isHoverCapable) {
+    if (!isTouch) {
         var dot = document.getElementById('cursor-dot');
         var ring = document.getElementById('cursor-ring');
         var glow = document.getElementById('cursor-glow');
@@ -918,7 +935,7 @@
 
     /* ============ PARTICLES ============ */
     var container = document.getElementById('particles');
-    var count = isMobile ? 8 : 16;
+    var count = isMobile ? 0 : 16; /* Tắt trên mobile */
     for (var p = 0; p < count; p++) {
         var el = document.createElement('div');
         el.className = 'particle';
@@ -928,7 +945,7 @@
     }
 
     /* ============ SPARKLE ON CARD HOVER ============ */
-    if (isHoverCapable && !isReducedMotion) {
+    if (!isTouch && !isReducedMotion) {
         document.querySelectorAll('.sparkle-wrap').forEach(function(wrap) {
             var timer = null;
             wrap.addEventListener('mouseenter', function() {
@@ -1028,7 +1045,7 @@
     });
 
     /* ============ 3D TILT (desktop only) ============ */
-    if (isHoverCapable && !isMobile && !isReducedMotion) {
+    if (!isTouch && !isReducedMotion) {
         document.querySelectorAll('.tilt-card').forEach(function(card) {
             card.addEventListener('mousemove', function(e) {
                 var r = card.getBoundingClientRect();
@@ -1046,7 +1063,7 @@
     }
 
     /* ============ MAGNETIC BUTTON ============ */
-    if (isHoverCapable && !isMobile) {
+    if (!isTouch) {
         document.querySelectorAll('.magnetic-btn').forEach(function(btn) {
             btn.addEventListener('mousemove', function(e) {
                 var r = btn.getBoundingClientRect();
@@ -1059,7 +1076,7 @@
     }
 
     /* ============ MOUSE PARALLAX ON HERO ============ */
-    if (isHoverCapable && !isMobile && !isReducedMotion) {
+    if (!isTouch && !isReducedMotion) {
         var heroSection = document.querySelector('section');
         if (heroSection) {
             heroSection.addEventListener('mousemove', function(e) {
@@ -1068,6 +1085,9 @@
                 var cy = (e.clientY - rect.top) / rect.height - 0.5;
                 heroSection.querySelectorAll('.blob-bg').forEach(function(b) {
                     b.style.transform = 'translate(' + cx * 20 + 'px,' + cy * 20 + 'px)';
+                });
+                heroSection.querySelectorAll('.absolute.right-8, .absolute.right-24, .absolute.right-16').forEach(function(g, i) {
+                    g.style.transform = 'translate(' + cx * (10 + i*8) + 'px,' + cy * (10 + i*8) + 'px)';
                 });
             });
         }
@@ -1093,7 +1113,7 @@
                 var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
                 var pct = winScroll / height;
 
-                if (isHoverCapable && !isMobile) {
+                if (!isMobile) {
                     var pb = document.getElementById('parallax-bg');
                     if (pb) pb.style.transform = 'translateY(' + winScroll * 0.3 + 'px)';
                 }
@@ -1123,10 +1143,14 @@
 })();
 </script>
 
-<!-- ====== SOUND SYSTEM (Web Audio API) ====== -->
 <script>
 (function () {
   'use strict';
+
+  let isTouchDevice = false;
+  if (typeof window !== 'undefined') {
+    isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth < 768);
+  }
 
   let ctx = null, masterGain = null, ambientNodes = [], isMuted = false;
   let isAmbientOn = false, birdLoop = null, isInitialized = false;
@@ -1143,7 +1167,7 @@
   }
 
   function playHover() {
-    if (isMuted) return;
+    if (isMuted || isTouchDevice) return;
     const c = getCtx(), t = c.currentTime;
     const osc = c.createOscillator(), g = c.createGain(), filter = c.createBiquadFilter();
     osc.type = 'sine'; osc.frequency.setValueAtTime(880, t); osc.frequency.exponentialRampToValueAtTime(1200, t + 0.12);
@@ -1196,7 +1220,7 @@
   }
 
   function playReveal() {
-    if (isMuted) return;
+    if (isMuted || isTouchDevice) return;
     const c = getCtx(), t = c.currentTime;
     const osc = c.createOscillator(), g = c.createGain();
     const vib = c.createOscillator(), vibGain = c.createGain();
@@ -1209,7 +1233,7 @@
 
   let lastScrollSound = 0;
   function playScrollTick() {
-    if (isMuted) return;
+    if (isMuted || isTouchDevice) return;
     const now = Date.now();
     if (now - lastScrollSound < 180) return;
     lastScrollSound = now;
@@ -1404,23 +1428,21 @@
   function init() {
     if (isInitialized) return;
     isInitialized = true;
-    if (isHoverCapable) getCtx();
-    if (isHoverCapable) {
-      document.querySelectorAll('a, button, article, .magnetic-btn, .neon-link, .tilt-card').forEach(function(el) {
-        if (el.id && el.id.startsWith('sound')) return;
-        el.addEventListener('mouseenter', function() { playHover(); });
-      });
-    }
+    getCtx();
+    document.querySelectorAll('a, button, article, .magnetic-btn, .neon-link, .tilt-card').forEach(function(el) {
+      if (el.id && el.id.startsWith('sound')) return;
+      el.addEventListener('mouseenter', function() { playHover(); });
+    });
     document.querySelectorAll('a, button, article').forEach(function(el) {
       el.addEventListener('click', function() { playClick(); });
     });
-    if (isHoverCapable) {
-      window.addEventListener('scroll', function() { playScrollTick(); }, { passive: true });
-    }
+    window.addEventListener('scroll', function() { playScrollTick(); }, { passive: true });
+    
     const revealObserver = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) { if (entry.isIntersecting) { playReveal(); revealObserver.unobserve(entry.target); } });
     }, { threshold: 0.2 });
     document.querySelectorAll('article').forEach(function(el) { revealObserver.observe(el); });
+
     const _orig = window.navigateTo;
     window.navigateTo = function(href) { playTransition(); setTimeout(function() { if (_orig) _orig(href); else window.location.href = href; }, 120); };
   }
@@ -1433,11 +1455,11 @@
   }
 
   function boot() {
-    if (isHoverCapable) createSoundPanel();
+    createSoundPanel();
     patchCounters();
     function firstGesture() {
       init();
-      if (isHoverCapable) setTimeout(function() { playLoadComplete(); }, 200);
+      setTimeout(function() { playLoadComplete(); }, 200);
       document.removeEventListener('click', firstGesture);
       document.removeEventListener('touchstart', firstGesture);
       document.removeEventListener('keydown', firstGesture);

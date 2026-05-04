@@ -109,7 +109,7 @@
             background: linear-gradient(135deg, #4caf50, #81c784);
             border-radius: 50% 50% 50% 0;
             transform-origin: bottom right;
-            animation: petal-spin 3s ease-in-out infinite; /* Slower, calmer spin */
+            animation: petal-spin 3s ease-in-out infinite;
             opacity: 0.85;
         }
         .loader-petal:nth-child(1) { --r: 0deg; transform: rotate(0deg); animation-delay: 0s; }
@@ -425,7 +425,7 @@
         .stat-bar-fill { height: 100%; background: linear-gradient(90deg, #81c784, #fff); border-radius: 2px; width: 0; transition: width 1.5s cubic-bezier(0.4,0,0.2,1); }
 
         /* ========== CARD ACTIVE STATE (mobile tap) ========== */
-        article:active { transform: scale(0.97); transition: transform 0.15s ease; }
+        .article:active { transform: scale(0.97); transition: transform 0.15s ease; }
 
         /* ========== SECTION NUMBER ========== */
         .section-number {
@@ -470,7 +470,7 @@
             *, ::before, ::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
         }
 
-        /* ========== MOBILE OPTIMIZATIONS ========== */
+        /* ========== MOBILE OPTIMIZATIONS (ĐÃ SỬA CHUẨN) ========== */
         @media (max-width: 767px) {
             .float-icon { animation: none !important; }
             .blob-bg { animation: none !important; border-radius: 50% !important; transform: none !important; }
@@ -487,11 +487,27 @@
             .pulse-wrap::after { display: none !important; }
             .pulse-wrap::before { animation-duration: 3s !important; inset: -4px !important; }
 
+            /* --- FIX LỖI LOADING SCREEN TRÊN ĐIỆN THOẠI --- */
+            .loader-petal { animation: none !important; opacity: 0.9 !important; }
+            .loader-petal:nth-child(1) { transform: rotate(0deg) scale(1) !important; }
+            .loader-petal:nth-child(2) { transform: rotate(72deg) scale(1) !important; }
+            .loader-petal:nth-child(3) { transform: rotate(144deg) scale(1) !important; }
+            .loader-petal:nth-child(4) { transform: rotate(216deg) scale(1) !important; }
+            .loader-petal:nth-child(5) { transform: rotate(288deg) scale(1) !important; }
+            .loader-text { animation: none !important; }
+            #loading-screen { transition: opacity 0.4s ease, visibility 0.4s ease !important; }
+
             /* --- FIX LỖI LOẠN CARD TRÊN ĐIỆN THOẠI --- */
-            .group .absolute.-inset-6 { display: none !important; }
+            .group .absolute.-inset-6 { display: none !important; } 
             .card-hover-label { display: none !important; }
-            .img-reveal { transition-duration: 0.5s !important; filter: grayscale(0) !important; }
+            
+            .tilt-card { transform: none !important; transform-style: flat !important; }
+            .tilt-content { transform: none !important; }
+            article:active { transform: none !important; }
+            
+            .img-reveal { transition-duration: 0.5s !important; filter: grayscale(0) !important; clip-path: inset(0 0 0 0) !important;}
             .group:hover img { transform: none !important; filter: grayscale(0) !important; }
+            
             .animate-slide-up { animation: slide-up-mobile 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important; }
         }
         @keyframes slide-up-mobile {
@@ -502,15 +518,12 @@
 </head>
 <body class="pt-20 md:pt-24">
 
-<!-- ====== PAGE TRANSITION OVERLAY ====== -->
 <div id="page-transition"></div>
 
-<!-- ====== CUSTOM CURSOR (desktop only) ====== -->
 <div id="cursor-dot" aria-hidden="true"></div>
 <div id="cursor-ring" aria-hidden="true"></div>
 <div id="cursor-glow" aria-hidden="true"></div>
 
-<!-- ====== LOADING SCREEN ====== -->
 <div id="loading-screen">
     <div class="loader-lotus">
         <div class="loader-petal"></div>
@@ -523,23 +536,18 @@
     <div class="loader-bar-wrap"><div class="loader-bar-fill"></div></div>
 </div>
 
-<!-- ====== PARTICLES ====== -->
 <div id="particles" aria-hidden="true"></div>
 
-<!-- ====== PROGRESS BAR ====== -->
 <div id="progress-bar"></div>
 
-<!-- ====== SCROLL LINE INDICATOR ====== -->
 <div class="scroll-line" aria-hidden="true">
     <div class="scroll-line-fill" id="scroll-line-fill"></div>
 </div>
 
-<!-- ====== SCROLL TO TOP ====== -->
 <button id="scroll-top" aria-label="Lên đầu trang" onclick="window.scrollTo({top:0,behavior:'smooth'})">
     <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
 
-<!-- ====== HEADER ====== -->
 <header id="main-header" class="bg-white fixed top-0 w-full z-50 border-b border-gray-200">
     <div class="flex justify-between items-center px-4 md:px-6 py-3 md:py-4 max-w-7xl mx-auto">
         <div class="flex items-center gap-2">
@@ -556,32 +564,26 @@
 </header>
 
 <main>
-    <!-- ====== HERO SECTION ====== -->
     <section class="w-full px-4 max-w-7xl mx-auto mb-8">
         <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0">
             
-            <!-- Parallax glow bg -->
             <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none -z-10" id="parallax-bg">
                 <img alt="Glow" class="w-full h-full object-cover rounded-[3rem] saturate-150" src="sen-27.jpg"/>
             </div>
             
-            <!-- Hero image with reveal -->
             <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-0">
                 <img alt="Sen" class="w-full h-full object-cover brightness-50 img-reveal" src="sen-27.jpg" id="hero-img"/>
                 <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
-                <!-- Scanline overlay -->
+                
                 <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px);"></div>
+                
+                <div class="hidden md:block blob-bg w-64 h-64 md:w-96 md:h-96 absolute right-10 top-10 z-1 opacity-60"></div>
+
+                <div class="hidden md:block absolute right-8 bottom-16 w-3 h-3 border-2 border-green-400/40 rotate-45 animate-[float_4s_ease-in-out_infinite]" aria-hidden="true"></div>
+                <div class="hidden md:block absolute right-24 bottom-32 w-2 h-2 bg-green-400/30 rounded-full animate-[float_3s_ease-in-out_infinite_0.5s]" aria-hidden="true"></div>
+                <div class="hidden md:block absolute right-16 top-20 w-4 h-4 border border-green-300/30 rounded-full animate-[float_5s_ease-in-out_infinite_1s]" aria-hidden="true"></div>
             </div>
 
-            <!-- Morphing blob decorations -->
-            <div class="blob-bg w-64 h-64 md:w-96 md:h-96 absolute right-10 top-10 z-1 opacity-60"></div>
-
-            <!-- Floating geometric accents -->
-            <div class="absolute right-8 bottom-16 w-3 h-3 border-2 border-green-400/40 rotate-45 animate-[float_4s_ease-in-out_infinite]" aria-hidden="true"></div>
-            <div class="absolute right-24 bottom-32 w-2 h-2 bg-green-400/30 rounded-full animate-[float_3s_ease-in-out_infinite_0.5s]" aria-hidden="true"></div>
-            <div class="absolute right-16 top-20 w-4 h-4 border border-green-300/30 rounded-full animate-[float_5s_ease-in-out_infinite_1s]" aria-hidden="true"></div>
-
-            <!-- Content -->
             <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
                 <div class="eco-badge mb-4 pointer-events-auto animate-slide-down" style="animation-delay:0.1s;">
                     <span class="material-symbols-outlined" style="font-size:12px;">eco</span>
@@ -599,29 +601,24 @@
         </div>
     </section>
 
-    <!-- ====== WAVE DIVIDER ====== -->
     <div class="wave-divider -mt-8 relative z-10" aria-hidden="true">
         <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:40px;">
             <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#f4f7f4"/>
         </svg>
     </div>
 
-    <!-- ====== STATS SECTION ====== -->
     <section class="max-w-7xl mx-auto px-6 py-12 md:py-20" data-aos="fade-up">
         <div class="gradient-bg rounded-[2rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden border border-green-400/30">
-            <!-- Orbiting rings -->
             <div class="orbit-wrap" aria-hidden="true">
                 <div class="orbit-ring"></div>
                 <div class="orbit-ring"></div>
                 <div class="orbit-ring"></div>
             </div>
-            <!-- Blob inside stats -->
             <div class="blob-bg w-72 h-72 absolute -bottom-10 -left-10 opacity-40"></div>
             <div class="absolute -top-24 -right-24 text-white/10" aria-hidden="true">
                 <span class="material-symbols-outlined" style="font-size: 300px;">local_florist</span>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center relative z-10">
-                <!-- Stat 1 -->
                 <div class="flex flex-col items-center gap-2">
                     <div class="pulse-wrap">
                         <span class="material-symbols-outlined text-4xl mb-2 text-green-200">map</span>
@@ -630,7 +627,6 @@
                     <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Km² Diện Tích</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="92"></div></div>
                 </div>
-                <!-- Stat 2 -->
                 <div class="flex flex-col items-center gap-2">
                     <div class="pulse-wrap">
                         <span class="material-symbols-outlined text-4xl mb-2 text-green-200">nature_people</span>
@@ -639,7 +635,6 @@
                     <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Loài Thực Vật Đặc Hữu</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="75"></div></div>
                 </div>
-                <!-- Stat 3 -->
                 <div class="flex flex-col items-center gap-2">
                     <div class="pulse-wrap">
                         <span class="material-symbols-outlined text-4xl mb-2 text-green-200">account_balance</span>
@@ -648,7 +643,6 @@
                     <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Di Tích Lịch Sự QG</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="60"></div></div>
                 </div>
-                <!-- Stat 4 -->
                 <div class="flex flex-col items-center gap-2">
                     <div class="pulse-wrap">
                         <span class="material-symbols-outlined text-4xl mb-2 text-green-200">library_books</span>
@@ -661,7 +655,6 @@
         </div>
     </section>
 
-    <!-- ====== EXPLORE SECTION ====== -->
     <section id="explore" class="max-w-7xl mx-auto px-6 pb-12 md:pb-16">
         <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12 relative" data-aos="fade-up">
             <div class="relative">
@@ -676,10 +669,8 @@
             </div>
         </div>
 
-        <!-- Cards Container -->
         <div class="flex flex-col md:grid md:grid-cols-3 gap-8 md:gap-10 mt-6" id="cards-container">
 
-            <!-- THẺ 1: TRÀM CHIM -->
             <div class="relative group h-full z-0 sparkle-wrap" data-aos="fade-up" data-aos-delay="100">
                 <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
                     <img src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
@@ -687,14 +678,12 @@
                 <article onclick="navigateTo('tramchim')" class="relative tilt-card card-glow card-shine card-border-glow ripple-container bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
                     <div class="h-48 md:h-64 overflow-hidden tilt-content relative">
                         <img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110 img-reveal" src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" loading="lazy"/>
-                        <!-- Tag badge overlay -->
                         <div class="absolute top-3 left-3 z-20">
                             <span class="eco-badge bg-white/80 text-green-800 border-green-300">
                                 <span class="material-symbols-outlined" style="font-size:10px;">water</span>
                                 Ramsar
                             </span>
                         </div>
-                        <!-- Hover label -->
                         <div class="card-hover-label">Khám phá ngay →</div>
                     </div>
                     <div class="p-6 md:p-8 flex-grow flex flex-col tilt-content">
@@ -709,7 +698,6 @@
                 </article>
             </div>
 
-            <!-- THẺ 2: DI TÍCH LỊCH SỬ -->
             <div class="relative group h-full z-0 sparkle-wrap" data-aos="fade-up" data-aos-delay="200">
                 <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
                     <img src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
@@ -737,7 +725,6 @@
                 </article>
             </div>
 
-            <!-- THẺ 3: DANH LAM -->
             <div class="relative group h-full z-0 sparkle-wrap" data-aos="fade-up" data-aos-delay="300">
                 <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
                     <img src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-110" loading="lazy"/>
@@ -768,7 +755,6 @@
         </div>
     </section>
 
-    <!-- ====== REFERENCES ====== -->
     <section class="max-w-7xl mx-auto px-6 py-8 border-t border-gray-200 mt-8 mb-8" data-aos="fade-up">
         <div class="bg-green-50/50 rounded-2xl p-6 md:p-8 border border-green-100 shadow-sm relative overflow-hidden">
             <div class="section-number" aria-hidden="true">03</div>
@@ -794,9 +780,7 @@
     </section>
 </main>
 
-<!-- ====== FOOTER ====== -->
 <footer class="bg-[#111811] text-white py-12 md:py-16 px-6 border-t-[6px] border-green-800 relative overflow-hidden">
-    <!-- Animated border top -->
     <div class="absolute top-0 left-0 h-[6px] w-full overflow-hidden" aria-hidden="true">
         <div style="height:100%;width:200%;background:linear-gradient(90deg,#1b5e20,#4caf50,#81c784,#4caf50,#1b5e20);animation:shimmer-move 3s linear infinite;background-size:50% 100%;"></div>
     </div>
@@ -837,7 +821,7 @@
                     setTimeout(function() { img.classList.add('revealed'); }, i * 150);
                 });
             }, 400);
-        }, 1200);
+        }, isMobile ? 500 : 1200); /* ĐÃ SỬA: Giảm thời gian loading trên điện thoại */
     });
 
     /* ============ PAGE TRANSITION ============ */
@@ -1131,7 +1115,6 @@
 })();
 </script>
 
-<!-- ============ DONG THAP SOUND SYSTEM (WEB AUDIO API) ============ -->
 <script>
 /**
  * 🌿 ĐỒNG THÁP SOUND SYSTEM
@@ -1140,6 +1123,12 @@
  */
 (function () {
   'use strict';
+
+  /* ĐÃ SỬA: Xác định thiết bị cảm ứng để vô hiệu hóa một số âm thanh nhạy cảm */
+  let isTouchDevice = false;
+  if (typeof window !== 'undefined') {
+    isTouchDevice = !window.matchMedia('(pointer: fine)').matches || window.innerWidth < 768;
+  }
 
   // ─── Context & State ────────────────────────────────────────────────────────
   let ctx = null;
@@ -1174,7 +1163,7 @@
 
   // ─── 1. HOVER CHIME ──────────────────────────────────────────────────────────
   function playHover() {
-    if (isMuted) return;
+    if (isMuted || isTouchDevice) return; /* ĐÃ SỬA: Tắt hoàn toàn trên điện thoại */
     const c = getCtx();
     const t = c.currentTime;
 
@@ -1291,7 +1280,7 @@
 
   // ─── 5. CARD FLIP / REVEAL ────────────────────────────────────────────────────
   function playReveal() {
-    if (isMuted) return;
+    if (isMuted || isTouchDevice) return; /* ĐÃ SỬA: Tắt hoàn toàn trên điện thoại để đỡ ồn khi lướt */
     const c = getCtx();
     const t = c.currentTime;
 
@@ -1323,7 +1312,7 @@
   // ─── 6. SCROLL TICK ───────────────────────────────────────────────────────────
   let lastScrollSound = 0;
   function playScrollTick() {
-    if (isMuted) return;
+    if (isMuted || isTouchDevice) return; /* ĐÃ SỬA: Tắt âm thanh kéo cuộn trang trên điện thoại */
     const now = Date.now();
     if (now - lastScrollSound < 180) return;
     lastScrollSound = now;
@@ -1729,26 +1718,22 @@
       </style>
 
       <div id="sound-submenu">
-        <!-- Volume -->
         <div id="volume-row">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
           <input type="range" id="vol-slider" min="0" max="100" value="70">
         </div>
 
-        <!-- Ambient toggle -->
         <button class="sound-sub-btn" id="btn-ambient">
           <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 19.5 3.82 19.5 2 23 8 20c1.85-.93 3.33-2.5 4.52-4.36C15.36 14.5 19 16 19 16c-3-4-2-8-2-8z"/></svg>
           Tiếng thiên nhiên
         </button>
 
-        <!-- Mute all -->
         <button class="sound-sub-btn" id="btn-mute">
           <svg viewBox="0 0 24 24" id="mute-icon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM19 12c0 2.26-1.28 4.22-3.16 5.19l1.42 1.42C19.51 17.26 21 14.8 21 12c0-2.8-1.49-5.26-3.74-6.61l-1.42 1.42C17.72 7.78 19 9.74 19 12z"/></svg>
           Tắt âm thanh
         </button>
       </div>
 
-      <!-- Main toggle button -->
       <button id="sound-toggle-btn" title="Âm thanh">
         <div id="eq-bars">
           <div class="eq-bar"></div>

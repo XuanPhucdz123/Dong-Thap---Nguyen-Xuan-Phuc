@@ -487,27 +487,33 @@
             .pulse-wrap::after { display: none !important; }
             .pulse-wrap::before { animation-duration: 3s !important; inset: -4px !important; }
 
-            /* --- FIX LỖI LOADING SCREEN TRÊN ĐIỆN THOẠI --- */
-            .loader-petal { animation: none !important; opacity: 0.9 !important; }
-            .loader-petal:nth-child(1) { transform: rotate(0deg) scale(1) !important; }
-            .loader-petal:nth-child(2) { transform: rotate(72deg) scale(1) !important; }
-            .loader-petal:nth-child(3) { transform: rotate(144deg) scale(1) !important; }
-            .loader-petal:nth-child(4) { transform: rotate(216deg) scale(1) !important; }
-            .loader-petal:nth-child(5) { transform: rotate(288deg) scale(1) !important; }
-            .loader-text { animation: none !important; }
-            #loading-screen { transition: opacity 0.4s ease, visibility 0.4s ease !important; }
+            /* --- FIX TỎA MÀU (AMBIENT GLOW & BLUR) TRÊN ĐIỆN THOẠI --- */
+            /* Giữ lại khối màu phát sáng phía sau, nhưng tắt transition để không bị giật lác loạn xạ khi lướt (hover nhầm) */
+            .group .absolute.-inset-6 {
+                display: block !important;
+                opacity: 0.85 !important;
+                filter: blur(28px) !important;
+                transform: translateY(12px) scale(1.05) !important;
+                transition: none !important; 
+            }
+            /* Chặn hover effect thay đổi kích thước trên nền phát sáng này */
+            .group:hover .absolute.-inset-6 {
+                opacity: 0.85 !important;
+                filter: blur(28px) !important;
+                transform: translateY(12px) scale(1.05) !important;
+            }
 
-            /* --- FIX LỖI LOẠN CARD TRÊN ĐIỆN THOẠI --- */
-            .group .absolute.-inset-6 { display: none !important; } 
-            .card-hover-label { display: none !important; }
-            
-            .tilt-card { transform: none !important; transform-style: flat !important; }
-            .tilt-content { transform: none !important; }
+            /* --- FIX LỖI CARD 3D BỊ NHẢY LOẠN XẠ --- */
+            .tilt-card { transform: none !important; transform-style: flat !important; transition: none !important;}
+            .tilt-content { transform: none !important; transition: none !important;}
             article:active { transform: none !important; }
             
+            /* Sửa lỗi ảnh bị chớp đen trắng liên tục */
             .img-reveal { transition-duration: 0.5s !important; filter: grayscale(0) !important; clip-path: inset(0 0 0 0) !important;}
             .group:hover img { transform: none !important; filter: grayscale(0) !important; }
+            .card-hover-label { display: none !important; }
             
+            /* Hiệu ứng trượt thẻ êm ái khi cuộn trang */
             .animate-slide-up { animation: slide-up-mobile 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important; }
         }
         @keyframes slide-up-mobile {
@@ -565,24 +571,22 @@
 
 <main>
     <section class="w-full px-4 max-w-7xl mx-auto mb-8">
-        <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0">
+        <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
             
             <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none -z-10" id="parallax-bg">
-                <img alt="Glow" class="w-full h-full object-cover rounded-[3rem] saturate-150" src="sen-27.jpg"/>
+                <img alt="Glow" class="w-full h-full object-cover saturate-150" src="sen-27.jpg"/>
             </div>
             
-            <div class="absolute inset-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-0">
-                <img alt="Sen" class="w-full h-full object-cover brightness-50 img-reveal" src="sen-27.jpg" id="hero-img"/>
-                <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
-                
-                <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px);"></div>
-                
-                <div class="hidden md:block blob-bg w-64 h-64 md:w-96 md:h-96 absolute right-10 top-10 z-1 opacity-60"></div>
+            <img alt="Sen" class="absolute inset-0 w-full h-full object-cover brightness-50 img-reveal -z-10" src="sen-27.jpg" id="hero-img"/>
+            <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent -z-10"></div>
+            
+            <div class="absolute inset-0 opacity-[0.03] pointer-events-none -z-10" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px);"></div>
+            
+            <div class="blob-bg w-64 h-64 md:w-96 md:h-96 absolute right-10 top-10 z-0 opacity-60"></div>
 
-                <div class="hidden md:block absolute right-8 bottom-16 w-3 h-3 border-2 border-green-400/40 rotate-45 animate-[float_4s_ease-in-out_infinite]" aria-hidden="true"></div>
-                <div class="hidden md:block absolute right-24 bottom-32 w-2 h-2 bg-green-400/30 rounded-full animate-[float_3s_ease-in-out_infinite_0.5s]" aria-hidden="true"></div>
-                <div class="hidden md:block absolute right-16 top-20 w-4 h-4 border border-green-300/30 rounded-full animate-[float_5s_ease-in-out_infinite_1s]" aria-hidden="true"></div>
-            </div>
+            <div class="absolute right-8 bottom-16 w-3 h-3 border-2 border-green-400/40 rotate-45 animate-[float_4s_ease-in-out_infinite]" aria-hidden="true"></div>
+            <div class="absolute right-24 bottom-32 w-2 h-2 bg-green-400/30 rounded-full animate-[float_3s_ease-in-out_infinite_0.5s]" aria-hidden="true"></div>
+            <div class="absolute right-16 top-20 w-4 h-4 border border-green-300/30 rounded-full animate-[float_5s_ease-in-out_infinite_1s]" aria-hidden="true"></div>
 
             <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
                 <div class="eco-badge mb-4 pointer-events-auto animate-slide-down" style="animation-delay:0.1s;">
@@ -821,7 +825,7 @@
                     setTimeout(function() { img.classList.add('revealed'); }, i * 150);
                 });
             }, 400);
-        }, isMobile ? 500 : 1200); /* ĐÃ SỬA: Giảm thời gian loading trên điện thoại */
+        }, 1200);
     });
 
     /* ============ PAGE TRANSITION ============ */
@@ -1124,10 +1128,10 @@
 (function () {
   'use strict';
 
-  /* ĐÃ SỬA: Xác định thiết bị cảm ứng để vô hiệu hóa một số âm thanh nhạy cảm */
+  // ĐÃ FIX: Nhận diện điện thoại để TẮT các âm thanh cọ quẹt (hover), âm cuộn trang gây ồn
   let isTouchDevice = false;
   if (typeof window !== 'undefined') {
-    isTouchDevice = !window.matchMedia('(pointer: fine)').matches || window.innerWidth < 768;
+    isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth < 768);
   }
 
   // ─── Context & State ────────────────────────────────────────────────────────
@@ -1151,7 +1155,6 @@
     return ctx;
   }
 
-  // ─── Utility ─────────────────────────────────────────────────────────────────
   function dbToGain(db) { return Math.pow(10, db / 20); }
 
   function createEnvelope(gainNode, attack, decay, sustain, release, now) {
@@ -1163,7 +1166,7 @@
 
   // ─── 1. HOVER CHIME ──────────────────────────────────────────────────────────
   function playHover() {
-    if (isMuted || isTouchDevice) return; /* ĐÃ SỬA: Tắt hoàn toàn trên điện thoại */
+    if (isMuted || isTouchDevice) return; // Không phát âm thanh này trên điện thoại
     const c = getCtx();
     const t = c.currentTime;
 
@@ -1280,7 +1283,7 @@
 
   // ─── 5. CARD FLIP / REVEAL ────────────────────────────────────────────────────
   function playReveal() {
-    if (isMuted || isTouchDevice) return; /* ĐÃ SỬA: Tắt hoàn toàn trên điện thoại để đỡ ồn khi lướt */
+    if (isMuted || isTouchDevice) return; // Không lật kêu tưng tưng trên điện thoại
     const c = getCtx();
     const t = c.currentTime;
 
@@ -1312,7 +1315,7 @@
   // ─── 6. SCROLL TICK ───────────────────────────────────────────────────────────
   let lastScrollSound = 0;
   function playScrollTick() {
-    if (isMuted || isTouchDevice) return; /* ĐÃ SỬA: Tắt âm thanh kéo cuộn trang trên điện thoại */
+    if (isMuted || isTouchDevice) return; // Không kêu tạch tạch liên hồi khi vuốt
     const now = Date.now();
     if (now - lastScrollSound < 180) return;
     lastScrollSound = now;

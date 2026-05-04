@@ -487,6 +487,15 @@
             .pulse-wrap::after { display: none !important; }
             .pulse-wrap::before { animation-duration: 3s !important; inset: -4px !important; }
 
+            /* ĐÓNG BĂNG MÀN HÌNH TẢI HOA SEN TRÊN ĐIỆN THOẠI */
+            .loader-petal { animation: none !important; opacity: 1 !important; }
+            .loader-petal:nth-child(1) { transform: rotate(0deg) scale(1) !important; }
+            .loader-petal:nth-child(2) { transform: rotate(72deg) scale(1) !important; }
+            .loader-petal:nth-child(3) { transform: rotate(144deg) scale(1) !important; }
+            .loader-petal:nth-child(4) { transform: rotate(216deg) scale(1) !important; }
+            .loader-petal:nth-child(5) { transform: rotate(288deg) scale(1) !important; }
+            .loader-text { animation: none !important; }
+
             /* --- FIX TỎA MÀU (AMBIENT GLOW & BLUR) TRÊN ĐIỆN THOẠI --- */
             /* Giữ lại khối màu phát sáng phía sau, nhưng tắt transition để không bị giật lác loạn xạ khi lướt (hover nhầm) */
             .group .absolute.-inset-6 {
@@ -1128,7 +1137,7 @@
 (function () {
   'use strict';
 
-  // ĐÃ FIX: Nhận diện điện thoại để TẮT các âm thanh cọ quẹt (hover), âm cuộn trang gây ồn
+  // Nhận diện điện thoại để TẮT các âm thanh cọ quẹt (hover), âm cuộn trang gây ồn
   let isTouchDevice = false;
   if (typeof window !== 'undefined') {
     isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth < 768);

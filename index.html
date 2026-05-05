@@ -218,9 +218,9 @@
         .card-border-glow { box-shadow: 0 0 0 0px rgba(76,175,80,0); transition: box-shadow 0.4s ease, transform 0.3s ease; }
         .card-border-glow:hover { box-shadow: 0 0 0 2px rgba(76,175,80,0.5), 0 20px 60px rgba(76,175,80,0.15); }
 
-        /* ========== 3D TILT ========== */
-        .tilt-card { transform-style: preserve-3d; transform: perspective(1000px); transition: transform 0.1s ease; }
-        .tilt-content { transform: translateZ(30px); }
+        /* ========== 3D TILT FIX ========== */
+        .tilt-card { transform: perspective(1000px); transition: transform 0.1s ease; will-change: transform; }
+        .tilt-content { /* Đã xóa translateZ để sửa lỗi kéo giãn trên Chrome/Edge */ }
 
         /* ========== BORDER SHIMMER ========== */
         .border-animate { position: relative; overflow: hidden; }
@@ -332,6 +332,14 @@
             color: rgba(76,175,80,0.06); line-height: 1; pointer-events: none; user-select: none; letter-spacing: -8px;
         }
 
+        /* ========== SCROLL INDICATOR LINE ========== */
+        .scroll-line {
+            position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
+            width: 2px; height: 80px; background: rgba(27,94,32,0.1); z-index: 50; border-radius: 2px; overflow: hidden; display: none;
+        }
+        @media (min-width: 1280px) { .scroll-line { display: block; } }
+        .scroll-line-fill { width: 100%; background: linear-gradient(180deg, #1b5e20, #4caf50); border-radius: 2px; height: 0; transition: height 0.2s ease; }
+
         /* ========== HOVER CARD LABEL ========== */
         .card-hover-label {
             position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(27,94,32,0.9) 0%, transparent 100%);
@@ -381,15 +389,12 @@
 </head>
 <body class="pt-20 md:pt-24">
 
-<!-- ====== PAGE TRANSITION OVERLAY ====== -->
 <div id="page-transition"></div>
 
-<!-- ====== CUSTOM CURSOR (desktop only) ====== -->
 <div id="cursor-dot" aria-hidden="true"></div>
 <div id="cursor-ring" aria-hidden="true"></div>
 <div id="cursor-glow" aria-hidden="true"></div>
 
-<!-- ====== LOADING SCREEN TÍCH HỢP NÚT BẮT ĐẦU ====== -->
 <div id="loading-screen">
     <div class="loader-lotus">
         <div class="loader-petal"></div>
@@ -400,32 +405,25 @@
     </div>
     <div class="loader-text mb-6">Đất Sen Hồng</div>
     
-    <!-- Thanh tải (sẽ ẩn đi sau khi load xong) -->
     <div class="loader-bar-wrap" id="loader-bar-wrap"><div class="loader-bar-fill"></div></div>
     
-    <!-- Nút bắt đầu (Hiện ra khi load xong) -->
     <button id="start-btn" class="px-8 py-3 border border-green-500 text-green-400 rounded-full font-bold uppercase tracking-widest text-[10px] hover:bg-green-500 hover:text-white transition-all duration-300 transform scale-90 opacity-0 hidden shadow-[0_0_15px_rgba(76,175,80,0.3)] hover:shadow-[0_0_25px_rgba(76,175,80,0.6)]">
         Bắt đầu khám phá
     </button>
 </div>
 
-<!-- ====== PARTICLES ====== -->
 <div id="particles" aria-hidden="true"></div>
 
-<!-- ====== PROGRESS BAR ====== -->
 <div id="progress-bar"></div>
 
-<!-- ====== SCROLL LINE INDICATOR ====== -->
 <div class="scroll-line" aria-hidden="true">
     <div class="scroll-line-fill" id="scroll-line-fill"></div>
 </div>
 
-<!-- ====== SCROLL TO TOP ====== -->
 <button id="scroll-top" aria-label="Lên đầu trang" onclick="window.scrollTo({top:0,behavior:'smooth'})">
     <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
 
-<!-- ====== HEADER ====== -->
 <header id="main-header" class="bg-white fixed top-0 w-full z-50 border-b border-gray-200">
     <div class="flex justify-between items-center px-4 md:px-6 py-3 md:py-4 max-w-7xl mx-auto">
         <div class="flex items-center gap-2">
@@ -443,27 +441,21 @@
 </header>
 
 <main>
-    <!-- ====== HERO SECTION ====== -->
     <section class="w-full px-4 max-w-7xl mx-auto mb-8">
         <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
-            <!-- Parallax glow bg -->
             <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none -z-10" id="parallax-bg">
                 <img alt="Glow" class="w-full h-full object-cover saturate-150" src="sen-27.jpg"/>
             </div>
-            <!-- Hero image -->
             <div class="absolute inset-0 z-0 pointer-events-none">
                 <img alt="Sen" class="absolute inset-0 w-full h-full object-cover brightness-50 img-reveal" src="sen-27.jpg" id="hero-img"/>
                 <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
                 <div class="absolute inset-0 opacity-[0.03]" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px);"></div>
             </div>
-            <!-- Morphing blob decorations -->
             <div class="hidden md:block blob-bg w-64 h-64 md:w-96 md:h-96 absolute right-10 top-10 z-0 opacity-60"></div>
-            <!-- Floating geometric accents -->
             <div class="hidden md:block absolute right-8 bottom-16 w-3 h-3 border-2 border-green-400/40 rotate-45 animate-[float_4s_ease-in-out_infinite]" aria-hidden="true"></div>
             <div class="hidden md:block absolute right-24 bottom-32 w-2 h-2 bg-green-400/30 rounded-full animate-[float_3s_ease-in-out_infinite_0.5s]" aria-hidden="true"></div>
             <div class="hidden md:block absolute right-16 top-20 w-4 h-4 border border-green-300/30 rounded-full animate-[float_5s_ease-in-out_infinite_1s]" aria-hidden="true"></div>
 
-            <!-- Content -->
             <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
                 <div class="eco-badge mb-4 pointer-events-auto animate-slide-down" style="animation-delay:0.1s;">
                     <span class="material-symbols-outlined" style="font-size:12px;">eco</span>
@@ -481,14 +473,12 @@
         </div>
     </section>
 
-    <!-- ====== WAVE DIVIDER ====== -->
     <div class="wave-divider -mt-8 relative z-10" aria-hidden="true">
         <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:40px;">
             <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#f4f7f4"/>
         </svg>
     </div>
 
-    <!-- ====== STATS SECTION ====== -->
     <section class="max-w-7xl mx-auto px-6 py-12 md:py-20" data-aos="fade-up">
         <div class="gradient-bg rounded-[2rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden border border-green-400/30">
             <div class="orbit-wrap" aria-hidden="true">
@@ -537,7 +527,6 @@
         </div>
     </section>
 
-    <!-- ====== EXPLORE SECTION ====== -->
     <section id="explore" class="max-w-7xl mx-auto px-6 pb-12 md:pb-16">
         <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12 relative" data-aos="fade-up">
             <div class="relative">
@@ -545,7 +534,7 @@
                 <h3 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight split-heading">
                     Hành trình
                     <span class="highlight-word" id="hl-disản">Di sản</span>
-                    &amp;
+                    &
                     <span class="highlight-word" id="hl-thiênnhiên">Thiên nhiên</span>
                 </h3>
                 <div class="w-16 md:w-24 h-1 md:h-1.5 bg-gradient-to-r from-green-600 to-green-400 mt-3" id="title-underline" style="width:0;transition:width 1s ease;"></div>
@@ -597,7 +586,7 @@
                     </div>
                     <div class="p-6 md:p-8 flex-grow flex flex-col tilt-content">
                         <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-widest mb-2 uppercase float-icon" style="animation-delay: 0.1s;">Dấu ấn thời gian</div>
-                        <h4 class="text-xl md:text-2xl font-black text-gray-900 mb-3">Di tích Lịch sử &amp; Văn hóa</h4>
+                        <h4 class="text-xl md:text-2xl font-black text-gray-900 mb-3">Di tích Lịch sử & Văn hóa</h4>
                         <p class="text-gray-600 mb-6 text-xs md:text-sm flex-grow">Ngược dòng lịch sử tìm về các giá trị văn hóa tại Xẻo Quýt, Gò Tháp và Lăng Cụ Phó bảng.</p>
                         <div class="mt-auto flex items-center justify-between border-t pt-4">
                             <span class="text-[10px] font-bold text-green-800 uppercase">Khám phá ngay</span>
@@ -637,7 +626,6 @@
         </div>
     </section>
 
-    <!-- ====== NEW SECTION: CẨM NANG DU LỊCH (BENTO GRID) ====== -->
     <section id="camnang" class="max-w-7xl mx-auto px-6 pb-12 md:pb-16 mt-8">
         <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12 relative" data-aos="fade-up">
             <div class="relative">
@@ -654,7 +642,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Bản đồ Đồng Tháp (Chiếm 2 cột trên màn lớn) -->
             <div class="lg:col-span-2 relative group z-0 tilt-card h-[350px] lg:h-auto" data-aos="fade-up" data-aos-delay="100">
                 <article class="w-full h-full relative card-glow card-border-glow bg-white rounded-2xl md:rounded-3xl overflow-hidden shadow-lg border border-gray-100 flex flex-col tilt-content">
                     <div class="p-5 md:p-6 border-b border-gray-100 flex items-center gap-3 bg-gradient-to-r from-green-50 to-white">
@@ -662,7 +649,7 @@
                         <h4 class="font-black text-gray-800 text-lg uppercase tracking-tight">Bản đồ chỉ dẫn</h4>
                     </div>
                     <div class="flex-grow w-full h-full relative overflow-hidden bg-gray-50">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1003454.1166687472!2d105.10543635817028!3d10.511514757270455!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x310a6503c4613273%3A0xc4862590209930f6!2zxJDhu5NuZyBUaMOhcCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1714490800000!5m2!1svi!2s" 
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1003454.1235655382!2d105.13280045167087!3d10.511520119290076!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x310a6504a3e817e9%3A0x8670abddbf1c1dc!2zxJDhu5NuZyBUaMOhcCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1714972124567!5m2!1svi!2s" 
                                 width="100%" height="100%" style="border:0; min-height: 100%; position: absolute; inset: 0;" 
                                 allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
                                 class="transition-all duration-700 group-hover:scale-[1.02]">
@@ -671,9 +658,7 @@
                 </article>
             </div>
 
-            <!-- Cột bên phải chứa 2 thẻ Ẩm thực & Lưu trú -->
             <div class="flex flex-col gap-6 lg:col-span-1">
-                <!-- Thẻ Ẩm thực -->
                 <div class="relative group z-0 tilt-card h-full" data-aos="fade-up" data-aos-delay="200">
                     <article class="h-full relative card-glow card-border-glow bg-gradient-to-br from-green-700 to-green-900 rounded-2xl md:rounded-3xl overflow-hidden shadow-lg p-6 md:p-8 flex flex-col justify-center tilt-content text-white">
                         <div class="absolute top-0 right-0 p-4 opacity-20 pointer-events-none">
@@ -690,7 +675,6 @@
                     </article>
                 </div>
 
-                <!-- Thẻ Lưu trú -->
                 <div class="relative group z-0 tilt-card h-full" data-aos="fade-up" data-aos-delay="300">
                     <article class="h-full relative card-glow card-border-glow bg-white rounded-2xl md:rounded-3xl overflow-hidden shadow-lg border border-gray-100 p-6 md:p-8 flex flex-col justify-center tilt-content">
                         <div class="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
@@ -699,12 +683,11 @@
                         <span class="material-symbols-outlined text-3xl mb-4 text-green-600">bed</span>
                         <h4 class="font-black text-gray-800 text-xl md:text-2xl uppercase tracking-tight mb-2">Lưu trú & Nghỉ dưỡng</h4>
                         <p class="text-sm md:text-base text-gray-600 mb-3">Hệ thống khách sạn tiện nghi tập trung chủ yếu tại <strong>TP. Cao Lãnh</strong> và <strong>TP. Sa Đéc</strong>.</p>
-                        <p class="text-sm md:text-base text-gray-600">Ngoài ra, bạn có thể chọn trải nghiệm <strong>Homestay sinh thái</strong> (như tại Tràm Chim) để hòa mình vào cuộc sống miền Tây sông nước.</p>
+                        <p class="text-sm md:text-base text-gray-600">Ngoài ra, bạn có thể chọn <strong>Homestay sinh thái</strong> để trải nghiệm cuộc sống miền sông nước.</p>
                     </article>
                 </div>
             </div>
 
-            <!-- Thẻ Lưu ý & Bí kíp (Chiếm trọn hàng dưới cùng) -->
             <div class="lg:col-span-3 relative group z-0 tilt-card" data-aos="fade-up" data-aos-delay="400">
                 <article class="relative card-glow card-border-glow bg-white rounded-2xl md:rounded-3xl overflow-hidden shadow-lg border border-green-100 p-6 md:p-8 tilt-content">
                     <div class="flex items-center gap-3 mb-6">
@@ -718,7 +701,7 @@
                             </div>
                             <div>
                                 <h5 class="font-bold text-gray-900 mb-1">Thời điểm lý tưởng</h5>
-                                <p class="text-sm text-gray-600">Từ tháng 8 đến tháng 11 (Mùa nước nổi) là lúc Đồng Tháp đẹp nhất với hoa sen nở rộ và chim muông tụ hội.</p>
+                                <p class="text-sm text-gray-600">Từ tháng 8 đến tháng 11 (Mùa nước nổi) là lúc Đồng Tháp đẹp nhất với sen nở rộ và đa dạng sản vật.</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-4">
@@ -727,7 +710,7 @@
                             </div>
                             <div>
                                 <h5 class="font-bold text-gray-900 mb-1">Trang phục & Hành lý</h5>
-                                <p class="text-sm text-gray-600">Ưu tiên quần áo gọn nhẹ, thấm hút mồ hôi. Nhớ mang theo mũ/nón, kem chống nắng và thuốc xịt muỗi khi đi rừng.</p>
+                                <p class="text-sm text-gray-600">Nên mặc quần áo gọn nhẹ. Chuẩn bị nón, kem chống nắng và đặc biệt là thuốc chống muỗi khi đi rừng.</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-4">
@@ -735,8 +718,8 @@
                                 <span class="material-symbols-outlined text-xl">directions_bus</span>
                             </div>
                             <div>
-                                <h5 class="font-bold text-gray-900 mb-1">Di chuyển</h5>
-                                <p class="text-sm text-gray-600">Cách TP.HCM khoảng 140km. Bạn có thể dễ dàng di chuyển bằng xe khách (Phương Trang, Phú Vĩnh Long) hoặc xe máy cá nhân.</p>
+                                <h5 class="font-bold text-gray-900 mb-1">Phương tiện di chuyển</h5>
+                                <p class="text-sm text-gray-600">Đường lộ cực kì thông thoáng. Di chuyển thuận tiện bằng xe giường nằm (Phương Trang, Phú Vĩnh Long) hoặc xe máy.</p>
                             </div>
                         </div>
                     </div>
@@ -745,7 +728,6 @@
         </div>
     </section>
 
-    <!-- ====== REFERENCES ====== -->
     <section class="max-w-7xl mx-auto px-6 py-8 border-t border-gray-200 mb-8" data-aos="fade-up">
         <div class="bg-green-50/50 rounded-2xl p-6 md:p-8 border border-green-100 shadow-sm relative overflow-hidden">
             <div class="section-number" aria-hidden="true">03</div>
@@ -760,7 +742,7 @@
                 </li>
                 <li class="flex items-start gap-3 group/ref">
                     <span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5 group-hover/ref:scale-125 transition-transform">check_circle</span>
-                    <span class="leading-relaxed"><strong>Cục Di sản Văn hóa - Bộ VH,TT&amp;DL (dsvh.gov.vn):</strong> Thông tin xếp hạng và hồ sơ quản lý 39 Di tích Lịch sử - Văn hóa cấp Quốc gia.</span>
+                    <span class="leading-relaxed"><strong>Cục Di sản Văn hóa - Bộ VH,TT&DL (dsvh.gov.vn):</strong> Thông tin xếp hạng và hồ sơ quản lý 39 Di tích Lịch sử - Văn hóa cấp Quốc gia.</span>
                 </li>
                 <li class="flex items-start gap-3 group/ref">
                     <span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5 group-hover/ref:scale-125 transition-transform">check_circle</span>
@@ -771,7 +753,6 @@
     </section>
 </main>
 
-<!-- ====== FOOTER TÍCH HỢP QR CODE ====== -->
 <footer class="bg-[#111811] text-white py-12 md:py-16 px-6 border-t-[6px] border-green-800 relative overflow-hidden">
     <div class="absolute top-0 left-0 h-[6px] w-full overflow-hidden" aria-hidden="true">
         <div style="height:100%;width:200%;background:linear-gradient(90deg,#1b5e20,#4caf50,#81c784,#4caf50,#1b5e20);animation:shimmer-move 3s linear infinite;background-size:50% 100%;"></div>
@@ -788,12 +769,10 @@
             <a class="hover:text-green-400 transition-all duration-300 neon-link" href="danhlam">Danh Lam</a>
         </nav>
         
-        <!-- Khối hiển thị mã QR và Tác giả -->
         <div class="text-center lg:text-right bg-green-900/40 p-5 rounded-xl border border-green-800/50 flex flex-col items-center lg:items-end shadow-lg">
             <div class="text-[9px] md:text-[10px] text-green-400 uppercase font-bold tracking-widest mb-3">Quét mã để truy cập web</div>
             <div class="bg-white p-1.5 rounded-lg mb-3 shadow-[0_0_15px_rgba(74,222,128,0.2)] hover:scale-105 transition-transform duration-300 cursor-pointer">
-                <!-- GHI CHÚ: Bạn đổi tên file 'qrcode.png' thành tên file hình mã QR của bạn nhé -->
-                <img src="xuanphucqr.png" alt="Mã QR Truy cập" class="w-16 h-16 md:w-20 md:h-20 object-contain"/>
+                <img src="qrcode.png" alt="Mã QR Truy cập" class="w-16 h-16 md:w-20 md:h-20 object-contain"/>
             </div>
             <div class="text-[8px] md:text-[10px] text-gray-400 uppercase tracking-widest mb-1">Thực hiện bởi</div>
             <a href="https://dongthap-xuanphuc.vercel.app/" target="_blank" class="glow-link inline-block text-sm md:text-base font-black animate-pop-bounce drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]">
@@ -977,7 +956,7 @@
                 if (cur >= target) { counter.textContent = target; clearInterval(timer); }
                 else { counter.textContent = Math.floor(cur); }
             }, 16);
-            var bar = counter.closest('.flex') && counter.closest('.flex')?.querySelector('.stat-bar-fill');
+            var bar = counter.closest('.flex') && counter.closest('.flex').querySelector('.stat-bar-fill');
             if (bar) bar.style.width = bar.getAttribute('data-width') + '%';
             counterObs.unobserve(counter);
         });
@@ -1017,14 +996,18 @@
         el.addEventListener('touchstart', addRipple, { passive: true });
     });
 
-    /* ============ 3D TILT ============ */
+    /* ============ 3D TILT FIX ============ */
     if (!isMobile && !isReducedMotion) {
         document.querySelectorAll('.tilt-card').forEach(function(card) {
             card.addEventListener('mousemove', function(e) {
                 var r = card.getBoundingClientRect();
-                var x = e.clientX - r.left, y = e.clientY - r.top;
-                var rx = ((y - r.height/2) / r.height) * -10;
-                var ry = ((x - r.width/2) / r.width) * 10;
+                var w = card.offsetWidth;
+                var h = card.offsetHeight;
+                var x = e.clientX - r.left - w/2;
+                var y = e.clientY - r.top - h/2;
+                // Giảm nhẹ độ nghiêng (-8 và 8) để tăng độ mượt
+                var rx = (y / (h/2)) * -8;
+                var ry = (x / (w/2)) * 8;
                 card.style.transform = 'perspective(1000px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) scale3d(1.02,1.02,1.02)';
             });
             card.addEventListener('mouseleave', function() {
@@ -1162,7 +1145,6 @@
     const c = getCtx();
     const t = c.currentTime;
     
-    // Hợp âm Cmaj9 dàn trải (C4, G4, B4, D5, E5) - Dài hơn và to hơn
     const notes = [261.63, 392.00, 493.88, 587.33, 659.25];
     notes.forEach(function (freq, i) {
       const osc = c.createOscillator();
@@ -1173,7 +1155,6 @@
       osc.frequency.value = freq;
       panner.pan.value = (i % 2 === 0 ? -0.4 : 0.4);
 
-      // Tăng âm lượng lên 0.12 và ngân dài lên 5 giây
       g.gain.setValueAtTime(0, t);
       g.gain.linearRampToValueAtTime(0.12, t + 0.4 + (i * 0.2)); 
       g.gain.exponentialRampToValueAtTime(0.001, t + 5.0 + (i * 0.3));
@@ -1186,7 +1167,6 @@
       osc.stop(t + 6.0);
     });
 
-    // Tiếng "ting" lấp lánh cũng to và kéo dài hơn
     const oscTing = c.createOscillator();
     const gTing = c.createGain();
     oscTing.type = 'triangle';
@@ -1632,7 +1612,7 @@
     });
 
     btnAmbient.addEventListener('click', function () {
-      getCtx(); // ensure context
+      getCtx();
       if (!isAmbientOn) {
         startAmbient(); btnAmbient.classList.add('active'); mainBtn.classList.add('ambient-active'); playToggle(true);
       } else {
@@ -1721,7 +1701,6 @@
 
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', boot); } else { boot(); }
 
-  // Expose cho nút Bắt đầu
   window.DongThapSound = {
     init: init,
     playLoadComplete: playLoadComplete

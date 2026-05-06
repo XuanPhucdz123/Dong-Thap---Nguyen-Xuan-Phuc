@@ -186,49 +186,6 @@
             display: inline-block; padding-top: 0.3em; padding-bottom: 0.1em; line-height: 1.2;
         }
 
-        /* ========== GLITCH EFFECT ========== */
-        .glitch { position: relative; }
-        .glitch:hover { animation: glitch-shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes glitch-shake {
-            0%,100% { transform: none; }
-            20% { transform: skewX(-2deg) translateX(2px); }
-            40% { transform: skewX(2deg) translateX(-2px); }
-            60% { transform: skewX(-1deg) translateX(1px); }
-            80% { transform: skewX(1deg) translateX(-1px); }
-        }
-        .glitch::before, .glitch::after {
-            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-            opacity: 0; pointer-events: none;
-        }
-        .glitch:hover::before {
-            background: linear-gradient(135deg, #ff4444, #ff8888, #ff4444);
-            animation: glitch-before 0.4s steps(2) forwards;
-            clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
-        }
-        .glitch:hover::after {
-            background: linear-gradient(135deg, #4444ff, #8888ff, #4444ff);
-            animation: glitch-after 0.4s steps(2) forwards;
-            clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
-        }
-        @keyframes glitch-before {
-            0%,100% { opacity: 0; transform: none; }
-            30%,70% { opacity: 0.6; transform: translateX(-3px); }
-        }
-        @keyframes glitch-after {
-            0%,100% { opacity: 0; transform: none; }
-            30%,70% { opacity: 0.5; transform: translateX(3px); }
-        }
-
-        /* ========== TEXT SHIMMER ========== */
-        .text-shimmer {
-            background: linear-gradient(90deg, #1b5e20 0%, #4caf50 30%, #81c784 50%, #4caf50 70%, #1b5e20 100%);
-            background-size: 200% auto;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-            animation: shimmer-move 3s linear infinite;
-        }
-        @keyframes shimmer-move { to { background-position: 200% center; } }
-
         /* ========== CLIP-PATH IMAGE REVEAL ========== */
         .img-reveal { opacity: 0; transform: scale(1.05); transition: opacity 1s cubic-bezier(0.77,0,0.175,1), transform 1s ease; }
         .img-reveal.revealed { opacity: 1; transform: scale(1); }
@@ -255,7 +212,6 @@
 
         /* ========== 3D TILT FIX ========== */
         .tilt-card { transform: perspective(1000px); transition: transform 0.1s ease; will-change: transform; }
-        .tilt-content { transform: translateZ(30px); }
 
         /* ========== BORDER SHIMMER ========== */
         .border-animate { position: relative; overflow: hidden; }
@@ -422,9 +378,7 @@
             .gradient-bg { animation: none !important; background: linear-gradient(160deg, #1b5e20 0%, #2e7d32 50%, #1b5e20 100%) !important; background-size: 100% 100% !important; }
             .gradient-text { animation: none !important; background-position: 0% 50% !important; }
             .text-shimmer { animation: none !important; -webkit-text-fill-color: #1b5e20; color: #1b5e20; background: none; }
-            .orbit-wrap, .section-number, #parallax-bg, #particles, .glitch::before, .glitch::after { display: none !important; }
-            .glitch:hover { animation: none !important; }
-            .eco-badge, .animate-pop-bounce { animation: none !important; }
+            .orbit-wrap, .section-number, #parallax-bg, #particles { display: none !important; }
             .card-shine::after { display: none !important; }
             .stat-bar-fill { transition-duration: 1s !important; }
             .card-glow::before, .border-animate::before { display: none !important; }
@@ -450,7 +404,6 @@
             }
 
             .tilt-card { transform: none !important; transform-style: flat !important; transition: none !important;}
-            .tilt-content { transform: none !important; transition: none !important;}
             article:active { transform: none !important; }
             main article { transform: none !important; } 
             
@@ -538,7 +491,7 @@
         <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[620px] rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-0">
             
             <!-- Parallax glow bg -->
-            <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none z-0" id="parallax-bg">
+            <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none -z-10" id="parallax-bg">
                 <img alt="Glow" class="w-full h-full object-cover saturate-150" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg"/>
             </div>
             
@@ -833,7 +786,7 @@
                 </li>
                 <li class="flex items-start gap-3 group/ref">
                     <span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5 group-hover/ref:scale-125 transition-transform">check_circle</span>
-                    <span class="leading-relaxed"><strong>Cục Di sản Văn hóa - Bộ VH,TT&amp;DL (dsvh.gov.vn):</strong> Thông tin xếp hạng và hồ sơ quản lý 39 Di tích Lịch sử - Văn hóa cấp Quốc gia.</span>
+                    <span class="leading-relaxed"><strong>Cục Di sản Văn hóa - Bộ VH,TT&DL (dsvh.gov.vn):</strong> Thông tin xếp hạng và hồ sơ quản lý 39 Di tích Lịch sử - Văn hóa cấp Quốc gia.</span>
                 </li>
                 <li class="flex items-start gap-3 group/ref">
                     <span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5 group-hover/ref:scale-125 transition-transform">check_circle</span>
@@ -865,7 +818,7 @@
         <div class="text-center lg:text-right bg-green-900/40 p-5 rounded-xl border border-green-800/50 flex flex-col items-center lg:items-end shadow-lg">
             <div class="text-[9px] md:text-[10px] text-green-400 uppercase font-bold tracking-widest mb-3">Quét mã để truy cập web</div>
             <div class="bg-white p-1.5 rounded-lg mb-3 shadow-[0_0_15px_rgba(74,222,128,0.2)] hover:scale-105 transition-transform duration-300 cursor-pointer">
-                <img src="xuanphucqr.png" alt="Mã QR Truy cập" class="w-16 h-16 md:w-20 md:h-20 object-contain"/>
+                <img src="qrcode.png" alt="Mã QR Truy cập" class="w-16 h-16 md:w-20 md:h-20 object-contain"/>
             </div>
             <div class="text-[8px] md:text-[10px] text-gray-400 uppercase tracking-widest mb-1">Thực hiện bởi</div>
             <a href="https://dongthap-xuanphuc.vercel.app/" target="_blank" class="glow-link inline-block text-sm md:text-base font-black animate-pop-bounce drop-shadow-[0_0_8px_rgba(74,222,128,0.5)] text-white">
@@ -875,7 +828,6 @@
     </div>
 </footer>
 
-<!-- ====== MAIN INTERACTION SCRIPT ====== -->
 <script>
 (function() {
     'use strict';
@@ -901,20 +853,24 @@
     });
 
     document.getElementById('start-btn').addEventListener('click', function() {
-        if(window.DongThapSound) {
-            window.DongThapSound.init();
-            window.DongThapSound.playLoadComplete();
-        }
-        
+        // Fix nghẽn chip bằng cách lùi thời gian tải nhạc
         document.getElementById('loading-screen').classList.add('hidden');
         
-        var heroImg = document.getElementById('hero-img');
-        if (heroImg) heroImg.classList.add('revealed');
         setTimeout(function() {
-            document.querySelectorAll('.img-reveal:not(#hero-img)').forEach(function(img, i) {
-                setTimeout(function() { img.classList.add('revealed'); }, i * 150);
-            });
-        }, 400);
+            if(window.DongThapSound) {
+                window.DongThapSound.init();
+                window.DongThapSound.playLoadComplete();
+            }
+            
+            var heroImg = document.getElementById('hero-img');
+            if (heroImg) heroImg.classList.add('revealed');
+            
+            setTimeout(function() {
+                document.querySelectorAll('.img-reveal:not(#hero-img)').forEach(function(img, i) {
+                    setTimeout(function() { img.classList.add('revealed'); }, i * 150);
+                });
+            }, 400);
+        }, 50); // Timeout 50ms để giảm INP issue
     });
 
     /* ============ PAGE TRANSITION ============ */
@@ -1090,7 +1046,7 @@
         el.addEventListener('touchstart', addRipple, { passive: true });
     });
 
-    /* ============ 3D TILT FIX LỖI CO GIÃN ============ */
+    /* ============ 3D TILT FIX ============ */
     if (!isMobile && !isReducedMotion) {
         document.querySelectorAll('.tilt-card').forEach(function(card) {
             let isHovered = false;
@@ -1164,7 +1120,20 @@
         }
     }, { passive: true });
 
-    /* ============ MOUSE PARALLAX HERO ============ */
+    /* ============ PARALLAX ============ */
+    if (isMobile) {
+        var heroImg = document.getElementById('hero-img');
+        if (heroImg) {
+            var lastY = 0;
+            window.addEventListener('scroll', function() {
+                var y = window.scrollY;
+                if (Math.abs(y - lastY) < 4) return;
+                lastY = y;
+                heroImg.style.transform = 'scale(1.04) translateY(' + (y * 0.04) + 'px)';
+            }, { passive: true });
+        }
+    }
+
     if (!isMobile && !isReducedMotion) {
         var heroSection = document.querySelector('section');
         if (heroSection) {
@@ -1184,12 +1153,9 @@
 })();
 </script>
 
-<!-- ============ ĐỒNG THÁP SOUND SYSTEM (WEB AUDIO API) ============ -->
 <script>
 /**
- * 🌿 ĐỒNG THÁP SOUND SYSTEM
- * Web Audio API - Không cần file ngoài, tổng hợp 100% trong trình duyệt
- * Version 2.0 — Full Immersive Edition
+ * 🌿 ĐỒNG THÁP SOUND SYSTEM - Web Audio API
  */
 (function () {
   'use strict';
@@ -1219,6 +1185,7 @@
     return ctx;
   }
 
+  // ─── ÂM THANH CHÀO MỪNG (STARTUP CHIME) ─────────────────────
   function playLoadComplete() {
     if (isMuted) return;
     const c = getCtx();
@@ -1263,27 +1230,40 @@
     oscTing.stop(t + 3.5);
   }
 
-  /* ─── 1. HOVER CHIME ─────────────────────────────────────── */
   function playHover() {
     if (isMuted || isTouchDevice) return; 
-    const c = getCtx(), t = c.currentTime;
-    const osc = c.createOscillator(), g = c.createGain(), filter = c.createBiquadFilter();
+    const c = getCtx();
+    const t = c.currentTime;
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    const filter = c.createBiquadFilter();
+
     osc.type = 'sine';
     osc.frequency.setValueAtTime(880, t);
     osc.frequency.exponentialRampToValueAtTime(1200, t + 0.12);
-    filter.type = 'bandpass'; filter.frequency.value = 1000; filter.Q.value = 2;
+
+    filter.type = 'bandpass';
+    filter.frequency.value = 1000;
+    filter.Q.value = 2;
+
     g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(0.08, t + 0.02);
     g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
-    osc.connect(filter); filter.connect(g); g.connect(masterGain);
-    osc.start(t); osc.stop(t + 0.3);
+
+    osc.connect(filter);
+    filter.connect(g);
+    g.connect(masterGain);
+
+    osc.start(t);
+    osc.stop(t + 0.3);
   }
 
-  /* ─── 2. CLICK POP ───────────────────────────────────────── */
   function playClick() {
     if (isMuted) return;
-    const c = getCtx(), t = c.currentTime;
-    const osc = c.createOscillator(), g = c.createGain();
+    const c = getCtx();
+    const t = c.currentTime;
+    const osc = c.createOscillator();
+    const g = c.createGain();
     osc.type = 'triangle';
     osc.frequency.setValueAtTime(320, t);
     osc.frequency.exponentialRampToValueAtTime(80, t + 0.1);
@@ -1292,7 +1272,8 @@
     osc.connect(g); g.connect(masterGain);
     osc.start(t); osc.stop(t + 0.15);
 
-    const osc2 = c.createOscillator(), g2 = c.createGain();
+    const osc2 = c.createOscillator();
+    const g2 = c.createGain();
     osc2.type = 'square';
     osc2.frequency.setValueAtTime(1800, t);
     g2.gain.setValueAtTime(0.06, t);
@@ -1301,27 +1282,32 @@
     osc2.start(t); osc2.stop(t + 0.05);
   }
 
-  /* ─── 3. PAGE TRANSITION WHOOSH ─────────────────────────── */
   function playTransition() {
     if (isMuted) return;
-    const c = getCtx(), t = c.currentTime;
+    const c = getCtx();
+    const t = c.currentTime;
     const bufSize = c.sampleRate * 0.6;
     const buf = c.createBuffer(1, bufSize, c.sampleRate);
     const data = buf.getChannelData(0);
     for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufSize, 2);
-    const src = c.createBufferSource(); src.buffer = buf;
+
+    const src = c.createBufferSource();
+    src.buffer = buf;
     const filter = c.createBiquadFilter();
     filter.type = 'bandpass';
     filter.frequency.setValueAtTime(400, t);
     filter.frequency.exponentialRampToValueAtTime(4000, t + 0.3);
     filter.Q.value = 1;
+
     const g = c.createGain();
     g.gain.setValueAtTime(0.4, t);
     g.gain.linearRampToValueAtTime(0, t + 0.55);
+
     src.connect(filter); filter.connect(g); g.connect(masterGain);
     src.start(t);
 
-    const osc = c.createOscillator(), g2 = c.createGain();
+    const osc = c.createOscillator();
+    const g2 = c.createGain();
     osc.type = 'sine';
     osc.frequency.setValueAtTime(600, t);
     osc.frequency.exponentialRampToValueAtTime(200, t + 0.4);
@@ -1331,54 +1317,74 @@
     osc.start(t); osc.stop(t + 0.5);
   }
 
-  /* ─── 5. CARD REVEAL ─────────────────────────────────────── */
   function playReveal() {
     if (isMuted || isTouchDevice) return; 
-    const c = getCtx(), t = c.currentTime;
-    const osc = c.createOscillator(), g = c.createGain();
-    const vib = c.createOscillator(), vibGain = c.createGain();
-    vib.frequency.value = 6; vibGain.gain.value = 15;
-    vib.connect(vibGain); vibGain.connect(osc.frequency);
+    const c = getCtx();
+    const t = c.currentTime;
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    const vib = c.createOscillator();
+    const vibGain = c.createGain();
+
+    vib.frequency.value = 6;
+    vibGain.gain.value = 15;
+    vib.connect(vibGain);
+    vibGain.connect(osc.frequency);
+
     osc.type = 'sine';
     osc.frequency.setValueAtTime(440, t);
     osc.frequency.linearRampToValueAtTime(660, t + 0.2);
+
     g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(0.12, t + 0.04);
     g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+
+    vib.connect(vibGain); vibGain.connect(osc.frequency);
     osc.connect(g); g.connect(masterGain);
     vib.start(t); vib.stop(t + 0.5);
     osc.start(t); osc.stop(t + 0.5);
   }
 
-  /* ─── 6. SCROLL TICK ─────────────────────────────────────── */
   let lastScrollSound = 0;
   function playScrollTick() {
     if (isMuted || isTouchDevice) return; 
     const now = Date.now();
     if (now - lastScrollSound < 180) return;
     lastScrollSound = now;
-    const c = getCtx(), t = c.currentTime;
-    const osc = c.createOscillator(), g = c.createGain();
-    osc.type = 'sine'; osc.frequency.value = 200 + Math.random() * 100;
+
+    const c = getCtx();
+    const t = c.currentTime;
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = 200 + Math.random() * 100;
     g.gain.setValueAtTime(0.04, t);
     g.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
     osc.connect(g); g.connect(masterGain);
     osc.start(t); osc.stop(t + 0.07);
   }
 
-  /* ─── 7. COUNTER TICK ────────────────────────────────────── */
+  // ─── 7. COUNTER TICK ───────────────────────────
   function playCounterTick() {
-    if (isMuted) return;
-    const c = getCtx(), t = c.currentTime;
-    const osc = c.createOscillator(), g = c.createGain();
-    osc.type = 'square'; osc.frequency.value = 400 + Math.random() * 200;
-    g.gain.setValueAtTime(0.035, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
-    osc.connect(g); g.connect(masterGain);
-    osc.start(t); osc.stop(t + 0.05);
+    if (isMuted || isTouchDevice) return; 
+    const c = getCtx();
+    const t = c.currentTime;
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    
+    osc.type = 'sine'; 
+    osc.frequency.value = 800 + Math.random() * 200;
+    
+    g.gain.setValueAtTime(0.005, t); 
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.03); 
+    
+    osc.connect(g); 
+    g.connect(masterGain);
+    
+    osc.start(t); 
+    osc.stop(t + 0.04);
   }
 
-  /* ─── 8. AMBIENT NATURE SOUNDSCAPE ──────────────────────── */
   function createAmbientLayer() {
     const c = getCtx();
     const bufSize = c.sampleRate * 3;
@@ -1387,100 +1393,161 @@
       const d = buf.getChannelData(ch);
       for (let i = 0; i < bufSize; i++) d[i] = Math.random() * 2 - 1;
     }
+
     const noise = c.createBufferSource();
-    noise.buffer = buf; noise.loop = true; noise.loopStart = 0; noise.loopEnd = 3;
-    const lpf = c.createBiquadFilter(); lpf.type = 'lowpass'; lpf.frequency.value = 600; lpf.Q.value = 0.5;
-    const hpf = c.createBiquadFilter(); hpf.type = 'highpass'; hpf.frequency.value = 80;
-    const lfo = c.createOscillator(), lfoGain = c.createGain();
-    lfo.type = 'sine'; lfo.frequency.value = 0.15; lfoGain.gain.value = 0.3;
+    noise.buffer = buf;
+    noise.loop = true;
+    noise.loopStart = 0;
+    noise.loopEnd = 3;
+
+    const lpf = c.createBiquadFilter();
+    lpf.type = 'lowpass';
+    lpf.frequency.value = 600;
+    lpf.Q.value = 0.5;
+
+    const hpf = c.createBiquadFilter();
+    hpf.type = 'highpass';
+    hpf.frequency.value = 80;
+
+    const lfo = c.createOscillator();
+    const lfoGain = c.createGain();
+    lfo.type = 'sine';
+    lfo.frequency.value = 0.15;
+    lfoGain.gain.value = 0.3;
     lfo.connect(lfoGain);
-    const ambGain = c.createGain(); ambGain.gain.value = 0.12;
+
+    const ambGain = c.createGain();
+    ambGain.gain.value = 0.12;
     lfoGain.connect(ambGain.gain);
-    noise.connect(lpf); lpf.connect(hpf); hpf.connect(ambGain); ambGain.connect(masterGain);
-    noise.start(); lfo.start();
+
+    noise.connect(lpf);
+    lpf.connect(hpf);
+    hpf.connect(ambGain);
+    ambGain.connect(masterGain);
+
+    noise.start();
+    lfo.start();
+
     ambientNodes.push(noise, lfo, ambGain);
     return ambGain;
   }
 
   function createBirdChirps() {
     const c = getCtx();
+
     function chirp() {
       if (!isAmbientOn || isMuted) return;
       const t = c.currentTime;
+
       const numNotes = 2 + Math.floor(Math.random() * 4);
       const baseFreq = 1800 + Math.random() * 1400;
+
       for (let i = 0; i < numNotes; i++) {
         const delay = i * (0.06 + Math.random() * 0.08);
         const freq = baseFreq * (0.9 + Math.random() * 0.4);
-        const osc = c.createOscillator(), g = c.createGain();
-        const vib = c.createOscillator(), vibG = c.createGain();
-        vib.type = 'sine'; vib.frequency.value = 12 + Math.random() * 8;
+
+        const osc = c.createOscillator();
+        const g = c.createGain();
+        const vib = c.createOscillator();
+        const vibG = c.createGain();
+
+        vib.type = 'sine';
+        vib.frequency.value = 12 + Math.random() * 8;
         vibG.gain.value = freq * 0.04;
-        vib.connect(vibG); vibG.connect(osc.frequency);
+        vib.connect(vibG);
+        vibG.connect(osc.frequency);
+
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, t + delay);
         osc.frequency.linearRampToValueAtTime(freq * 1.15, t + delay + 0.04);
         osc.frequency.exponentialRampToValueAtTime(freq * 0.9, t + delay + 0.12);
+
         const vol = 0.06 + Math.random() * 0.06;
         g.gain.setValueAtTime(0, t + delay);
         g.gain.linearRampToValueAtTime(vol, t + delay + 0.02);
         g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.14);
-        const panner = c.createStereoPanner(); panner.pan.value = (Math.random() * 2 - 1) * 0.7;
+
+        const panner = c.createStereoPanner();
+        panner.pan.value = (Math.random() * 2 - 1) * 0.7;
+
         vib.start(t + delay); vib.stop(t + delay + 0.2);
-        osc.connect(g); g.connect(panner); panner.connect(masterGain);
+        osc.connect(g);
+        g.connect(panner);
+        panner.connect(masterGain);
         osc.start(t + delay); osc.stop(t + delay + 0.2);
       }
+
       birdLoop = setTimeout(chirp, (2 + Math.random() * 4) * 1000);
     }
+
     chirp();
   }
 
   function createCrickets() {
     const c = getCtx();
-    function chirp() {
+
+    function cricket() {
       if (!isAmbientOn || isMuted) return;
       const t = c.currentTime;
       const freq = 4200 + Math.random() * 800;
+
       for (let i = 0; i < 8; i++) {
-        const osc = c.createOscillator(), g = c.createGain();
+        const osc = c.createOscillator();
+        const g = c.createGain();
         const delay = i * 0.05;
-        osc.type = 'square'; osc.frequency.value = freq;
+        osc.type = 'square';
+        osc.frequency.value = freq;
         g.gain.setValueAtTime(0, t + delay);
         g.gain.linearRampToValueAtTime(0.02, t + delay + 0.01);
         g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.04);
-        const lpf = c.createBiquadFilter(); lpf.type = 'lowpass'; lpf.frequency.value = 5000;
-        const panner = c.createStereoPanner(); panner.pan.value = (Math.random() * 2 - 1) * 0.9;
+
+        const lpf = c.createBiquadFilter();
+        lpf.type = 'lowpass';
+        lpf.frequency.value = 5000;
+
+        const panner = c.createStereoPanner();
+        panner.pan.value = (Math.random() * 2 - 1) * 0.9;
+
         osc.connect(lpf); lpf.connect(g); g.connect(panner); panner.connect(masterGain);
         osc.start(t + delay); osc.stop(t + delay + 0.05);
       }
-      birdLoop = setTimeout(chirp, (0.8 + Math.random() * 3) * 1000);
+
+      birdLoop = setTimeout(cricket, (0.8 + Math.random() * 3) * 1000);
     }
-    setTimeout(chirp, 2500);
+
+    setTimeout(cricket, 2500);
   }
 
   function startAmbient() {
     if (isAmbientOn) return;
     isAmbientOn = true;
-    createAmbientLayer(); createBirdChirps(); createCrickets();
+    createAmbientLayer();
+    createBirdChirps();
+    createCrickets();
   }
 
   function stopAmbient() {
     isAmbientOn = false;
     clearTimeout(birdLoop);
-    ambientNodes.forEach(function(n) {
-      try { n.stop && n.stop(); n.disconnect && n.disconnect(); } catch(e) {}
+    ambientNodes.forEach(function (n) {
+      try {
+        n.stop && n.stop();
+        n.disconnect && n.disconnect();
+      } catch (e) {}
     });
     ambientNodes = [];
   }
 
-  /* ─── 9. AMBIENT TOGGLE CHIME ───────────────────────────── */
   function playToggle(on) {
-    const c = getCtx(), t = c.currentTime;
+    const c = getCtx();
+    const t = c.currentTime;
     const freqs = on ? [440, 554, 659] : [659, 554, 440];
-    freqs.forEach(function(freq, i) {
-      const osc = c.createOscillator(), g = c.createGain();
+    freqs.forEach(function (freq, i) {
+      const osc = c.createOscillator();
+      const g = c.createGain();
       const st = t + i * 0.1;
-      osc.type = 'sine'; osc.frequency.value = freq;
+      osc.type = 'sine';
+      osc.frequency.value = freq;
       g.gain.setValueAtTime(0, st);
       g.gain.linearRampToValueAtTime(0.15, st + 0.02);
       g.gain.exponentialRampToValueAtTime(0.001, st + 0.5);
@@ -1489,7 +1556,6 @@
     });
   }
 
-  /* ─── UI: SOUND CONTROL PANEL ───────────────────────────── */
   function createSoundPanel() {
     const panel = document.createElement('div');
     panel.id = 'sound-panel';
@@ -1501,84 +1567,48 @@
         }
         #sound-toggle-btn {
           width: 48px; height: 48px; border-radius: 50%;
-          background: linear-gradient(135deg, #1b5e20, #4caf50);
-          border: none; cursor: pointer;
-          display: flex; align-items: center; justify-content: center;
-          box-shadow: 0 4px 20px rgba(76,175,80,0.5);
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-          position: relative; overflow: hidden;
+          background: linear-gradient(135deg, #1b5e20, #4caf50); border: none; cursor: pointer;
+          display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(76,175,80,0.5);
+          transition: transform 0.2s ease, box-shadow 0.2s ease; position: relative; overflow: hidden;
         }
         #sound-toggle-btn:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(76,175,80,0.7); }
         #sound-toggle-btn:active { transform: scale(0.92); }
         #sound-toggle-btn svg { width: 22px; height: 22px; fill: white; transition: opacity 0.2s; }
         #sound-toggle-btn.muted svg { opacity: 0.5; }
-
-        #sound-toggle-btn.ambient-active::before,
-        #sound-toggle-btn.ambient-active::after {
+        #sound-toggle-btn.ambient-active::before, #sound-toggle-btn.ambient-active::after {
           content: ''; position: absolute; inset: -4px; border-radius: 50%;
-          border: 2px solid rgba(129,199,132,0.6);
-          animation: sound-pulse 2s ease-out infinite;
+          border: 2px solid rgba(129,199,132,0.6); animation: sound-pulse 2s ease-out infinite;
         }
         #sound-toggle-btn.ambient-active::after { animation-delay: 1s; }
-        @keyframes sound-pulse {
-          0% { transform: scale(1); opacity: 1; }
-          100% { transform: scale(1.7); opacity: 0; }
-        }
+        @keyframes sound-pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.7); opacity: 0; } }
 
-        #sound-submenu {
-          display: none; flex-direction: column; gap: 6px; align-items: flex-end;
-          animation: fadeSlideUp 0.25s ease forwards;
-        }
+        #sound-submenu { display: none; flex-direction: column; gap: 6px; align-items: flex-end; animation: fadeSlideUp 0.25s ease forwards; }
         #sound-submenu.open { display: flex; }
-        @keyframes fadeSlideUp {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .sound-sub-btn {
-          display: flex; align-items: center; gap: 8px;
-          background: white; border: 1.5px solid rgba(27,94,32,0.2);
-          border-radius: 24px; padding: 6px 14px 6px 10px;
+          display: flex; align-items: center; gap: 8px; background: white;
+          border: 1.5px solid rgba(27,94,32,0.2); border-radius: 24px; padding: 6px 14px 6px 10px;
           font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-          color: #1b5e20; cursor: pointer; white-space: nowrap;
-          box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-          transition: all 0.2s ease;
+          color: #1b5e20; cursor: pointer; white-space: nowrap; box-shadow: 0 2px 12px rgba(0,0,0,0.08); transition: all 0.2s ease;
         }
         .sound-sub-btn:hover { background: #f0fdf4; border-color: #4caf50; transform: translateX(-4px); }
-        .sound-sub-btn.active {
-          background: linear-gradient(135deg, #1b5e20, #4caf50);
-          color: white; border-color: transparent;
-          box-shadow: 0 4px 16px rgba(76,175,80,0.4);
-        }
+        .sound-sub-btn.active { background: linear-gradient(135deg, #1b5e20, #4caf50); color: white; border-color: transparent; box-shadow: 0 4px 16px rgba(76,175,80,0.4); }
         .sound-sub-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
         .sound-sub-btn.active svg { fill: white; }
         .sound-sub-btn:not(.active) svg { fill: #1b5e20; }
 
         #volume-row {
-          display: flex; align-items: center; gap: 8px;
-          background: white; border: 1.5px solid rgba(27,94,32,0.15);
-          border-radius: 24px; padding: 6px 14px;
-          box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+          display: flex; align-items: center; gap: 8px; background: white;
+          border: 1.5px solid rgba(27,94,32,0.15); border-radius: 24px; padding: 6px 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
         #volume-row svg { width: 14px; height: 14px; fill: #4caf50; flex-shrink: 0; }
-        #vol-slider {
-          -webkit-appearance: none; width: 80px; height: 3px; border-radius: 2px;
-          background: linear-gradient(90deg, #4caf50 var(--pct, 70%), #d1d5db var(--pct, 70%));
-          outline: none; cursor: pointer;
-        }
-        #vol-slider::-webkit-slider-thumb {
-          -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
-          background: #1b5e20; box-shadow: 0 1px 4px rgba(0,0,0,0.2); cursor: pointer;
-        }
-        #vol-slider::-moz-range-thumb {
-          width: 14px; height: 14px; border-radius: 50%; background: #1b5e20; border: none;
-        }
+        #vol-slider { -webkit-appearance: none; width: 80px; height: 3px; border-radius: 2px; background: linear-gradient(90deg, #4caf50 var(--pct, 70%), #d1d5db var(--pct, 70%)); outline: none; cursor: pointer; }
+        #vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #1b5e20; box-shadow: 0 1px 4px rgba(0,0,0,0.2); cursor: pointer; }
+        #vol-slider::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #1b5e20; border: none; }
 
         #eq-bars { display: flex; gap: 2px; align-items: flex-end; height: 16px; }
-        .eq-bar {
-          width: 3px; border-radius: 1px; background: white;
-          animation: eq-dance 0.6s ease-in-out infinite alternate;
-        }
+        .eq-bar { width: 3px; border-radius: 1px; background: white; animation: eq-dance 0.6s ease-in-out infinite alternate; }
         .eq-bar:nth-child(1) { height: 6px; animation-delay: 0s; }
         .eq-bar:nth-child(2) { height: 12px; animation-delay: 0.1s; }
         .eq-bar:nth-child(3) { height: 8px; animation-delay: 0.2s; }
@@ -1604,10 +1634,7 @@
 
       <button id="sound-toggle-btn" title="Âm thanh">
         <div id="eq-bars">
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
+          <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
         </div>
       </button>
     `;
@@ -1622,28 +1649,22 @@
     const volSlider = document.getElementById('vol-slider');
     const eqBars = document.querySelectorAll('.eq-bar');
 
-    mainBtn.addEventListener('click', function() {
+    mainBtn.addEventListener('click', function () {
       menuOpen = !menuOpen;
       submenu.classList.toggle('open', menuOpen);
       playClick();
     });
 
-    btnAmbient.addEventListener('click', function() {
+    btnAmbient.addEventListener('click', function () {
       getCtx();
       if (!isAmbientOn) {
-        startAmbient();
-        btnAmbient.classList.add('active');
-        mainBtn.classList.add('ambient-active');
-        playToggle(true);
+        startAmbient(); btnAmbient.classList.add('active'); mainBtn.classList.add('ambient-active'); playToggle(true);
       } else {
-        stopAmbient();
-        btnAmbient.classList.remove('active');
-        mainBtn.classList.remove('ambient-active');
-        playToggle(false);
+        stopAmbient(); btnAmbient.classList.remove('active'); mainBtn.classList.remove('ambient-active'); playToggle(false);
       }
     });
 
-    btnMute.addEventListener('click', function() {
+    btnMute.addEventListener('click', function () {
       isMuted = !isMuted;
       masterGain && (masterGain.gain.value = isMuted ? 0 : (parseFloat(volSlider.value) / 100));
       btnMute.classList.toggle('active', isMuted);
@@ -1654,7 +1675,7 @@
         : '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM19 12c0 2.26-1.28 4.22-3.16 5.19l1.42 1.42C19.51 17.26 21 14.8 21 12c0-2.8-1.49-5.26-3.74-6.61l-1.42 1.42C17.72 7.78 19 9.74 19 12z"/>';
     });
 
-    volSlider.addEventListener('input', function() {
+    volSlider.addEventListener('input', function () {
       const v = parseFloat(this.value) / 100;
       if (!isMuted && masterGain) masterGain.gain.value = v;
       this.style.setProperty('--pct', this.value + '%');
@@ -1663,57 +1684,51 @@
       mainBtn.classList.remove('muted');
     });
 
-    document.addEventListener('click', function(e) {
-      if (!panel.contains(e.target) && menuOpen) {
-        menuOpen = false;
-        submenu.classList.remove('open');
-      }
+    document.addEventListener('click', function (e) {
+      if (!panel.contains(e.target) && menuOpen) { menuOpen = false; submenu.classList.remove('open'); }
     });
   }
 
-  /* ─── HOOK INTO PAGE EVENTS ─────────────────────────────── */
   function init() {
     if (isInitialized) return;
     isInitialized = true;
     getCtx();
 
-    const hoverTargets = 'a, button, article, .magnetic-btn, .neon-link, .sound-sub-btn';
-    document.querySelectorAll(hoverTargets).forEach(function(el) {
+    document.querySelectorAll('a, button, article, .magnetic-btn, .neon-link, .sound-sub-btn').forEach(function (el) {
       if (el.id && el.id.startsWith('sound')) return;
-      el.addEventListener('mouseenter', function() { playHover(); });
+      el.addEventListener('mouseenter', function () { playHover(); });
     });
 
-    document.querySelectorAll('a, button, article').forEach(function(el) {
-      el.addEventListener('click', function() { playClick(); });
+    document.querySelectorAll('a, button, article').forEach(function (el) {
+      el.addEventListener('click', function () { playClick(); });
     });
 
-    window.addEventListener('scroll', function() { playScrollTick(); }, { passive: true });
+    window.addEventListener('scroll', function () { playScrollTick(); }, { passive: true });
 
-    const revealObserver = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
+    const revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           playReveal();
           revealObserver.unobserve(entry.target);
         }
       });
     }, { threshold: 0.2 });
-    document.querySelectorAll('article').forEach(function(el) { revealObserver.observe(el); });
+    document.querySelectorAll('article').forEach(function (el) { revealObserver.observe(el); });
 
-    const _origNavigateTo = window.navigateTo;
-    window.navigateTo = function(href) {
+    var _origNavigateTo = window.navigateTo;
+    window.navigateTo = function (href) {
       playTransition();
-      setTimeout(function() {
+      setTimeout(function () {
         if (_origNavigateTo) _origNavigateTo(href);
         else window.location.href = href;
       }, 120);
     };
   }
 
-  /* ─── PATCH COUNTER FOR TICK SOUNDS ─────────────────────── */
   function patchCounters() {
-    document.querySelectorAll('.counter').forEach(function(counter) {
+    document.querySelectorAll('.counter').forEach(function (counter) {
       var orig = counter.textContent;
-      var observer = new MutationObserver(function() {
+      var observer = new MutationObserver(function () {
         if (counter.textContent !== orig) {
           playCounterTick();
           orig = counter.textContent;
@@ -1723,38 +1738,19 @@
     });
   }
 
-  /* ─── BOOT ───────────────────────────────────────────────── */
   function boot() {
     createSoundPanel();
     patchCounters();
-
-    function firstGesture() {
-      init();
-      setTimeout(function() { playLoadComplete(); }, 200);
-      document.removeEventListener('click', firstGesture);
-      document.removeEventListener('touchstart', firstGesture);
-      document.removeEventListener('keydown', firstGesture);
-    }
-
-    document.addEventListener('click', firstGesture);
-    document.addEventListener('touchstart', firstGesture, { passive: true });
-    document.addEventListener('keydown', firstGesture);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot);
-  } else {
-    boot();
-  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', boot); } else { boot(); }
 
   window.DongThapSound = {
-    playClick, playHover, playReveal, playTransition, playLoadComplete,
-    startAmbient, stopAmbient,
-    mute: function() { isMuted = true; masterGain && (masterGain.gain.value = 0); },
-    unmute: function() { isMuted = false; masterGain && (masterGain.gain.value = 0.7); },
+    init: init,
+    playLoadComplete: playLoadComplete
   };
 })();
 </script>
-
+    
 </body>
 </html>

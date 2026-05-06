@@ -4,6 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta name="theme-color" content="#1b5e20">
+    <meta name="darkreader-lock">
     <title>Đồng Tháp - Danh Lam Thắng Cảnh</title>
     
     <link rel="icon" type="image/png" href="favicon.png">
@@ -81,7 +82,7 @@
     </script>
 
     <style>
-        :root { --primary-green: #1b5e20; --accent-green: #4caf50; }
+        :root { --primary-green: #1b5e20; --accent-green: #4caf50; color-scheme: light only; }
 
         /* ========== BASE ========== */
         body { background-color: #f4f7f4; font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
@@ -100,10 +101,11 @@
         #loading-screen {
             position: fixed; inset: 0; background: #0a1f0a; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease;
         }
-        #loading-screen.hidden { opacity: 0; visibility: hidden; }
-        .loader-lotus { width: 60px; height: 60px; position: relative; margin-bottom: 24px; }
+        #loading-screen.hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+        
+        .loader-lotus { width: 60px; height: 60px; position: relative; margin-bottom: 20px; }
         .loader-petal {
             position: absolute; width: 20px; height: 30px;
             background: linear-gradient(135deg, #4caf50, #81c784);
@@ -121,17 +123,14 @@
             0%, 100% { opacity: 0.3; transform: rotate(var(--r, 0deg)) scale(0.8); }
             50% { opacity: 1; transform: rotate(var(--r, 0deg)) scale(1.1); }
         }
-        .loader-text { color: #4caf50; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; font-weight: 800; animation: loader-pulse 1.2s ease-in-out infinite; }
-        .loader-bar-wrap { width: 140px; height: 2px; background: rgba(76,175,80,0.2); border-radius: 2px; margin-top: 16px; overflow: hidden; }
-        .loader-bar-fill { height: 100%; background: linear-gradient(90deg, #1b5e20, #4caf50); width: 0; animation: loader-bar 1s ease forwards 0.3s; border-radius: 2px; }
+        .loader-text { color: #4caf50; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; font-weight: 800; animation: loader-pulse 1.2s ease-in-out infinite; margin-bottom: 24px; }
+        .loader-bar-wrap { width: 140px; height: 2px; background: rgba(76,175,80,0.2); border-radius: 2px; overflow: hidden; }
+        .loader-bar-fill { height: 100%; background: linear-gradient(90deg, #1b5e20, #4caf50); width: 0; animation: loader-bar 1.2s ease forwards 0.3s; border-radius: 2px; }
         @keyframes loader-bar { to { width: 100%; } }
         @keyframes loader-pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
-        /* ========== CUSTOM CURSOR (desktop only) ========== */
-        @media (pointer: fine) {
-            body { cursor: none; }
-            a, button, [onclick] { cursor: none; }
-        }
+        /* ========== CUSTOM CURSOR ========== */
+        @media (pointer: fine) { body { cursor: none; } a, button, [onclick] { cursor: none; } }
         #cursor-dot {
             position: fixed; width: 8px; height: 8px; border-radius: 50%;
             background: #4caf50; pointer-events: none; z-index: 99999;
@@ -171,7 +170,7 @@
 
         /* ========== GRADIENT BG ========== */
         .gradient-bg {
-            background: linear-gradient(-45deg, #1b5e20, #4caf50, #004d40, #2e7d32);
+            background: linear-gradient(-45deg, #1b5e20, #4caf50, #004d40, #2e7d32) !important;
             background-size: 400% 400%;
             animation: gradient-shift 10s ease infinite;
         }
@@ -184,8 +183,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: gradient-shift 6s ease infinite;
-            display: inline-block;
-            padding-top: 0.3em; padding-bottom: 0.1em; line-height: 1.2;
+            display: inline-block; padding-top: 0.3em; padding-bottom: 0.1em; line-height: 1.2;
         }
 
         /* ========== GLITCH EFFECT ========== */
@@ -231,33 +229,20 @@
         }
         @keyframes shimmer-move { to { background-position: 200% center; } }
 
-        /* ========== SPARKLE ========== */
-        .sparkle-wrap { position: relative; }
-        .sparkle {
-            position: absolute; pointer-events: none; z-index: 20;
-            width: 6px; height: 6px; border-radius: 50%;
-            background: #4caf50;
-            animation: sparkle-burst 0.7s ease forwards;
-        }
-        @keyframes sparkle-burst {
-            0% { opacity: 1; transform: translate(0,0) scale(1); }
-            100% { opacity: 0; transform: translate(var(--sx, 0px), var(--sy, 0px)) scale(0); }
-        }
-
         /* ========== CLIP-PATH IMAGE REVEAL ========== */
-        .img-reveal { clip-path: inset(0 100% 0 0); transition: clip-path 1s cubic-bezier(0.77,0,0.175,1); }
-        .img-reveal.revealed { clip-path: inset(0 0% 0 0); }
-
-        /* ========== FLOAT ICON ========== */
-        .float-icon { display: inline-block; animation: float 3s ease-in-out infinite; }
+        .img-reveal { opacity: 0; transform: scale(1.05); transition: opacity 1s cubic-bezier(0.77,0,0.175,1), transform 1s ease; clip-path: inset(0 100% 0 0); transition: clip-path 1s cubic-bezier(0.77,0,0.175,1); }
+        .img-reveal.revealed { opacity: 1; transform: scale(1); clip-path: inset(0 0% 0 0); }
 
         /* ========== CARD EFFECTS ========== */
         .card-glow { position: relative; transition: all 0.3s ease; }
         .card-glow::before {
-            content: ''; position: absolute; inset: 0; border-radius: 1rem;
+            content: ''; position: absolute; inset: 0; border-radius: inherit;
             opacity: 0; transition: opacity 0.3s ease; z-index: -1;
         }
-        .card-glow:hover::before { opacity: 1; box-shadow: 0 0 60px rgba(76, 175, 80, 0.8); }
+        .card-glow:hover::before { opacity: 1; box-shadow: 0 0 40px rgba(76, 175, 80, 0.4); }
+
+        .card-border-glow { box-shadow: 0 0 0 0px rgba(76,175,80,0); transition: box-shadow 0.4s ease, transform 0.3s ease; }
+        .card-border-glow:hover { box-shadow: 0 0 0 2px rgba(76,175,80,0.4), 0 20px 40px rgba(76,175,80,0.1); }
 
         /* Shine sweep */
         .card-shine { position: relative; overflow: hidden; }
@@ -268,18 +253,17 @@
         }
         .card-shine:hover::after, .card-shine:active::after { left: 120%; }
 
-        /* Card border glow on hover */
-        .card-border-glow {
-            box-shadow: 0 0 0 0px rgba(76,175,80,0);
-            transition: box-shadow 0.4s ease, transform 0.3s ease;
-        }
-        .card-border-glow:hover {
-            box-shadow: 0 0 0 2px rgba(76,175,80,0.5), 0 20px 60px rgba(76,175,80,0.15);
-        }
-
-        /* ========== 3D TILT ========== */
-        .tilt-card { transform-style: preserve-3d; transform: perspective(1000px); transition: transform 0.1s ease; }
+        /* ========== 3D TILT FIX ========== */
+        .tilt-card { transform-style: preserve-3d; transform: perspective(1000px); transition: transform 0.1s ease; will-change: transform; }
         .tilt-content { transform: translateZ(30px); }
+
+        /* ========== RIPPLE ========== */
+        .ripple-container { position: relative; overflow: hidden; }
+        .ripple {
+            position: absolute; border-radius: 50%; background: rgba(76, 175, 80, 0.35);
+            transform: scale(0); animation: ripple-anim 0.6s linear; pointer-events: none; z-index: 10;
+        }
+        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
         /* ========== BORDER SHIMMER ========== */
         .border-animate { position: relative; overflow: hidden; }
@@ -290,22 +274,12 @@
         }
         .border-animate:hover::before { left: 100%; }
 
-        /* ========== RIPPLE ========== */
-        .ripple-container { position: relative; overflow: hidden; }
-        .ripple {
-            position: absolute; border-radius: 50%; background: rgba(76, 175, 80, 0.35);
-            transform: scale(0); animation: ripple-anim 0.6s linear;
-            pointer-events: none; z-index: 10;
-        }
-        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
-
         /* ========== FLOATING PARTICLES ========== */
         #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
         .particle {
             position: absolute; border-radius: 50%;
             background: radial-gradient(circle, rgba(76,175,80,0.6) 0%, transparent 70%);
-            animation: particle-float linear infinite;
-            will-change: transform;
+            animation: particle-float linear infinite; will-change: transform;
         }
         @keyframes particle-float {
             0% { transform: translateY(110vh) scale(0); opacity: 0; }
@@ -335,10 +309,10 @@
         .neon-link::after {
             content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
             background: linear-gradient(90deg, #4caf50, #81c784);
-            box-shadow: 0 0 8px rgba(76,175,80,0.8);
-            transition: width 0.35s ease; border-radius: 1px;
+            box-shadow: 0 0 8px rgba(76,175,80,0.8); transition: width 0.35s ease; border-radius: 1px;
         }
-        .neon-link:hover::after { width: 100%; }
+        .neon-link:hover::after, .neon-link.active-link::after { width: 100%; }
+        .active-link { color: #006e1c !important; }
 
         /* ========== SCROLL TO TOP ========== */
         #scroll-top {
@@ -346,8 +320,7 @@
             width: 48px; height: 48px; background: linear-gradient(135deg, #1b5e20, #4caf50);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             cursor: pointer; box-shadow: 0 4px 20px rgba(76,175,80,0.5);
-            opacity: 0; transform: translateY(20px) scale(0.8);
-            transition: opacity 0.3s, transform 0.3s;
+            opacity: 0; transform: translateY(20px) scale(0.8); transition: opacity 0.3s, transform 0.3s;
         }
         #scroll-top.visible { opacity: 1; transform: translateY(0) scale(1); }
         #scroll-top:active { transform: scale(0.9); }
@@ -376,8 +349,6 @@
 
         /* ========== SCROLL REVEAL BASE ========== */
         [data-aos] { opacity: 0; }
-
-        /* ========== MAGNETIC BTN ========== */
         .magnetic-btn { display: inline-flex; transition: transform 0.2s ease; }
 
         /* ========== HIGHLIGHT UNDERLINE ON SCROLL ========== */
@@ -388,6 +359,19 @@
             border-radius: 2px; transition: width 0.8s ease;
         }
         .highlight-word.active::after { width: 100%; }
+
+        /* ========== SPARKLE ========== */
+        .sparkle-wrap { position: relative; }
+        .sparkle {
+            position: absolute; pointer-events: none; z-index: 20;
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #4caf50;
+            animation: sparkle-burst 0.7s ease forwards;
+        }
+        @keyframes sparkle-burst {
+            0% { opacity: 1; transform: translate(0,0) scale(1); }
+            100% { opacity: 0; transform: translate(var(--sx, 0px), var(--sy, 0px)) scale(0); }
+        }
 
         /* ========== TAG BADGE ========== */
         .eco-badge {
@@ -406,15 +390,7 @@
         .blob-bg {
             position: absolute; border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
             background: radial-gradient(circle at 30% 50%, rgba(76,175,80,0.15), rgba(27,94,32,0.08));
-            filter: blur(30px);
-            animation: blob-morph 8s ease-in-out infinite;
-            pointer-events: none;
-        }
-        @keyframes blob-morph {
-            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-            25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
-            50% { border-radius: 50% 60% 30% 60% / 30% 40% 70% 50%; }
-            75% { border-radius: 40% 60% 60% 30% / 60% 40% 50% 60%; }
+            filter: blur(30px); animation: blob-morph 8s ease-in-out infinite; pointer-events: none;
         }
 
         /* ========== STATS PROGRESS BAR ========== */
@@ -428,9 +404,6 @@
             letter-spacing: -8px;
         }
 
-        /* ========== FOOTER GLOW LINK ========== */
-        .glow-link { text-shadow: 0 0 12px rgba(74,222,128,0.5); }
-
         /* ========== SCROLL INDICATOR LINE ========== */
         .scroll-line {
             position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
@@ -442,16 +415,6 @@
             width: 100%; background: linear-gradient(180deg, #1b5e20, #4caf50);
             border-radius: 2px; height: 0; transition: height 0.2s ease;
         }
-
-        /* ========== HOVER CARD LABEL ========== */
-        .card-hover-label {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            background: linear-gradient(to top, rgba(27,94,32,0.9) 0%, transparent 100%);
-            color: white; padding: 20px 16px 12px;
-            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-            font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; z-index: 15;
-        }
-        .group:hover .card-hover-label { transform: translateY(0); }
 
         /* ========== ARTICLE SECTION DIVIDER ========== */
         .section-divider {
@@ -467,12 +430,10 @@
             padding: 16px 20px; border-radius: 0 12px 12px 0;
         }
 
-        /* ========== REDUCED MOTION ========== */
-        @media (prefers-reduced-motion: reduce) {
-            *, ::before, ::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-        }
+        /* ========== FLOAT ICON ========== */
+        .float-icon { display: inline-block; animation: float 3s ease-in-out infinite; }
 
-        /* ========== MOBILE OPTIMIZATIONS (ĐÃ ĐỒNG BỘ CHUẨN VỚI TRANG CHỦ) ========== */
+        /* ========== MOBILE OPTIMIZATIONS ========== */
         @media (max-width: 767px) {
             .float-icon { animation: none !important; }
             .blob-bg { animation: none !important; border-radius: 50% !important; transform: none !important; }
@@ -489,7 +450,6 @@
             .pulse-wrap::after { display: none !important; }
             .pulse-wrap::before { animation-duration: 3s !important; inset: -4px !important; }
 
-            /* ĐÓNG BĂNG MÀN HÌNH TẢI HOA SEN TRÊN ĐIỆN THOẠI */
             .loader-petal { animation: none !important; opacity: 1 !important; }
             .loader-petal:nth-child(1) { transform: rotate(0deg) scale(1) !important; }
             .loader-petal:nth-child(2) { transform: rotate(72deg) scale(1) !important; }
@@ -498,7 +458,6 @@
             .loader-petal:nth-child(5) { transform: rotate(288deg) scale(1) !important; }
             .loader-text { animation: none !important; }
 
-            /* --- FIX TỎA MÀU (AMBIENT GLOW & BLUR) TRÊN ĐIỆN THOẠI --- */
             .group .absolute.-inset-6 {
                 display: block !important;
                 opacity: 0.85 !important;
@@ -512,22 +471,17 @@
                 transform: translateY(12px) scale(1.05) !important;
             }
 
-            /* --- FIX LỖI CARD 3D BỊ NHẢY LOẠN XẠ --- */
             .tilt-card { transform: none !important; transform-style: flat !important; transition: none !important;}
             .tilt-content { transform: none !important; transition: none !important;}
             article:active { transform: none !important; }
-            main article { transform: none !important; } /* Fix chèn ép layout ngang trên mobile */
+            main article { transform: none !important; } 
             
             .img-reveal { transition-duration: 0.5s !important; filter: grayscale(0) !important; clip-path: inset(0 0 0 0) !important;}
             .group:hover img { transform: none !important; filter: grayscale(0) !important; }
-            .card-hover-label { display: none !important; }
             
             .animate-slide-up { animation: slide-up-mobile 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important; }
         }
-        @keyframes slide-up-mobile {
-            from { opacity: 0; transform: translateY(60px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slide-up-mobile { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Hover effect chỉ dành cho desktop card ngang */
         @media (hover: hover) and (pointer: fine) {
@@ -542,7 +496,7 @@
 <!-- ====== PAGE TRANSITION OVERLAY ====== -->
 <div id="page-transition"></div>
 
-<!-- ====== CUSTOM CURSOR (desktop only) ====== -->
+<!-- ====== CUSTOM CURSOR ====== -->
 <div id="cursor-dot" aria-hidden="true"></div>
 <div id="cursor-ring" aria-hidden="true"></div>
 <div id="cursor-glow" aria-hidden="true"></div>
@@ -556,8 +510,12 @@
         <div class="loader-petal"></div>
         <div class="loader-petal"></div>
     </div>
-    <div class="loader-text">Đất Sen Hồng</div>
-    <div class="loader-bar-wrap"><div class="loader-bar-fill"></div></div>
+    <div class="loader-text mb-6">Đất Sen Hồng</div>
+    <div class="loader-bar-wrap" id="loader-bar-wrap"><div class="loader-bar-fill"></div></div>
+    
+    <button id="start-btn" class="px-8 py-3 border border-green-500 text-green-400 rounded-full font-bold uppercase tracking-widest text-[10px] hover:bg-green-500 hover:text-white transition-all duration-300 transform scale-90 opacity-0 hidden shadow-[0_0_15px_rgba(76,175,80,0.3)] hover:shadow-[0_0_25px_rgba(76,175,80,0.6)]">
+        Mở Cẩm Nang
+    </button>
 </div>
 
 <!-- ====== PARTICLES ====== -->
@@ -584,18 +542,17 @@
             <div class="glitch text-lg md:text-2xl font-black text-green-900 tracking-tight uppercase leading-none" data-text="Đồng Tháp">Đồng Tháp</div>
         </div>
         <nav class="flex gap-3 md:gap-8 text-[10px] md:text-xs font-black uppercase">
-            <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="/">Trang chủ</a>
+            <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="index.html">Trang chủ</a>
             <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="tramchim">Sinh thái</a>
             <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="ditichlichsu">Lịch sử</a>
-            <a class="text-green-700 border-b-2 border-green-700 pb-1 neon-link" href="danhlam">Danh Lam</a>
+            <a class="text-green-700 border-b-2 border-green-700 pb-1 neon-link active-link" href="danhlam">Danh Lam</a>
         </nav>
     </div>
 </header>
 
 <main>
     <!-- ====== HERO SECTION ====== -->
-    <section class="w-full px-4 max-w-7xl mx-auto mb-8">
-        <!-- ĐÃ FIX: Thêm overflow-hidden vào để chặn blob bị lòi ra ngoài -->
+    <section class="w-full px-4 max-w-7xl mx-auto mb-8 mt-4">
         <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
             
             <!-- Parallax glow bg -->
@@ -610,15 +567,12 @@
             <!-- Scanline overlay -->
             <div class="absolute inset-0 opacity-[0.03] pointer-events-none -z-10" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px);"></div>
 
-            <!-- Morphing blob decorations (Đã giấu đi trên điện thoại) -->
+            <!-- Decorations -->
             <div class="hidden md:block blob-bg w-64 h-64 md:w-96 md:h-96 absolute right-10 top-10 z-0 opacity-60"></div>
-
-            <!-- Floating geometric accents (Đã giấu đi trên điện thoại) -->
             <div class="hidden md:block absolute right-8 bottom-16 w-3 h-3 border-2 border-green-400/40 rotate-45 animate-[float_4s_ease-in-out_infinite]" aria-hidden="true"></div>
             <div class="hidden md:block absolute right-24 bottom-32 w-2 h-2 bg-green-400/30 rounded-full animate-[float_3s_ease-in-out_infinite_0.5s]" aria-hidden="true"></div>
-            <div class="hidden md:block absolute right-16 top-20 w-4 h-4 border border-green-300/30 rounded-full animate-[float_5s_ease-in-out_infinite_1s]" aria-hidden="true"></div>
+            <div class="hidden md:block absolute left-16 top-20 w-4 h-4 border border-green-300/30 rounded-full animate-[float_5s_ease-in-out_infinite_1s]" aria-hidden="true"></div>
 
-            <!-- Content -->
             <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
                 <div class="eco-badge mb-4 pointer-events-auto animate-slide-down" style="animation-delay:0.1s;">
                     <span class="material-symbols-outlined" style="font-size:12px;">local_florist</span>
@@ -646,50 +600,36 @@
     <!-- ====== STATS SECTION ====== -->
     <section class="max-w-7xl mx-auto px-6 py-12 md:py-20" data-aos="fade-up">
         <div class="gradient-bg rounded-[2rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden border border-green-400/30">
-            <!-- Orbiting rings -->
             <div class="orbit-wrap" aria-hidden="true">
                 <div class="orbit-ring"></div>
                 <div class="orbit-ring"></div>
                 <div class="orbit-ring"></div>
             </div>
-            <!-- Blob inside stats -->
             <div class="blob-bg w-72 h-72 absolute -bottom-10 -left-10 opacity-40"></div>
             <div class="absolute -top-24 -right-24 text-white/10" aria-hidden="true">
                 <span class="material-symbols-outlined" style="font-size: 300px;">local_florist</span>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center relative z-10">
-                <!-- Stat 1 -->
                 <div class="flex flex-col items-center gap-2">
-                    <div class="pulse-wrap">
-                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">local_florist</span>
-                    </div>
+                    <div class="pulse-wrap"><span class="material-symbols-outlined text-4xl mb-2 text-green-200">local_florist</span></div>
                     <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="400">0</span>+</div>
                     <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Loài Hoa Kiểng</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="85"></div></div>
                 </div>
-                <!-- Stat 2 -->
                 <div class="flex flex-col items-center gap-2">
-                    <div class="pulse-wrap">
-                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">nature_people</span>
-                    </div>
+                    <div class="pulse-wrap"><span class="material-symbols-outlined text-4xl mb-2 text-green-200">nature_people</span></div>
                     <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="2000">0</span>+</div>
                     <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Hộ Nông Dân</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="90"></div></div>
                 </div>
-                <!-- Stat 3 -->
                 <div class="flex flex-col items-center gap-2">
-                    <div class="pulse-wrap">
-                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">forest</span>
-                    </div>
+                    <div class="pulse-wrap"><span class="material-symbols-outlined text-4xl mb-2 text-green-200">forest</span></div>
                     <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="1600">0</span></div>
                     <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Hecta Rừng Gáo Giồng</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="65"></div></div>
                 </div>
-                <!-- Stat 4 -->
                 <div class="flex flex-col items-center gap-2">
-                    <div class="pulse-wrap">
-                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">water</span>
-                    </div>
+                    <div class="pulse-wrap"><span class="material-symbols-outlined text-4xl mb-2 text-green-200">water</span></div>
                     <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="3">0</span></div>
                     <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Điểm Tham Quan Nổi Bật</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="50"></div></div>
@@ -698,9 +638,9 @@
         </div>
     </section>
 
-    <!-- ====== EXPLORE SECTION ====== -->
+    <!-- ====== EXPLORE SECTION (BỐ CỤC ZIC-ZAC THẺ XÉO NHAU) ====== -->
     <section id="explore" class="max-w-7xl mx-auto px-6 pb-12 md:pb-16">
-        <!-- Section heading -->
+        
         <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-12 md:mb-16 relative" data-aos="fade-up">
             <div class="relative">
                 <div class="section-number" aria-hidden="true">01</div>
@@ -712,7 +652,7 @@
             </div>
         </div>
 
-        <!-- ====== ARTICLE 1: LÀNG HOA SA ĐÉC ====== -->
+        <!-- ====== ARTICLE 1: LÀNG HOA SA ĐÉC (Ảnh Trái - Chữ Phải) ====== -->
         <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center mb-16 md:mb-32" data-aos="fade-up">
             <div class="w-full md:w-1/2 relative group z-0 sparkle-wrap">
                 <!-- Glow blur behind card -->
@@ -728,7 +668,6 @@
                                 Làng hoa
                             </span>
                         </div>
-                        <div class="card-hover-label">Điểm đến nổi bật →</div>
                     </div>
                 </div>
             </div>
@@ -759,7 +698,7 @@
 
         <div class="section-divider mb-16 md:mb-32"></div>
 
-        <!-- ====== ARTICLE 2: HỆ SINH THÁI NGẬP NƯỚC ====== -->
+        <!-- ====== ARTICLE 2: HỆ SINH THÁI NGẬP NƯỚC (Ảnh Phải - Chữ Trái) ====== -->
         <article class="flex flex-col md:flex-row-reverse gap-8 md:gap-16 items-center mb-16 md:mb-32" data-aos="fade-up">
             <div class="w-full md:w-1/2 relative group z-0 sparkle-wrap">
                 <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
@@ -774,7 +713,6 @@
                                 Sinh thái
                             </span>
                         </div>
-                        <div class="card-hover-label">Thiên nhiên trù phú →</div>
                     </div>
                 </div>
             </div>
@@ -798,14 +736,14 @@
                 <div class="flex flex-wrap gap-3 mt-2 md:justify-end">
                     <span class="eco-badge"><span class="material-symbols-outlined" style="font-size:10px;">spa</span> Đầm sen bát ngát</span>
                     <span class="eco-badge"><span class="material-symbols-outlined" style="font-size:10px;">forest</span> Rừng tràm đặc hữu</span>
-                    <span class="eco-badge"><span class="material-symbols-outlined" style="font-size:10px;">eco</span> Hệ sinh thái bền vững</span>
+                    <span class="eco-badge"><span class="material-symbols-outlined" style="font-size:10px;">eco</span> Sinh thái bền vững</span>
                 </div>
             </div>
         </article>
 
         <div class="section-divider mb-16 md:mb-32"></div>
 
-        <!-- ====== ARTICLE 3: GÁO GIỒNG ====== -->
+        <!-- ====== ARTICLE 3: GÁO GIỒNG (Ảnh Trái - Chữ Phải) ====== -->
         <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center mb-16 md:mb-32" data-aos="fade-up">
             <div class="w-full md:w-1/2 relative group z-0 sparkle-wrap">
                 <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
@@ -820,7 +758,6 @@
                                 Khu sinh thái
                             </span>
                         </div>
-                        <div class="card-hover-label">Ốc đảo xanh →</div>
                     </div>
                 </div>
             </div>
@@ -879,7 +816,6 @@
 
 <!-- ====== FOOTER ====== -->
 <footer class="bg-[#111811] text-white py-12 md:py-16 px-6 border-t-[6px] border-green-800 relative overflow-hidden">
-    <!-- Animated border top -->
     <div class="absolute top-0 left-0 h-[6px] w-full overflow-hidden" aria-hidden="true">
         <div style="height:100%;width:200%;background:linear-gradient(90deg,#1b5e20,#4caf50,#81c784,#4caf50,#1b5e20);animation:shimmer-move 3s linear infinite;background-size:50% 100%;"></div>
     </div>
@@ -889,14 +825,20 @@
             <p class="text-gray-400 text-xs md:text-sm max-w-md italic mt-2">Hệ thống số hóa thông tin giáo dục địa phương.</p>
         </div>
         <nav class="flex flex-wrap justify-center gap-4 text-[10px] md:text-xs font-bold uppercase text-gray-500">
-            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="/">Trang chủ</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="index.html">Trang chủ</a>
             <a class="hover:text-green-400 transition-all duration-300 neon-link" href="tramchim">Sinh thái</a>
             <a class="hover:text-green-400 transition-all duration-300 neon-link" href="ditichlichsu">Lịch sử</a>
-            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="danhlam">Danh Lam</a>
+            <a class="text-green-400 border-b border-green-400 pb-1" href="danhlam">Danh Lam</a>
         </nav>
-        <div class="text-center lg:text-right bg-green-900/40 p-4 rounded-lg border border-green-800/50 flex flex-col items-center lg:items-end">
-            <div class="text-[8px] md:text-[10px] text-gray-400 uppercase mb-2">Thực hiện bởi</div>
-            <a href="https://xuanphuc2108.vercel.app/" target="_blank" class="glow-link inline-block text-sm md:text-base font-black animate-pop-bounce drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]">Nguyễn Xuân Phúc - 21/8/2012</a>
+        <div class="text-center lg:text-right bg-green-900/40 p-5 rounded-xl border border-green-800/50 flex flex-col items-center lg:items-end shadow-lg">
+            <div class="text-[9px] md:text-[10px] text-green-400 uppercase font-bold tracking-widest mb-3">Quét mã để truy cập web</div>
+            <div class="bg-white p-1.5 rounded-lg mb-3 shadow-[0_0_15px_rgba(74,222,128,0.2)] hover:scale-105 transition-transform duration-300 cursor-pointer">
+                <img src="xuanphucqr.png" alt="Mã QR Truy cập" class="w-16 h-16 md:w-20 md:h-20 object-contain"/>
+            </div>
+            <div class="text-[8px] md:text-[10px] text-gray-400 uppercase tracking-widest mb-1">Thực hiện bởi</div>
+            <a href="https://dongthap-xuanphuc.vercel.app/" target="_blank" class="glow-link inline-block text-sm md:text-base font-black animate-pop-bounce drop-shadow-[0_0_8px_rgba(74,222,128,0.5)] text-white">
+                Nguyễn Xuân Phúc - 21/8/2012
+            </a>
         </div>
     </div>
 </footer>
@@ -986,7 +928,7 @@
 
     /* ============ PARTICLES ============ */
     var container = document.getElementById('particles');
-    var count = isMobile ? 0 : 16; /* Đã tắt hạt bụi mờ trên mobile để tránh lag */
+    var count = isMobile ? 0 : 16;
     for (var p = 0; p < count; p++) {
         var el = document.createElement('div');
         el.className = 'particle';
@@ -1175,7 +1117,7 @@
                 blobs.forEach(function(b) {
                     b.style.transform = 'translate(' + cx * 20 + 'px,' + cy * 20 + 'px)';
                 });
-                var geoms = heroSection.querySelectorAll('.absolute.right-8, .absolute.right-24, .absolute.right-16');
+                var geoms = heroSection.querySelectorAll('.absolute.right-8, .absolute.right-24, .absolute.left-16');
                 geoms.forEach(function(g, i) {
                     g.style.transform = 'translate(' + cx * (10 + i*8) + 'px,' + cy * (10 + i*8) + 'px)';
                 });
@@ -1196,7 +1138,6 @@
 (function () {
   'use strict';
 
-  // ĐÃ FIX: Nhận diện điện thoại để TẮT các âm thanh nhạy cảm
   let isTouchDevice = false;
   if (typeof window !== 'undefined') {
     isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth < 768);
@@ -1221,8 +1162,6 @@
     if (ctx.state === 'suspended') ctx.resume();
     return ctx;
   }
-
-  function dbToGain(db) { return Math.pow(10, db / 20); }
 
   /* ─── 1. HOVER CHIME ─────────────────────────────────────── */
   function playHover() {

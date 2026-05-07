@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     
@@ -21,7 +21,10 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    fontFamily: { 
+                        sans: ['Inter', 'sans-serif'],
+                        display: ["'Playfair Display'", 'serif']
+                    },
                     colors: { primary: "#006e1c" },
                     keyframes: {
                         'pop-bounce': {
@@ -204,7 +207,7 @@
         /* ========== CARD EFFECTS ========== */
         .card-glow { position: relative; transition: all 0.3s ease; }
         .card-glow::before {
-            content: ''; position: absolute; inset: 0; border-radius: 1rem;
+            content: ''; position: absolute; inset: 0; border-radius: inherit;
             opacity: 0; transition: opacity 0.3s ease; z-index: -1;
         }
         .card-glow:hover::before { opacity: 1; box-shadow: 0 0 60px rgba(76, 175, 80, 0.4); }
@@ -344,6 +347,7 @@
         .section-number {
             font-size: 120px; font-weight: 900; position: absolute; right: -10px; top: -40px;
             color: rgba(76,175,80,0.06); line-height: 1; pointer-events: none; user-select: none; letter-spacing: -8px;
+            font-family: 'Playfair Display', serif;
         }
 
         /* ========== SCROLL INDICATOR LINE ========== */
@@ -362,10 +366,8 @@
         }
         .group:hover .card-hover-label { transform: translateY(0); }
 
-        /* ========== LEAFLET MAP CUSTOM STYLES ========== */
+        /* ========== LEAFLET MAP CUSTOM STYLES & FIXES ========== */
         #map-container { position: relative; z-index: 10; }
-        #dong-thap-map { height: 480px; border-radius: 1.5rem; z-index: 10; background: #0a1f0a; border: 2px solid rgba(76, 175, 80, 0.2); }
-        @media(min-width:768px) { #dong-thap-map { height: 560px; } }
         
         .leaflet-layer, .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-attribution {
             filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
@@ -378,7 +380,6 @@
         .map-popup-title { font-weight: 800; font-size: 14px; margin-bottom: 4px; display: flex; gap: 6px; align-items: center; }
         .map-popup-desc { color: #a5d6a7; font-size: 11px; line-height: 1.5; }
         
-        /* Cố định marker với Lat/Lng */
         .custom-map-marker { position: relative; display: flex; align-items: center; justify-content: center; }
         .marker-pulse { width: 14px; height: 14px; border-radius: 50%; background: var(--dot-color); border: 2.5px solid white; box-shadow: 0 2px 10px var(--dot-color); position: relative; z-index: 2; }
         .marker-pulse::before { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--dot-color); animation: map-ping-kf 1.5s cubic-bezier(0,0,0.2,1) infinite; z-index: 1; opacity: 0.7; }
@@ -551,15 +552,15 @@
                         <span class="material-symbols-outlined text-4xl mb-2 text-green-200">account_balance</span>
                     </div>
                     <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="17">0</span></div>
-                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Di Tích Lịch Sự QG</div>
+                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Di Tích Lịch Sử QG</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="60"></div></div>
                 </div>
                 <div class="flex flex-col items-center gap-2">
                     <div class="pulse-wrap">
-                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">library_books</span>
+                        <span class="material-symbols-outlined text-4xl mb-2 text-green-200">flutter_dash</span>
                     </div>
                     <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="231">0</span></div>
-                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Loài Chim</div>
+                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Loài chim</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="40"></div></div>
                 </div>
             </div>
@@ -584,9 +585,41 @@
         </div>
 
         <div id="map-container" class="grid md:grid-cols-3 gap-6">
-            <div class="md:col-span-2 relative">
-                <div class="absolute inset-0 -z-10 rounded-[1.75rem] blur-2xl opacity-20 translate-y-4 scale-105" style="background:linear-gradient(135deg,#1b5e20,#4caf50);"></div>
-                <div id="dong-thap-map" class="shadow-2xl border border-green-200/50"></div>
+            
+            <div class="md:col-span-2 flex flex-col gap-6">
+                
+                <div class="relative flex-grow rounded-[1.5rem] overflow-hidden shadow-2xl border border-green-200/50" style="min-height: 480px;">
+                    <div class="absolute inset-0 bg-[#0a1f0a] flex flex-col items-center justify-center">
+                        <span class="material-symbols-outlined text-green-500 animate-spin-slow text-4xl mb-2">autorenew</span>
+                        <span class="text-green-500 text-xs font-bold uppercase tracking-widest opacity-80">Đang tải bản đồ...</span>
+                    </div>
+                    <div id="dong-thap-map" class="absolute inset-0 w-full h-full z-10" style="background: transparent;"></div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-white rounded-2xl p-4 md:p-5 border border-green-100 shadow-md card-glow hover:-translate-y-1 transition-transform cursor-default">
+                        <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-3 shadow-sm">
+                            <span class="material-symbols-outlined">sailing</span>
+                        </div>
+                        <h5 class="font-black text-gray-900 text-sm mb-1">Du lịch Sông nước</h5>
+                        <p class="text-[11px] text-gray-500 leading-relaxed font-medium">Trải nghiệm chèo xuồng ba lá, len lỏi giữa rừng tràm xanh ngát.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-4 md:p-5 border border-green-100 shadow-md card-glow hover:-translate-y-1 transition-transform cursor-default">
+                        <div class="w-10 h-10 rounded-full bg-pink-50 text-pink-600 flex items-center justify-center mb-3 shadow-sm">
+                            <span class="material-symbols-outlined">local_florist</span>
+                        </div>
+                        <h5 class="font-black text-gray-900 text-sm mb-1">Thủ phủ Hoa Sen</h5>
+                        <p class="text-[11px] text-gray-500 leading-relaxed font-medium">Check-in cùng những đầm sen bát ngát rực rỡ nhất miền Tây.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-4 md:p-5 border border-green-100 shadow-md card-glow hover:-translate-y-1 transition-transform cursor-default">
+                        <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center mb-3 shadow-sm">
+                            <span class="material-symbols-outlined">restaurant</span>
+                        </div>
+                        <h5 class="font-black text-gray-900 text-sm mb-1">Ẩm thực Khẩn hoang</h5>
+                        <p class="text-[11px] text-gray-500 leading-relaxed font-medium">Thưởng thức cá lóc nướng trui, lẩu mắm, nem chua trứ danh.</p>
+                    </div>
+                </div>
+                
             </div>
 
             <div class="flex flex-col gap-4">
@@ -598,7 +631,7 @@
 
                 <div class="bg-white rounded-2xl p-5 border border-green-100 shadow-lg card-glow">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-green-600 flex items-center justify-center shadow-md">
+                        <div class="w-10 h-10 rounded-xl bg-green-600 flex items-center justify-center shadow-sm">
                             <span class="material-symbols-outlined text-white text-lg">info</span>
                         </div>
                         <div>
@@ -623,6 +656,19 @@
                             <span class="text-xs text-gray-500">Đơn vị hành chính</span>
                             <span class="text-xs font-black text-gray-800">102 cấp xã</span>
                         </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-green-50 to-white rounded-2xl p-5 border border-green-100 shadow-lg card-glow relative overflow-hidden flex items-center gap-4 mt-auto">
+                    <div class="absolute -right-4 -bottom-4 text-green-100/50 pointer-events-none">
+                        <span class="material-symbols-outlined" style="font-size: 80px;">spa</span>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 relative z-10 border border-green-200">
+                        <span class="material-symbols-outlined text-green-600 text-xl">format_quote</span>
+                    </div>
+                    <div class="relative z-10">
+                        <p class="text-xs text-green-900 font-bold leading-relaxed mb-1">"Tháp Mười đẹp nhất bông sen<br>Việt Nam đẹp nhất có tên Bác Hồ"</p>
+                        <p class="text-[9px] text-green-600 uppercase tracking-widest font-black">Ca dao Việt Nam</p>
                     </div>
                 </div>
             </div>
@@ -741,7 +787,7 @@
                     <div class="eco-badge bg-green-500/20 text-green-200 border-green-400/50 mb-4 backdrop-blur-md">
                         <span class="material-symbols-outlined" style="font-size:12px;">menu_book</span> Hành trang điện tử
                     </div>
-                    <h3 class="text-3xl md:text-5xl lg:text-6xl font-black text-white uppercase tracking-tight mb-4 drop-shadow-lg">
+                    <h3 class="text-3xl md:text-5xl lg:text-6xl font-black text-white uppercase tracking-tight mb-4 drop-shadow-lg font-display" style="font-family:'Playfair Display',serif;">
                         Cẩm Nang <span class="text-green-400">Du Lịch</span>
                     </h3>
                     <p class="text-green-50/90 text-sm md:text-lg leading-relaxed mb-8 font-medium drop-shadow-md">
@@ -772,7 +818,7 @@
             <ul class="space-y-3 text-sm md:text-base text-gray-700 relative z-10">
                 <li class="flex items-start gap-3 group/ref hover:translate-x-1 transition-transform">
                     <span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5 group-hover/ref:scale-125 transition-transform">check_circle</span>
-                    <span class="leading-relaxed"><strong>Cổng Thông tin điện tử tỉnh Đồng Tháp (dongthap.gov.vn):</strong> Số liệu cập nhật mới nhất về diện tích tự nhiên, dân số và quy hoạch hành chính.</span>
+                    <span class="leading-relaxed"><strong>Cổng Thông tin điện tử tỉnh Đồng Tháp (dongthap.gov.vn):</strong> Số liệu cập nhật mới nhất về diện tích tự nhiên, dân số và đơn vị hành chính cấp xã.</span>
                 </li>
                 <li class="flex items-start gap-3 group/ref hover:translate-x-1 transition-transform">
                     <span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5 group-hover/ref:scale-125 transition-transform">check_circle</span>
@@ -797,11 +843,11 @@
             <p class="text-gray-400 text-xs md:text-sm max-w-md italic mt-2">Hệ thống số hóa thông tin giáo dục địa phương.</p>
         </div>
         <nav class="flex flex-wrap justify-center gap-4 text-[10px] md:text-xs font-bold uppercase text-gray-500">
-            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="/">Trang chủ</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="index.html">Trang chủ</a>
             <a class="hover:text-green-400 transition-all duration-300 neon-link" href="tramchim">Sinh thái</a>
             <a class="hover:text-green-400 transition-all duration-300 neon-link" href="ditichlichsu">Lịch sử</a>
             <a class="hover:text-green-400 transition-all duration-300 neon-link" href="danhlam">Danh Lam</a>
-            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="camnang.html">Cẩm Nang</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="https://dongthap-xuanphuc.vercel.app/camnang">Cẩm Nang</a>
         </nav>
         
         <div class="text-center lg:text-right bg-green-900/40 p-5 rounded-xl border border-green-800/50 flex flex-col items-center lg:items-end shadow-lg">
@@ -868,7 +914,7 @@
     };
     document.querySelectorAll('a[href]').forEach(function(link) {
         var href = link.getAttribute('href');
-        if (!href.startsWith('http') && !href.startsWith('#') && !href.startsWith('mailto')) {
+        if (!href.startsWith('http') && !href.startsWith('#') && !href.startsWith('mailto') && link.getAttribute('target') !== '_blank') {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
                 navigateTo(href);
@@ -992,8 +1038,8 @@
             var duration = 2000, inc = target / (duration / 16), cur = 0;
             var timer = setInterval(function() {
                 cur += inc;
-                if (cur >= target) { counter.textContent = target.toLocaleString('vi-VN'); clearInterval(timer); }
-                else { counter.textContent = Math.floor(cur).toLocaleString('vi-VN'); }
+                if (cur >= target) { counter.textContent = target; clearInterval(timer); }
+                else { counter.textContent = Math.floor(cur); }
             }, 16);
             var bar = counter.closest('.flex') && counter.closest('.flex').querySelector('.stat-bar-fill');
             if (bar) bar.style.width = bar.getAttribute('data-width') + '%';
@@ -1142,24 +1188,25 @@
         }
     }
     
-    /* ============ LEAFLET MAP (Google Maps & Đã Fix Lỗi Click) ============ */
+    /* ============ LEAFLET MAP (Google Maps Tọa độ chính xác) ============ */
     var mapLocations = [
-        { name: 'TP. Cao Lãnh', desc: 'Trung tâm tỉnh Đồng Tháp', lat: 10.4578, lng: 105.6325, category: 'city' },
-        { name: 'Vườn QG Tràm Chim', desc: 'Khu Ramsar thứ 2000 — 231 loài chim quý hiếm', lat: 10.7329, lng: 105.5342, category: 'eco' },
-        { name: 'Làng hoa Sa Đéc', desc: 'Vùng trồng hoa nổi tiếng nhất miền Nam', lat: 10.3129, lng: 105.7516, category: 'scenic' },
-        { name: 'Gò Tháp', desc: 'Di tích lịch sử - văn hóa cấp Quốc gia', lat: 10.5982, lng: 105.8086, category: 'history' },
-        { name: 'Khu di tích Nguyễn Sinh Sắc', desc: 'Lăng mộ thân phụ Chủ tịch Hồ Chí Minh', lat: 10.4465, lng: 105.6298, category: 'history' },
-        { name: 'Xẻo Quýt', desc: 'Khu du lịch sinh thái rừng tràm đặc sắc', lat: 10.4497, lng: 105.8458, category: 'eco' },
-        { name: 'TP. Sa Đéc', desc: 'Thành phố hoa và di sản kiến trúc Pháp', lat: 10.2934, lng: 105.7588, category: 'city' },
-        { name: 'Tháp Mười', desc: 'Vùng đất ngập nước lịch sử Đồng Tháp Mười', lat: 10.6067, lng: 105.8119, category: 'scenic' },
-        { name: 'Hồng Ngự', desc: 'Thành phố biên giới, cửa ngõ giao thương', lat: 10.8031, lng: 105.3421, category: 'city' },
+        { id: 'caolanh', name: 'TP. Cao Lãnh', desc: 'Trung tâm hành chính tỉnh Đồng Tháp', lat: 10.4578, lng: 105.6325, category: 'city' },
+        { id: 'tramchim', name: 'Vườn QG Tràm Chim', desc: 'Khu Ramsar thứ 2000 — 231 loài chim quý hiếm', lat: 10.7329, lng: 105.5342, category: 'eco' },
+        { id: 'langhoa', name: 'Làng hoa Sa Đéc', desc: 'Vùng trồng hoa nổi tiếng nhất miền Nam', lat: 10.3129, lng: 105.7516, category: 'scenic' },
+        { id: 'gothap', name: 'Gò Tháp', desc: 'Di tích lịch sử - văn hóa cấp Quốc gia', lat: 10.5982, lng: 105.8086, category: 'history' },
+        { id: 'phobang', name: 'Khu di tích Nguyễn Sinh Sắc', desc: 'Lăng mộ thân phụ Chủ tịch Hồ Chí Minh', lat: 10.4465, lng: 105.6298, category: 'history' },
+        { id: 'xeoquyt', name: 'Xẻo Quýt', desc: 'Khu du lịch sinh thái rừng tràm đặc sắc', lat: 10.4497, lng: 105.8458, category: 'eco' },
+        { id: 'sadec', name: 'TP. Sa Đéc', desc: 'Thành phố hoa và di sản kiến trúc Pháp', lat: 10.2934, lng: 105.7588, category: 'city' },
+        { id: 'thapmuoi', name: 'Tháp Mười', desc: 'Vùng đất ngập nước lịch sử Đồng Tháp Mười', lat: 10.6067, lng: 105.8119, category: 'scenic' },
+        { id: 'hongngu', name: 'Hồng Ngự', desc: 'Thành phố cửa khẩu biên giới', lat: 10.8031, lng: 105.3421, category: 'city' },
     ];
 
     var categoryColors = { eco: '#22c55e', history: '#a855f7', scenic: '#06b6d4', city: '#f59e0b' };
     var categoryLabels = { eco: 'Sinh thái', history: 'Lịch sử & Văn hóa', scenic: 'Danh lam', city: 'Đô thị' };
 
     var legendEl = document.getElementById('map-legend-list');
-    var seen = {};
+    
+    // Khởi tạo thẻ HTML chú giải trước (nằm ngoài initMap để load liền)
     if(legendEl) {
         legendEl.innerHTML = '';
         var cats = [...new Set(mapLocations.map(l => l.category))];
@@ -1188,6 +1235,7 @@
             attributionControl: false
         });
 
+        // Nền Google Map
         L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
             maxZoom: 20,
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
@@ -1196,6 +1244,7 @@
 
         L.control.attribution({ prefix: false, position: 'bottomright' }).addTo(map);
 
+        // Polygon tỉnh Đồng Tháp
         var dtPolygon = [
             [10.95, 105.25],[10.96, 105.40],[10.93, 105.58],[10.88, 105.68],
             [10.82, 105.76],[10.77, 105.95],[10.70, 106.05],[10.60, 106.02],
@@ -1208,25 +1257,26 @@
             fillColor: 'rgba(76,175,80,0.08)', fillOpacity: 1, dashArray: '6,4'
         }).addTo(map);
 
+        // Vòng lặp GẮN SỰ KIỆN DUY NHẤT (Chống lỗi click nhảy bậy)
         mapLocations.forEach(function(loc) {
             var dotColor = categoryColors[loc.category];
+            
+            // Marker
             var html = '<div class="marker-pulse" style="--dot-color: ' + dotColor + ';"></div>';
             var icon = L.divIcon({ html: html, className: 'custom-map-marker', iconSize: [20, 20], iconAnchor: [10, 10] });
             var marker = L.marker([loc.lat, loc.lng], { icon: icon }).addTo(map);
-            loc.marker = marker;
             marker.bindPopup('<div class="map-popup-title"><span style="color:'+dotColor+'">⬤</span> '+loc.name+'</div><div class="map-popup-desc">'+loc.desc+'</div>');
 
-            // Render thẻ danh sách & Gắn sự kiện click trực tiếp để không bao giờ bị lệch
+            // Danh sách bên phải & Hàm Click
             if (legendEl) {
                 var row = document.createElement('div');
                 row.className = 'flex items-start gap-2 cursor-pointer hover:bg-green-900/30 rounded-lg px-2 py-1.5 transition-all -mx-2';
                 row.innerHTML = '<div class="w-2 h-2 rounded-full mt-1 flex-shrink-0" style="background:'+dotColor+';"></div><div><div class="text-[11px] font-bold text-white/90 leading-tight">'+loc.name+'</div><div class="text-[10px] text-green-400/70">'+categoryLabels[loc.category]+'</div></div>';
                 
+                // Lắng nghe sự kiện click trực tiếp vào vị trí Loc này
                 row.addEventListener('click', function() {
-                    if (map) {
-                        map.flyTo([loc.lat, loc.lng], 13, { duration: 1.2 });
-                        setTimeout(function() { if (loc.marker) loc.marker.openPopup(); }, 1200);
-                    }
+                    map.flyTo([loc.lat, loc.lng], 13, { duration: 1.2 });
+                    setTimeout(function() { marker.openPopup(); }, 1200);
                 });
                 
                 legendEl.appendChild(row);

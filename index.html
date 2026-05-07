@@ -368,10 +368,8 @@
 
         /* ========== LEAFLET MAP CUSTOM STYLES & FIXES ========== */
         #map-container { position: relative; z-index: 10; }
-        
-        .leaflet-layer, .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-attribution {
-            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
-        }
+        #dong-thap-map { height: 480px; border-radius: 1.5rem; z-index: 10; background: #0a1f0a; border: 2px solid rgba(76, 175, 80, 0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        @media(min-width:768px) { #dong-thap-map { height: 560px; } }
 
         .leaflet-popup-content-wrapper { background: #0a1f0a; border: 1px solid rgba(76,175,80,0.4); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
         .leaflet-popup-content { color: white; font-family: 'Inter', sans-serif; font-size: 13px; margin: 12px 16px; }
@@ -379,12 +377,26 @@
         .leaflet-popup-close-button { color: #4caf50 !important; font-size: 18px !important; }
         .map-popup-title { font-weight: 800; font-size: 14px; margin-bottom: 4px; display: flex; gap: 6px; align-items: center; }
         .map-popup-desc { color: #a5d6a7; font-size: 11px; line-height: 1.5; }
-        
-        .custom-map-marker { position: relative; display: flex; align-items: center; justify-content: center; }
-        .marker-pulse { width: 14px; height: 14px; border-radius: 50%; background: var(--dot-color); border: 2.5px solid white; box-shadow: 0 2px 10px var(--dot-color); position: relative; z-index: 2; }
-        .marker-pulse::before { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--dot-color); animation: map-ping-kf 1.5s cubic-bezier(0,0,0.2,1) infinite; z-index: 1; opacity: 0.7; }
+
+        .custom-map-marker { background: none; border: none; }
+        .marker-pulse { 
+            position: absolute; 
+            top: 50%; left: 50%; 
+            transform: translate(-50%, -50%);
+            width: 14px; height: 14px; 
+            border-radius: 50%; 
+            background: var(--dot-color); 
+            border: 2px solid white; 
+            box-shadow: 0 2px 10px var(--dot-color); 
+        }
+        .marker-pulse::before { 
+            content: ''; position: absolute; inset: -6px; border-radius: 50%; 
+            border: 2px solid var(--dot-color); 
+            animation: map-ping-kf 1.5s cubic-bezier(0,0,0.2,1) infinite; 
+            opacity: 0.7; 
+        }
         @keyframes map-ping-kf { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.4); opacity: 0; } }
-        
+
         .map-legend { background: rgba(10,31,10,0.92); backdrop-filter: blur(12px); border: 1px solid rgba(76,175,80,0.3); border-radius: 12px; padding: 14px 18px; }
         .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
@@ -574,26 +586,22 @@
                 <div class="eco-badge mb-3">
                     <span class="material-symbols-outlined" style="font-size:11px;">explore</span> Bản đồ tương tác
                 </div>
-                <h3 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">
+                <h3 class="font-display text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight" style="font-family:'Playfair Display',serif;">
                     Khám Phá
                     <span class="highlight-word" id="hl-bandothap">Bản Đồ</span><br>
                     <span class="highlight-word" id="hl-dongthap">Đồng Tháp</span>
                 </h3>
-                <div class="w-16 md:w-24 h-1 md:h-1.5 bg-gradient-to-r from-green-600 to-green-400 mt-3" id="map-underline" style="width:0;transition:width 1s ease;"></div>
+                <div class="w-0 h-1 bg-gradient-to-r from-green-600 to-green-400 mt-3 rounded-full transition-all duration-1000" id="map-underline"></div>
             </div>
             <p class="text-sm text-gray-500 max-w-xs mt-4 md:mt-0 leading-relaxed">Click vào các điểm đánh dấu để xem thông tin chi tiết về từng địa danh.</p>
         </div>
 
-        <div id="map-container" class="grid md:grid-cols-3 gap-6">
+        <div id="map-container" class="grid lg:grid-cols-3 gap-6 items-stretch">
             
-            <div class="md:col-span-2 flex flex-col gap-6">
+            <div class="lg:col-span-2 flex flex-col gap-6 h-full">
                 
                 <div class="relative flex-grow rounded-[1.5rem] overflow-hidden shadow-2xl border border-green-200/50" style="min-height: 480px;">
-                    <div class="absolute inset-0 bg-[#0a1f0a] flex flex-col items-center justify-center">
-                        <span class="material-symbols-outlined text-green-500 animate-spin-slow text-4xl mb-2">autorenew</span>
-                        <span class="text-green-500 text-xs font-bold uppercase tracking-widest opacity-80">Đang tải bản đồ...</span>
-                    </div>
-                    <div id="dong-thap-map" class="absolute inset-0 w-full h-full z-10" style="background: transparent;"></div>
+                    <div id="dong-thap-map" class="absolute inset-0 w-full h-full z-10"></div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -619,19 +627,18 @@
                         <p class="text-[11px] text-gray-500 leading-relaxed font-medium">Thưởng thức cá lóc nướng trui, lẩu mắm, nem chua trứ danh.</p>
                     </div>
                 </div>
-                
             </div>
 
-            <div class="flex flex-col gap-4">
-                <div class="map-legend text-white">
+            <div class="flex flex-col gap-4 h-full">
+                <div class="map-legend text-white flex-grow">
                     <div class="text-[10px] font-black uppercase tracking-widest text-green-400 mb-4">Chú giải địa danh</div>
-                    <div class="space-y-3" id="map-legend-list">
+                    <div class="space-y-2" id="map-legend-list">
                         </div>
                 </div>
 
-                <div class="bg-white rounded-2xl p-5 border border-green-100 shadow-lg card-glow">
+                <div class="bg-white rounded-2xl p-5 border border-green-100 shadow-lg card-lift">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-green-600 flex items-center justify-center shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-green-600 flex items-center justify-center shadow-md">
                             <span class="material-symbols-outlined text-white text-lg">info</span>
                         </div>
                         <div>
@@ -1188,7 +1195,7 @@
         }
     }
     
-    /* ============ LEAFLET MAP (Google Maps Tọa độ chính xác) ============ */
+    /* ─── LEAFLET MAP (Google Maps Tọa độ đúng) ─── */
     var mapLocations = [
         { id: 'caolanh', name: 'TP. Cao Lãnh', desc: 'Trung tâm hành chính tỉnh Đồng Tháp', lat: 10.4578, lng: 105.6325, category: 'city' },
         { id: 'tramchim', name: 'Vườn QG Tràm Chim', desc: 'Khu Ramsar thứ 2000 — 231 loài chim quý hiếm', lat: 10.7329, lng: 105.5342, category: 'eco' },
@@ -1198,15 +1205,15 @@
         { id: 'xeoquyt', name: 'Xẻo Quýt', desc: 'Khu du lịch sinh thái rừng tràm đặc sắc', lat: 10.4497, lng: 105.8458, category: 'eco' },
         { id: 'sadec', name: 'TP. Sa Đéc', desc: 'Thành phố hoa và di sản kiến trúc Pháp', lat: 10.2934, lng: 105.7588, category: 'city' },
         { id: 'thapmuoi', name: 'Tháp Mười', desc: 'Vùng đất ngập nước lịch sử Đồng Tháp Mười', lat: 10.6067, lng: 105.8119, category: 'scenic' },
-        { id: 'hongngu', name: 'Hồng Ngự', desc: 'Thành phố cửa khẩu biên giới', lat: 10.8031, lng: 105.3421, category: 'city' },
+        { id: 'hongngu', name: 'Hồng Ngự', desc: 'Thành phố biên giới, cửa ngõ giao thương', lat: 10.8031, lng: 105.3421, category: 'city' },
     ];
 
     var categoryColors = { eco: '#22c55e', history: '#a855f7', scenic: '#06b6d4', city: '#f59e0b' };
     var categoryLabels = { eco: 'Sinh thái', history: 'Lịch sử & Văn hóa', scenic: 'Danh lam', city: 'Đô thị' };
 
+    // Xây dựng Legend & Gán ID để không lỗi Click
     var legendEl = document.getElementById('map-legend-list');
-    
-    // Khởi tạo thẻ HTML chú giải trước (nằm ngoài initMap để load liền)
+    var seen = {};
     if(legendEl) {
         legendEl.innerHTML = '';
         var cats = [...new Set(mapLocations.map(l => l.category))];
@@ -1235,7 +1242,7 @@
             attributionControl: false
         });
 
-        // Nền Google Map
+        // Dark tile layer Google Map
         L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
             maxZoom: 20,
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
@@ -1244,7 +1251,7 @@
 
         L.control.attribution({ prefix: false, position: 'bottomright' }).addTo(map);
 
-        // Polygon tỉnh Đồng Tháp
+        // Draw Đồng Tháp province polygon
         var dtPolygon = [
             [10.95, 105.25],[10.96, 105.40],[10.93, 105.58],[10.88, 105.68],
             [10.82, 105.76],[10.77, 105.95],[10.70, 106.05],[10.60, 106.02],
@@ -1257,28 +1264,25 @@
             fillColor: 'rgba(76,175,80,0.08)', fillOpacity: 1, dashArray: '6,4'
         }).addTo(map);
 
-        // Vòng lặp GẮN SỰ KIỆN DUY NHẤT (Chống lỗi click nhảy bậy)
+        // Render Marker & Click Event trực tiếp
         mapLocations.forEach(function(loc) {
             var dotColor = categoryColors[loc.category];
-            
-            // Marker
+            // Kích thước icon 0,0 để tâm chính xác tuyệt đối
             var html = '<div class="marker-pulse" style="--dot-color: ' + dotColor + ';"></div>';
-            var icon = L.divIcon({ html: html, className: 'custom-map-marker', iconSize: [20, 20], iconAnchor: [10, 10] });
+            var icon = L.divIcon({ html: html, className: 'custom-map-marker', iconSize: [0, 0], iconAnchor: [0, 0], popupAnchor: [0, -10] });
             var marker = L.marker([loc.lat, loc.lng], { icon: icon }).addTo(map);
             marker.bindPopup('<div class="map-popup-title"><span style="color:'+dotColor+'">⬤</span> '+loc.name+'</div><div class="map-popup-desc">'+loc.desc+'</div>');
 
-            // Danh sách bên phải & Hàm Click
-            if (legendEl) {
+            if(legendEl) {
                 var row = document.createElement('div');
                 row.className = 'flex items-start gap-2 cursor-pointer hover:bg-green-900/30 rounded-lg px-2 py-1.5 transition-all -mx-2';
                 row.innerHTML = '<div class="w-2 h-2 rounded-full mt-1 flex-shrink-0" style="background:'+dotColor+';"></div><div><div class="text-[11px] font-bold text-white/90 leading-tight">'+loc.name+'</div><div class="text-[10px] text-green-400/70">'+categoryLabels[loc.category]+'</div></div>';
                 
-                // Lắng nghe sự kiện click trực tiếp vào vị trí Loc này
+                // Gắn sự kiện bay chính xác
                 row.addEventListener('click', function() {
                     map.flyTo([loc.lat, loc.lng], 13, { duration: 1.2 });
                     setTimeout(function() { marker.openPopup(); }, 1200);
                 });
-                
                 legendEl.appendChild(row);
             }
         });
@@ -1292,7 +1296,6 @@
         lsObs.observe(ls, { attributes: true, attributeFilter: ['class'] });
         if (ls.classList.contains('hidden')) initMap();
     }
-
 })();
 </script>
 

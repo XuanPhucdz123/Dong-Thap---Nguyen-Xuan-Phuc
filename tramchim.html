@@ -97,14 +97,15 @@
         }
         #page-transition.out { opacity: 1; pointer-events: all; }
 
-        /* ========== LOADING SCREEN ========== */
+        /* ========== LOADING SCREEN & CỬA SỔ KÉO RÈM ========== */
         #loading-screen {
             position: fixed; inset: 0; background: #0a1f0a; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s ease;
         }
-        #loading-screen.hidden { opacity: 0; visibility: hidden; }
-        .loader-lotus { width: 60px; height: 60px; position: relative; margin-bottom: 24px; }
+        #loading-screen.hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+        
+        .loader-lotus { width: 60px; height: 60px; position: relative; margin-bottom: 20px; }
         .loader-petal {
             position: absolute; width: 20px; height: 30px;
             background: linear-gradient(135deg, #4caf50, #81c784);
@@ -122,17 +123,14 @@
             0%, 100% { opacity: 0.3; transform: rotate(var(--r, 0deg)) scale(0.8); }
             50% { opacity: 1; transform: rotate(var(--r, 0deg)) scale(1.1); }
         }
-        .loader-text { color: #4caf50; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; font-weight: 800; animation: loader-pulse 1.2s ease-in-out infinite; }
-        .loader-bar-wrap { width: 140px; height: 2px; background: rgba(76,175,80,0.2); border-radius: 2px; margin-top: 16px; overflow: hidden; }
-        .loader-bar-fill { height: 100%; background: linear-gradient(90deg, #1b5e20, #4caf50); width: 0; animation: loader-bar 1s ease forwards 0.3s; border-radius: 2px; }
+        .loader-text { color: #4caf50; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; font-weight: 800; animation: loader-pulse 1.2s ease-in-out infinite; margin-bottom: 24px; }
+        .loader-bar-wrap { width: 140px; height: 2px; background: rgba(76,175,80,0.2); border-radius: 2px; overflow: hidden; }
+        .loader-bar-fill { height: 100%; background: linear-gradient(90deg, #1b5e20, #4caf50); width: 0; animation: loader-bar 1.2s ease forwards 0.3s; border-radius: 2px; }
         @keyframes loader-bar { to { width: 100%; } }
         @keyframes loader-pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
-        /* ========== CUSTOM CURSOR (desktop only) ========== */
-        @media (pointer: fine) {
-            body { cursor: none; }
-            a, button, [onclick] { cursor: none; }
-        }
+        /* ========== CUSTOM CURSOR ========== */
+        @media (pointer: fine) { body { cursor: none; } a, button, [onclick] { cursor: none; } }
         #cursor-dot {
             position: fixed; width: 8px; height: 8px; border-radius: 50%;
             background: #4caf50; pointer-events: none; z-index: 99999;
@@ -255,10 +253,10 @@
         /* ========== CARD EFFECTS ========== */
         .card-glow { position: relative; transition: all 0.3s ease; }
         .card-glow::before {
-            content: ''; position: absolute; inset: 0; border-radius: 1rem;
+            content: ''; position: absolute; inset: 0; border-radius: inherit;
             opacity: 0; transition: opacity 0.3s ease; z-index: -1;
         }
-        .card-glow:hover::before { opacity: 1; box-shadow: 0 0 60px rgba(76, 175, 80, 0.8); }
+        .card-glow:hover::before { opacity: 1; box-shadow: 0 0 40px rgba(76, 175, 80, 0.4); }
 
         /* Shine sweep */
         .card-shine { position: relative; overflow: hidden; }
@@ -275,12 +273,11 @@
             transition: box-shadow 0.4s ease, transform 0.3s ease;
         }
         .card-border-glow:hover {
-            box-shadow: 0 0 0 2px rgba(76,175,80,0.5), 0 20px 60px rgba(76,175,80,0.15);
+            box-shadow: 0 0 0 2px rgba(76,175,80,0.4), 0 20px 40px rgba(76,175,80,0.1);
         }
 
-        /* ========== 3D TILT ========== */
-        .tilt-card { transform-style: preserve-3d; transform: perspective(1000px); transition: transform 0.1s ease; }
-        .tilt-content { transform: translateZ(30px); }
+        /* ========== 3D TILT FIX CHỐNG KÉO GIÃN ========== */
+        .tilt-card { transform: perspective(1000px); transition: transform 0.1s ease; will-change: transform; }
 
         /* ========== BORDER SHIMMER ========== */
         .border-animate { position: relative; overflow: hidden; }
@@ -332,17 +329,15 @@
         @keyframes orbit-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         /* ========== NEON UNDERLINE ========== */
-        .neon-link {
-            position: relative; text-decoration: none;
-        }
+        .neon-link { position: relative; text-decoration: none; }
         .neon-link::after {
             content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
             background: linear-gradient(90deg, #4caf50, #81c784);
             box-shadow: 0 0 8px rgba(76,175,80,0.8);
-            transition: width 0.35s ease;
-            border-radius: 1px;
+            transition: width 0.35s ease; border-radius: 1px;
         }
-        .neon-link:hover::after { width: 100%; }
+        .neon-link:hover::after, .neon-link.active-link::after { width: 100%; }
+        .active-link { color: #006e1c !important; }
 
         /* ========== SCROLL TO TOP ========== */
         #scroll-top {
@@ -380,16 +375,13 @@
 
         /* ========== SCROLL REVEAL BASE ========== */
         [data-aos] { opacity: 0; }
-
-        /* ========== MAGNETIC BTN ========== */
         .magnetic-btn { display: inline-flex; transition: transform 0.2s ease; }
 
         /* ========== HIGHLIGHT UNDERLINE ON SCROLL ========== */
         .highlight-word { position: relative; display: inline-block; }
         .highlight-word::after {
             content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 3px;
-            background: linear-gradient(90deg, #4caf50, #81c784);
-            border-radius: 2px; transition: width 0.8s ease;
+            background: linear-gradient(90deg, #4caf50, #81c784); border-radius: 2px; transition: width 0.8s ease;
         }
         .highlight-word.active::after { width: 100%; }
 
@@ -401,24 +393,13 @@
             text-transform: uppercase; padding: 3px 10px; border-radius: 999px;
             animation: badge-glow 3s ease-in-out infinite;
         }
-        @keyframes badge-glow {
-            0%, 100% { box-shadow: 0 0 0px rgba(76,175,80,0); }
-            50% { box-shadow: 0 0 12px rgba(76,175,80,0.4); }
-        }
+        @keyframes badge-glow { 0%, 100% { box-shadow: 0 0 0px rgba(76,175,80,0); } 50% { box-shadow: 0 0 12px rgba(76,175,80,0.4); } }
 
         /* ========== MORPHING BLOB ========== */
         .blob-bg {
             position: absolute; border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
             background: radial-gradient(circle at 30% 50%, rgba(76,175,80,0.15), rgba(27,94,32,0.08));
-            filter: blur(30px);
-            animation: blob-morph 8s ease-in-out infinite;
-            pointer-events: none;
-        }
-        @keyframes blob-morph {
-            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-            25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
-            50% { border-radius: 50% 60% 30% 60% / 30% 40% 70% 50%; }
-            75% { border-radius: 40% 60% 60% 30% / 60% 40% 50% 60%; }
+            filter: blur(30px); animation: blob-morph 8s ease-in-out infinite; pointer-events: none;
         }
 
         /* ========== STATS PROGRESS BAR ========== */
@@ -428,8 +409,7 @@
         /* ========== SECTION NUMBER ========== */
         .section-number {
             font-size: 120px; font-weight: 900; position: absolute; right: -10px; top: -40px;
-            color: rgba(76,175,80,0.06); line-height: 1; pointer-events: none; user-select: none;
-            letter-spacing: -8px;
+            color: rgba(76,175,80,0.06); line-height: 1; pointer-events: none; user-select: none; letter-spacing: -8px;
         }
 
         /* ========== FOOTER GLOW LINK ========== */
@@ -442,10 +422,7 @@
             z-index: 50; border-radius: 2px; overflow: hidden; display: none;
         }
         @media (min-width: 1280px) { .scroll-line { display: block; } }
-        .scroll-line-fill {
-            width: 100%; background: linear-gradient(180deg, #1b5e20, #4caf50);
-            border-radius: 2px; height: 0; transition: height 0.2s ease;
-        }
+        .scroll-line-fill { width: 100%; background: linear-gradient(180deg, #1b5e20, #4caf50); border-radius: 2px; height: 0; transition: height 0.2s ease; }
 
         /* ========== HOVER CARD LABEL ========== */
         .card-hover-label {
@@ -461,25 +438,13 @@
         .video-badge {
             position: absolute; top: 14px; left: 14px; z-index: 20;
             background: #16a34a; color: white; font-size: 10px; font-weight: 800;
-            letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 12px;
-            border-radius: 2px;
+            letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 12px; border-radius: 2px;
         }
 
         /* ========== ARTICLE CONTENT ========== */
-        .article-body p {
-            text-align: justify;
-            line-height: 1.9;
-        }
+        .article-body p { text-align: justify; line-height: 1.9; }
 
-        /* ========== REDUCED MOTION ========== */
-        @media (prefers-reduced-motion: reduce) {
-            *, ::before, ::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-        }
-
-        /* ========== CARD ACTIVE STATE (mobile tap) ========== */
-        article:active { transform: scale(0.97); transition: transform 0.15s ease; }
-
-        /* ========== ĐỒNG BỘ MOBILE OPTIMIZATIONS TỪ TRANG CHỦ ========== */
+        /* ========== MOBILE OPTIMIZATIONS TỪ TRANG CHỦ ========== */
         @media (max-width: 767px) {
             .float-icon { animation: none !important; }
             .blob-bg { animation: none !important; border-radius: 50% !important; transform: none !important; }
@@ -495,7 +460,6 @@
             .pulse-wrap::after { display: none !important; }
             .pulse-wrap::before { animation-duration: 3s !important; inset: -4px !important; }
 
-            /* ĐÓNG BĂNG MÀN HÌNH TẢI HOA SEN TRÊN ĐIỆN THOẠI YÊU CẦU */
             .loader-petal { animation: none !important; opacity: 1 !important; }
             .loader-petal:nth-child(1) { transform: rotate(0deg) scale(1) !important; }
             .loader-petal:nth-child(2) { transform: rotate(72deg) scale(1) !important; }
@@ -504,47 +468,25 @@
             .loader-petal:nth-child(5) { transform: rotate(288deg) scale(1) !important; }
             .loader-text { animation: none !important; }
 
-            /* FIX HIỆU ỨNG TỎA MÀU: GIỮ NGUYÊN KHỐI PHÁT SÁNG NHƯNG CHỐNG LAG GIẬT */
-            .group .absolute.-inset-6,
-            .group .absolute.-inset-4 {
-                display: block !important;
-                opacity: 0.85 !important;
-                filter: blur(28px) !important;
-                transform: translateY(12px) scale(1.05) !important;
-                transition: none !important; 
-            }
-            /* Chặn hover effect thay đổi kích thước trên nền phát sáng này */
-            .group:hover .absolute.-inset-6,
-            .group:hover .absolute.-inset-4 {
-                opacity: 0.85 !important;
-                filter: blur(28px) !important;
-                transform: translateY(12px) scale(1.05) !important;
-            }
+            .group .absolute.-inset-6, .group .absolute.-inset-4 { display: block !important; opacity: 0.85 !important; filter: blur(28px) !important; transform: translateY(12px) scale(1.05) !important; transition: none !important; }
+            .group:hover .absolute.-inset-6, .group:hover .absolute.-inset-4 { opacity: 0.85 !important; filter: blur(28px) !important; transform: translateY(12px) scale(1.05) !important; }
 
-            /* FIX LỖI CARD 3D BỊ NHẢY LOẠN XẠ */
             .tilt-card { transform: none !important; transform-style: flat !important; transition: none !important;}
-            .tilt-content { transform: none !important; transition: none !important;}
             article:active { transform: none !important; }
-            main article { transform: none !important; }
             
-            /* FIX 100% HIỂN THỊ ẢNH TRÊN ĐIỆN THOẠI (Bỏ qua clip-path bị lỗi) */
-            .img-reveal { transition-duration: 0.5s !important; filter: grayscale(0) !important; opacity: 1 !important; }
+            .img-reveal { transition-duration: 0.5s !important; filter: grayscale(0) !important; opacity: 1 !important; transform: scale(1) !important;}
             .group:hover img { transform: none !important; filter: grayscale(0) !important; }
             .card-hover-label { display: none !important; }
-            
             .animate-slide-up { animation: slide-up-mobile 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important; }
         }
-        @keyframes slide-up-mobile {
-            from { opacity: 0; transform: translateY(60px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slide-up-mobile { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* HOVER EFFECT CHO CARD NGANG (CHỈ TRÊN DESKTOP) */
         @media (hover: hover) and (pointer: fine) {
             main article { transition: transform 0.35s ease, filter 0.35s ease; }
             main article:hover { transform: translateY(-8px); }
-            main article:hover .highlight-box { filter: brightness(1.04); }
         }
+
+        @media (prefers-reduced-motion: reduce) { *, ::before, ::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
     </style>
 </head>
 <body class="pt-20 md:pt-24">
@@ -563,12 +505,14 @@
         <div class="loader-petal"></div>
         <div class="loader-petal"></div>
     </div>
-    <div class="loader-text">Tràm Chim</div>
-    <div class="loader-bar-wrap"><div class="loader-bar-fill"></div></div>
+    <div class="loader-text mb-6">Đất Sen Hồng</div>
+    <div class="loader-bar-wrap" id="loader-bar-wrap"><div class="loader-bar-fill"></div></div>
+    <button id="start-btn" class="px-8 py-3 border border-green-500 text-green-400 rounded-full font-bold uppercase tracking-widest text-[10px] hover:bg-green-500 hover:text-white transition-all duration-300 transform scale-90 opacity-0 hidden shadow-[0_0_15px_rgba(76,175,80,0.3)] hover:shadow-[0_0_25px_rgba(76,175,80,0.6)]">
+        Bắt đầu khám phá
+    </button>
 </div>
 
 <div id="particles" aria-hidden="true"></div>
-
 <div id="progress-bar"></div>
 
 <div class="scroll-line" aria-hidden="true">
@@ -589,16 +533,17 @@
             </div>
         </div>
         <nav class="flex gap-3 md:gap-8 text-[10px] md:text-xs font-black uppercase">
-            <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="/">Trang chủ</a>
-            <a class="text-green-700 border-b-2 border-green-700 pb-1 neon-link" href="tramchim">Sinh thái</a>
-            <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="ditichlichsu">Lịch sử</a>
-            <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="danhlam">Danh Lam</a>
+            <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="index.html">Trang chủ</a>
+            <a class="text-green-700 border-b-2 border-green-700 pb-1 neon-link active-link" href="#">Sinh thái</a>
+            <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="ditichlichsu.html">Lịch sử</a>
+            <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="danhlam.html">Danh Lam</a>
+            <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="camnang.html">Cẩm Nang</a>
         </nav>
     </div>
 </header>
 
 <main>
-    <section class="w-full px-4 max-w-7xl mx-auto mb-8">
+    <section class="w-full px-4 max-w-7xl mx-auto mb-8 mt-4">
         <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
             
             <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none z-0" id="parallax-bg">
@@ -612,7 +557,6 @@
             </div>
 
             <div class="hidden md:block blob-bg w-64 h-64 md:w-96 md:h-96 absolute right-10 top-10 z-0 opacity-60"></div>
-
             <div class="hidden md:block absolute right-8 bottom-16 w-3 h-3 border-2 border-green-400/40 rotate-45 animate-[float_4s_ease-in-out_infinite]" aria-hidden="true"></div>
             <div class="hidden md:block absolute right-24 bottom-32 w-2 h-2 bg-green-400/30 rounded-full animate-[float_3s_ease-in-out_infinite_0.5s]" aria-hidden="true"></div>
             <div class="hidden md:block absolute right-16 top-20 w-4 h-4 border border-green-300/30 rounded-full animate-[float_5s_ease-in-out_infinite_1s]" aria-hidden="true"></div>
@@ -629,9 +573,14 @@
                 <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto animate-slide-up" style="animation-delay: 0.4s;">
                     Hành trình về miền Đất Sen Hồng, khám phá Vườn Quốc gia Tràm Chim — Khu Ramsar thứ 2000 của thế giới với hệ sinh thái hoang sơ tuyệt đẹp.
                 </p>
-                <a href="/" class="magnetic-btn ripple-container w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs pointer-events-auto animate-scale-in" style="animation-delay: 0.6s;">
-                    <span class="material-symbols-outlined">west</span> Quay về trang chủ
-                </a>
+                <div class="flex flex-wrap gap-3 pointer-events-auto animate-scale-in" style="animation-delay: 0.6s;">
+                    <a href="#explore" class="magnetic-btn ripple-container w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs tracking-wider">
+                        <span class="material-symbols-outlined text-base">auto_stories</span> Khám phá ngay
+                    </a>
+                    <a href="index.html" class="magnetic-btn ripple-container w-fit inline-flex items-center gap-2 bg-white/10 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-white/20 transition-all border border-white/30 uppercase text-xs tracking-wider">
+                        <span class="material-symbols-outlined text-base">west</span> Trang chủ
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -690,14 +639,14 @@
         </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-6 pb-16 space-y-20 md:space-y-36">
+    <section id="explore" class="max-w-7xl mx-auto px-6 pb-16 space-y-20 md:space-y-36">
 
         <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center sparkle-wrap" data-aos="fade-up">
             <div class="w-full md:w-1/2 relative group z-0 tilt-card">
-                <div class="absolute -inset-4 translate-y-4 scale-[1.04] opacity-70 blur-3xl group-hover:opacity-100 group-hover:blur-[70px] group-hover:scale-[1.07] transition-all duration-700 pointer-events-none -z-10 tilt-content">
+                <div class="absolute -inset-4 translate-y-4 scale-[1.04] opacity-70 blur-3xl group-hover:opacity-100 group-hover:blur-[70px] group-hover:scale-[1.07] transition-all duration-700 pointer-events-none -z-10">
                     <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
                 </div>
-                <div class="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-10 card-shine card-border-glow border-animate tilt-content">
+                <div class="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-10 card-shine card-border-glow border-animate">
                     <img src="kk_cd04_316_du_lich_sinh_thai_tram_chim_h_dung_637106109388827377_501052057_505290745.jpg"
                          alt="Tràm Chim toàn cảnh"
                          class="w-full h-64 md:h-96 object-cover img-reveal transition-transform duration-700 group-hover:scale-105"/>
@@ -736,12 +685,11 @@
 
         <article class="flex flex-col md:flex-row-reverse gap-8 md:gap-16 items-center sparkle-wrap" data-aos="fade-up">
             <div class="w-full md:w-1/2 relative group z-0 tilt-card">
-                <div class="absolute -inset-4 translate-y-4 scale-[1.04] opacity-70 blur-3xl group-hover:opacity-100 group-hover:blur-[70px] group-hover:scale-[1.07] transition-all duration-700 pointer-events-none -z-10 tilt-content">
+                <div class="absolute -inset-4 translate-y-4 scale-[1.04] opacity-70 blur-3xl group-hover:opacity-100 group-hover:blur-[70px] group-hover:scale-[1.07] transition-all duration-700 pointer-events-none -z-10">
                     <div class="w-full h-full rounded-3xl" style="background:linear-gradient(135deg,#2d6a4f,#52b788,#1b4332);"></div>
                 </div>
-                <div class="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl bg-black z-10 card-shine card-border-glow border-animate tilt-content">
-                    <video src="227085.mp4" autoplay loop muted playsinline
-                           class="w-full h-64 md:h-96 object-cover opacity-95 transition-transform duration-700 group-hover:scale-105"></video>
+                <div class="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl bg-black z-10 card-shine card-border-glow border-animate">
+                    <video src="227085.mp4" autoplay loop muted playsinline class="w-full h-64 md:h-96 object-cover opacity-95 transition-transform duration-700 group-hover:scale-105"></video>
                     <div class="video-badge">
                         <span class="material-symbols-outlined" style="font-size:12px;vertical-align:middle;">videocam</span>
                         Tư liệu thực địa
@@ -776,10 +724,10 @@
 
         <article class="flex flex-col md:flex-row gap-8 md:gap-16 items-center sparkle-wrap" data-aos="fade-up">
             <div class="w-full md:w-1/2 relative group z-0 tilt-card">
-                <div class="absolute -inset-4 translate-y-4 scale-[1.04] opacity-70 blur-3xl group-hover:opacity-100 group-hover:blur-[70px] group-hover:scale-[1.07] transition-all duration-700 pointer-events-none -z-10 tilt-content">
+                <div class="absolute -inset-4 translate-y-4 scale-[1.04] opacity-70 blur-3xl group-hover:opacity-100 group-hover:blur-[70px] group-hover:scale-[1.07] transition-all duration-700 pointer-events-none -z-10">
                     <img src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
                 </div>
-                <div class="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-10 card-shine card-border-glow border-animate tilt-content">
+                <div class="relative rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl z-10 card-shine card-border-glow border-animate">
                     <img src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg"
                          alt="Đa dạng sinh học Tràm Chim"
                          class="w-full h-64 md:h-96 object-cover img-reveal transition-transform duration-700 group-hover:scale-105" loading="lazy"/>
@@ -853,14 +801,21 @@
             <p class="text-gray-400 text-xs md:text-sm max-w-md italic mt-2">Hệ thống số hóa thông tin giáo dục địa phương.</p>
         </div>
         <nav class="flex flex-wrap justify-center gap-4 text-[10px] md:text-xs font-bold uppercase text-gray-500">
-            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="/">Trang chủ</a>
-            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="tramchim">Sinh thái</a>
-            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="ditichlichsu">Lịch sử</a>
-            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="danhlam">Danh Lam</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="index.html">Trang chủ</a>
+            <a class="text-green-400 border-b-2 border-green-400 pb-1 neon-link active-link" href="#">Sinh thái</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="ditichlichsu.html">Lịch sử</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="danhlam.html">Danh Lam</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="camnang.html">Cẩm Nang</a>
         </nav>
-        <div class="text-center lg:text-right bg-green-900/40 p-4 rounded-lg border border-green-800/50 flex flex-col items-center lg:items-end">
-            <div class="text-[8px] md:text-[10px] text-gray-400 uppercase mb-2">Thực hiện bởi</div>
-            <a href="https://xuanphuc2108.vercel.app/" target="_blank" class="glow-link inline-block text-sm md:text-base font-black animate-pop-bounce drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]">Nguyễn Xuân Phúc - 21/8/2012</a>
+        <div class="text-center lg:text-right bg-green-900/40 p-5 rounded-xl border border-green-800/50 flex flex-col items-center lg:items-end shadow-lg">
+            <div class="text-[9px] md:text-[10px] text-green-400 uppercase font-bold tracking-widest mb-3">Quét mã để truy cập web</div>
+            <div class="bg-white p-1.5 rounded-lg mb-3 shadow-[0_0_15px_rgba(74,222,128,0.2)] hover:scale-105 transition-transform duration-300 cursor-pointer">
+                <img src="xuanphucqr.png" alt="Mã QR Truy cập" class="w-16 h-16 md:w-20 md:h-20 object-contain"/>
+            </div>
+            <div class="text-[8px] md:text-[10px] text-gray-400 uppercase tracking-widest mb-1">Thực hiện bởi</div>
+            <a href="https://dongthap-xuanphuc.vercel.app/" target="_blank" class="glow-link inline-block text-sm md:text-base font-black animate-pop-bounce drop-shadow-[0_0_8px_rgba(74,222,128,0.5)] text-white">
+                Nguyễn Xuân Phúc - 21/8/2012
+            </a>
         </div>
     </div>
 </footer>
@@ -872,18 +827,41 @@
     var isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var isTouch = !window.matchMedia('(pointer: fine)').matches;
 
-    /* ============ LOADING SCREEN ============ */
+    /* ============ MÀN HÌNH TẢI & NÚT BẮT ĐẦU ============ */
     window.addEventListener('load', function() {
         setTimeout(function() {
-            document.getElementById('loading-screen').classList.add('hidden');
+            var barWrap = document.getElementById('loader-bar-wrap');
+            var startBtn = document.getElementById('start-btn');
+            
+            if (barWrap) barWrap.style.display = 'none';
+            if (startBtn) {
+                startBtn.classList.remove('hidden');
+                setTimeout(function() {
+                    startBtn.style.opacity = '1';
+                    startBtn.style.transform = 'scale(1)';
+                }, 50);
+            }
+        }, 1200);
+    });
+
+    document.getElementById('start-btn').addEventListener('click', function() {
+        document.getElementById('loading-screen').classList.add('hidden');
+        
+        setTimeout(function() {
+            if(window.DongThapSound) {
+                window.DongThapSound.init();
+                window.DongThapSound.playLoadComplete();
+            }
+            
             var heroImg = document.getElementById('hero-img');
             if (heroImg) heroImg.classList.add('revealed');
+            
             setTimeout(function() {
                 document.querySelectorAll('.img-reveal:not(#hero-img)').forEach(function(img, i) {
-                    setTimeout(function() { img.classList.add('revealed'); }, i * 200);
+                    setTimeout(function() { img.classList.add('revealed'); }, i * 150);
                 });
-            }, 500);
-        }, 1200);
+            }, 400);
+        }, 50);
     });
 
     /* ============ PAGE TRANSITION ============ */
@@ -909,7 +887,9 @@
         var glow = document.getElementById('cursor-glow');
         var mx = 0, my = 0, rx = 0, ry = 0, gx = 0, gy = 0;
 
-        document.addEventListener('mousemove', function(e) { mx = e.clientX; my = e.clientY; });
+        document.addEventListener('mousemove', function(e) {
+            mx = e.clientX; my = e.clientY;
+        });
 
         (function cursorLoop() {
             dot.style.left = mx + 'px'; dot.style.top = my + 'px';
@@ -933,9 +913,22 @@
         });
     }
 
+    /* ============ TYPEWRITER ============ */
+    var subtitle = document.getElementById('hero-subtitle');
+    var text = 'Hành trình về miền Đất Sen Hồng, khám phá Vườn Quốc gia Tràm Chim — Khu Ramsar thứ 2000 của thế giới với hệ sinh thái hoang sơ tuyệt đẹp.';
+    var i = 0;
+    subtitle.style.borderRight = '2px solid #4caf50';
+    function type() {
+        if (i < text.length) {
+            subtitle.textContent += text[i++];
+            setTimeout(type, 26);
+        } else { subtitle.style.borderRight = 'none'; subtitle.classList.remove('typewriter-cursor'); }
+    }
+    setTimeout(type, 1400);
+
     /* ============ PARTICLES ============ */
     var container = document.getElementById('particles');
-    var count = isMobile ? 0 : 16; /* Tắt trên mobile */
+    var count = isMobile ? 0 : 16; 
     for (var p = 0; p < count; p++) {
         var el = document.createElement('div');
         el.className = 'particle';
@@ -949,6 +942,7 @@
         document.querySelectorAll('.sparkle-wrap').forEach(function(wrap) {
             var timer = null;
             wrap.addEventListener('mouseenter', function() {
+                if (timer) clearInterval(timer);
                 timer = setInterval(function() {
                     var s = document.createElement('div');
                     s.className = 'sparkle';
@@ -958,14 +952,16 @@
                     s.style.setProperty('--sy', Math.sin(angle) * dist + 'px');
                     s.style.left = (20 + Math.random() * 60) + '%';
                     s.style.top = (20 + Math.random() * 60) + '%';
-                    s.style.width = (3 + Math.random() * 5) + 'px';
-                    s.style.height = s.style.width;
                     s.style.background = ['#4caf50','#81c784','#a5d6a7','#fff'][Math.floor(Math.random()*4)];
-                    wrap.appendChild(s);
+                    var targetNode = wrap.querySelector('.tilt-card') || wrap;
+                    targetNode.appendChild(s);
                     s.addEventListener('animationend', function() { s.remove(); });
                 }, 120);
             });
-            wrap.addEventListener('mouseleave', function() { clearInterval(timer); });
+            wrap.addEventListener('mouseleave', function() { 
+                clearInterval(timer); 
+                timer = null; 
+            });
         });
     }
 
@@ -1044,17 +1040,26 @@
         el.addEventListener('touchstart', addRipple, { passive: true });
     });
 
-    /* ============ 3D TILT (desktop only) ============ */
+    /* ============ 3D TILT FIX ============ */
     if (!isTouch && !isReducedMotion) {
         document.querySelectorAll('.tilt-card').forEach(function(card) {
+            let isHovered = false;
+            card.addEventListener('mouseenter', () => isHovered = true);
             card.addEventListener('mousemove', function(e) {
-                var r = card.getBoundingClientRect();
-                var x = e.clientX - r.left, y = e.clientY - r.top;
-                var rx = ((y - r.height/2) / r.height) * -10;
-                var ry = ((x - r.width/2) / r.width) * 10;
-                card.style.transform = 'perspective(1000px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) scale3d(1.02,1.02,1.02)';
+                if(!isHovered) return;
+                window.requestAnimationFrame(function() {
+                    var r = card.getBoundingClientRect();
+                    var w = card.offsetWidth;
+                    var h = card.offsetHeight;
+                    var x = e.clientX - r.left - w/2;
+                    var y = e.clientY - r.top - h/2;
+                    var rx = (y / (h/2)) * -6;
+                    var ry = (x / (w/2)) * 6;
+                    card.style.transform = 'perspective(1000px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) scale3d(1.02,1.02,1.02)';
+                });
             });
             card.addEventListener('mouseleave', function() {
+                isHovered = false;
                 card.style.transition = 'transform 0.5s ease';
                 card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
                 setTimeout(function() { card.style.transition = 'transform 0.1s ease'; }, 500);
@@ -1119,7 +1124,6 @@
                 }
 
                 document.getElementById('progress-bar').style.width = (pct * 100) + '%';
-
                 var slf = document.getElementById('scroll-line-fill');
                 if (slf) slf.style.height = (pct * 100) + '%';
 
@@ -1133,7 +1137,6 @@
                 }
 
                 document.getElementById('scroll-top').classList.toggle('visible', winScroll > 300);
-
                 ticking = false;
             });
             ticking = true;
@@ -1210,13 +1213,17 @@
   function playLoadComplete() {
     if (isMuted) return;
     const c = getCtx();
-    [523.25, 659.25, 783.99, 1046.5].forEach(function(freq, i) {
-      const t = c.currentTime + i * 0.15;
-      const osc = c.createOscillator(), g = c.createGain();
-      osc.type = 'sine'; osc.frequency.value = freq;
-      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.18, t + 0.03); g.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
-      osc.connect(g); g.connect(masterGain); osc.start(t); osc.stop(t + 0.7);
+    const t = c.currentTime;
+    [261.63, 392.00, 493.88, 587.33, 659.25].forEach(function(freq, i) {
+      const osc = c.createOscillator(), g = c.createGain(), panner = c.createStereoPanner();
+      osc.type = 'sine'; osc.frequency.value = freq; panner.pan.value = (i % 2 === 0 ? -0.4 : 0.4);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.12, t + 0.4 + (i * 0.2)); g.gain.exponentialRampToValueAtTime(0.001, t + 5.0 + (i * 0.3));
+      osc.connect(g); g.connect(panner); panner.connect(masterGain); osc.start(t); osc.stop(t + 6.0);
     });
+    const oscTing = c.createOscillator(), gTing = c.createGain();
+    oscTing.type = 'triangle'; oscTing.frequency.setValueAtTime(1046.50, t + 0.2); oscTing.frequency.exponentialRampToValueAtTime(2093.00, t + 2.0); 
+    gTing.gain.setValueAtTime(0, t); gTing.gain.linearRampToValueAtTime(0.05, t + 0.5); gTing.gain.exponentialRampToValueAtTime(0.001, t + 3.0); 
+    oscTing.connect(gTing); gTing.connect(masterGain); oscTing.start(t + 0.2); oscTing.stop(t + 3.5);
   }
 
   function playReveal() {
@@ -1237,20 +1244,18 @@
     const now = Date.now();
     if (now - lastScrollSound < 180) return;
     lastScrollSound = now;
-    const c = getCtx(), t = c.currentTime;
-    const osc = c.createOscillator(), g = c.createGain();
+    const c = getCtx(), t = c.currentTime, osc = c.createOscillator(), g = c.createGain();
     osc.type = 'sine'; osc.frequency.value = 200 + Math.random() * 100;
     g.gain.setValueAtTime(0.04, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
     osc.connect(g); g.connect(masterGain); osc.start(t); osc.stop(t + 0.07);
   }
 
   function playCounterTick() {
-    if (isMuted) return;
-    const c = getCtx(), t = c.currentTime;
-    const osc = c.createOscillator(), g = c.createGain();
-    osc.type = 'square'; osc.frequency.value = 400 + Math.random() * 200;
-    g.gain.setValueAtTime(0.035, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
-    osc.connect(g); g.connect(masterGain); osc.start(t); osc.stop(t + 0.05);
+    if (isMuted || isTouchDevice) return;
+    const c = getCtx(), t = c.currentTime, osc = c.createOscillator(), g = c.createGain();
+    osc.type = 'sine'; osc.frequency.value = 800 + Math.random() * 200;
+    g.gain.setValueAtTime(0.005, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
+    osc.connect(g); g.connect(masterGain); osc.start(t); osc.stop(t + 0.04);
   }
 
   function createAmbientLayer() {
@@ -1314,7 +1319,11 @@
     setTimeout(cricket, 2500);
   }
 
-  function startAmbient() { if (isAmbientOn) return; isAmbientOn = true; createAmbientLayer(); createBirdChirps(); createCrickets(); }
+  function startAmbient() {
+    if (isAmbientOn) return;
+    isAmbientOn = true; createAmbientLayer(); createBirdChirps(); createCrickets();
+  }
+
   function stopAmbient() {
     isAmbientOn = false; clearTimeout(birdLoop);
     ambientNodes.forEach(function(n) { try { n.stop && n.stop(); n.disconnect && n.disconnect(); } catch(e){} });
@@ -1337,36 +1346,32 @@
     panel.id = 'sound-panel';
     panel.innerHTML = `
       <style>
-        #sound-panel { position:fixed; bottom:84px; right:20px; z-index:200; display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
-        #sound-toggle-btn { width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,#1b5e20,#4caf50); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(76,175,80,0.5); transition:transform 0.2s ease,box-shadow 0.2s ease; position:relative; overflow:hidden; }
-        #sound-toggle-btn:hover { transform:scale(1.1); box-shadow:0 6px 28px rgba(76,175,80,0.7); }
+        #sound-panel { position:fixed;bottom:84px;right:20px;z-index:200;display:flex;flex-direction:column;align-items:flex-end;gap:8px; }
+        #sound-toggle-btn { width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#1b5e20,#4caf50);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(76,175,80,0.5);transition:transform 0.2s,box-shadow 0.2s;position:relative;overflow:hidden; }
+        #sound-toggle-btn:hover { transform:scale(1.1);box-shadow:0 6px 28px rgba(76,175,80,0.7); }
         #sound-toggle-btn:active { transform:scale(0.92); }
-        #sound-toggle-btn svg { width:22px; height:22px; fill:white; transition:opacity 0.2s; }
-        #sound-toggle-btn.muted svg { opacity:0.5; }
-        #sound-toggle-btn.ambient-active::before, #sound-toggle-btn.ambient-active::after { content:''; position:absolute; inset:-4px; border-radius:50%; border:2px solid rgba(129,199,132,0.6); animation:sound-pulse 2s ease-out infinite; }
+        #sound-toggle-btn svg { width:22px;height:22px;fill:white; }
+        #sound-toggle-btn.ambient-active::before,#sound-toggle-btn.ambient-active::after { content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(129,199,132,0.6);animation:sound-pulse 2s ease-out infinite; }
         #sound-toggle-btn.ambient-active::after { animation-delay:1s; }
-        @keyframes sound-pulse { 0% { transform:scale(1); opacity:1; } 100% { transform:scale(1.7); opacity:0; } }
-        #sound-submenu { display:none; flex-direction:column; gap:6px; align-items:flex-end; animation:fadeSlideUp 0.25s ease forwards; }
+        @keyframes sound-pulse { 0%{transform:scale(1);opacity:1;}100%{transform:scale(1.7);opacity:0;} }
+        #sound-submenu { display:none;flex-direction:column;gap:6px;align-items:flex-end;animation:fadeSlideUp 0.25s ease forwards; }
         #sound-submenu.open { display:flex; }
-        @keyframes fadeSlideUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-        .sound-sub-btn { display:flex; align-items:center; gap:8px; background:white; border:1.5px solid rgba(27,94,32,0.2); border-radius:24px; padding:6px 14px 6px 10px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#1b5e20; cursor:pointer; white-space:nowrap; box-shadow:0 2px 12px rgba(0,0,0,0.08); transition:all 0.2s ease; }
-        .sound-sub-btn:hover { background:#f0fdf4; border-color:#4caf50; transform:translateX(-4px); }
-        .sound-sub-btn.active { background:linear-gradient(135deg,#1b5e20,#4caf50); color:white; border-color:transparent; box-shadow:0 4px 16px rgba(76,175,80,0.4); }
-        .sound-sub-btn svg { width:16px; height:16px; flex-shrink:0; }
+        @keyframes fadeSlideUp { from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);} }
+        .sound-sub-btn { display:flex;align-items:center;gap:8px;background:white;border:1.5px solid rgba(27,94,32,0.2);border-radius:24px;padding:6px 14px 6px 10px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#1b5e20;cursor:pointer;white-space:nowrap;box-shadow:0 2px 12px rgba(0,0,0,0.08);transition:all 0.2s ease; }
+        .sound-sub-btn:hover { background:#f0fdf4;border-color:#4caf50;transform:translateX(-4px); }
+        .sound-sub-btn.active { background:linear-gradient(135deg,#1b5e20,#4caf50);color:white;border-color:transparent;box-shadow:0 4px 16px rgba(76,175,80,0.4); }
+        .sound-sub-btn svg { width:16px;height:16px;flex-shrink:0; }
         .sound-sub-btn.active svg { fill:white; }
         .sound-sub-btn:not(.active) svg { fill:#1b5e20; }
-        #volume-row { display:flex; align-items:center; gap:8px; background:white; border:1.5px solid rgba(27,94,32,0.15); border-radius:24px; padding:6px 14px; box-shadow:0 2px 12px rgba(0,0,0,0.08); }
-        #volume-row svg { width:14px; height:14px; fill:#4caf50; flex-shrink:0; }
-        #vol-slider { -webkit-appearance:none; width:80px; height:3px; border-radius:2px; background:linear-gradient(90deg,#4caf50 var(--pct,70%),#d1d5db var(--pct,70%)); outline:none; cursor:pointer; }
-        #vol-slider::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:#1b5e20; box-shadow:0 1px 4px rgba(0,0,0,0.2); cursor:pointer; }
-        #eq-bars { display:flex; gap:2px; align-items:flex-end; height:16px; }
-        .eq-bar { width:3px; border-radius:1px; background:white; animation:eq-dance 0.6s ease-in-out infinite alternate; }
-        .eq-bar:nth-child(1) { height:6px; animation-delay:0s; }
-        .eq-bar:nth-child(2) { height:12px; animation-delay:0.1s; }
-        .eq-bar:nth-child(3) { height:8px; animation-delay:0.2s; }
-        .eq-bar:nth-child(4) { height:14px; animation-delay:0.05s; }
-        @keyframes eq-dance { from { transform:scaleY(0.3); } to { transform:scaleY(1); } }
-        .eq-bar.paused { animation-play-state:paused; transform:scaleY(0.2); }
+        #volume-row { display:flex;align-items:center;gap:8px;background:white;border:1.5px solid rgba(27,94,32,0.15);border-radius:24px;padding:6px 14px;box-shadow:0 2px 12px rgba(0,0,0,0.08); }
+        #volume-row svg { width:14px;height:14px;fill:#4caf50;flex-shrink:0; }
+        #vol-slider { -webkit-appearance:none;width:80px;height:3px;border-radius:2px;background:linear-gradient(90deg,#4caf50 var(--pct,70%),#d1d5db var(--pct,70%));outline:none;cursor:pointer; }
+        #vol-slider::-webkit-slider-thumb { -webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#1b5e20;box-shadow:0 1px 4px rgba(0,0,0,0.2);cursor:pointer; }
+        #eq-bars { display:flex;gap:2px;align-items:flex-end;height:16px; }
+        .eq-bar { width:3px;border-radius:1px;background:white;animation:eq-dance 0.6s ease-in-out infinite alternate; }
+        .eq-bar:nth-child(1){height:6px;animation-delay:0s;} .eq-bar:nth-child(2){height:12px;animation-delay:0.1s;} .eq-bar:nth-child(3){height:8px;animation-delay:0.2s;} .eq-bar:nth-child(4){height:14px;animation-delay:0.05s;}
+        @keyframes eq-dance { from{transform:scaleY(0.3);}to{transform:scaleY(1);} }
+        .eq-bar.paused { animation-play-state:paused;transform:scaleY(0.2); }
       </style>
       <div id="sound-submenu">
         <div id="volume-row">
@@ -1457,22 +1462,9 @@
   function boot() {
     createSoundPanel();
     patchCounters();
-    function firstGesture() {
-      init();
-      setTimeout(function() { playLoadComplete(); }, 200);
-      document.removeEventListener('click', firstGesture);
-      document.removeEventListener('touchstart', firstGesture);
-      document.removeEventListener('keydown', firstGesture);
-    }
-    document.addEventListener('click', firstGesture);
-    document.addEventListener('touchstart', firstGesture, { passive: true });
-    document.addEventListener('keydown', firstGesture);
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
-
-  window.DongThapSound = { playClick, playHover, playReveal, playTransition, playLoadComplete, startAmbient, stopAmbient };
+  window.DongThapSound = { playClick, playHover, playReveal, playTransition, playLoadComplete, startAmbient, stopAmbient, init };
 })();
 </script>
 

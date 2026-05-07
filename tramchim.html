@@ -183,42 +183,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: gradient-shift 6s ease infinite;
-            display: inline-block;
-            padding-top: 0.3em; padding-bottom: 0.1em; line-height: 1.2;
-        }
-
-        /* ========== GLITCH EFFECT ========== */
-        .glitch { position: relative; }
-        .glitch:hover { animation: glitch-shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes glitch-shake {
-            0%,100% { transform: none; }
-            20% { transform: skewX(-2deg) translateX(2px); }
-            40% { transform: skewX(2deg) translateX(-2px); }
-            60% { transform: skewX(-1deg) translateX(1px); }
-            80% { transform: skewX(1deg) translateX(-1px); }
-        }
-        .glitch::before, .glitch::after {
-            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-            opacity: 0; pointer-events: none;
-        }
-        .glitch:hover::before {
-            background: linear-gradient(135deg, #ff4444, #ff8888, #ff4444);
-            animation: glitch-before 0.4s steps(2) forwards;
-            clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
-        }
-        .glitch:hover::after {
-            background: linear-gradient(135deg, #4444ff, #8888ff, #4444ff);
-            animation: glitch-after 0.4s steps(2) forwards;
-            clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
-        }
-        @keyframes glitch-before {
-            0%,100% { opacity: 0; transform: none; }
-            30%,70% { opacity: 0.6; transform: translateX(-3px); }
-        }
-        @keyframes glitch-after {
-            0%,100% { opacity: 0; transform: none; }
-            30%,70% { opacity: 0.5; transform: translateX(3px); }
+            display: inline-block; padding-top: 0.3em; padding-bottom: 0.1em; line-height: 1.2;
         }
 
         /* ========== TEXT SHIMMER ========== */
@@ -229,19 +194,6 @@
             animation: shimmer-move 3s linear infinite;
         }
         @keyframes shimmer-move { to { background-position: 200% center; } }
-
-        /* ========== SPARKLE ========== */
-        .sparkle-wrap { position: relative; }
-        .sparkle {
-            position: absolute; pointer-events: none; z-index: 20;
-            width: 6px; height: 6px; border-radius: 50%;
-            background: #4caf50;
-            animation: sparkle-burst 0.7s ease forwards;
-        }
-        @keyframes sparkle-burst {
-            0% { opacity: 1; transform: translate(0,0) scale(1); }
-            100% { opacity: 0; transform: translate(var(--sx, 0px), var(--sy, 0px)) scale(0); }
-        }
 
         /* ========== CLIP-PATH IMAGE REVEAL ========== */
         .img-reveal { opacity: 0; transform: scale(1.05); transition: opacity 1s cubic-bezier(0.77,0,0.175,1), transform 1s ease; }
@@ -256,9 +208,8 @@
             content: ''; position: absolute; inset: 0; border-radius: inherit;
             opacity: 0; transition: opacity 0.3s ease; z-index: -1;
         }
-        .card-glow:hover::before { opacity: 1; box-shadow: 0 0 40px rgba(76, 175, 80, 0.4); }
+        .card-glow:hover::before { opacity: 1; box-shadow: 0 0 60px rgba(76, 175, 80, 0.4); }
 
-        /* Shine sweep */
         .card-shine { position: relative; overflow: hidden; }
         .card-shine::after {
             content: ''; position: absolute; top: -50%; left: -80%; width: 50%; height: 200%;
@@ -267,16 +218,10 @@
         }
         .card-shine:hover::after, .card-shine:active::after { left: 120%; }
 
-        /* Card border glow on hover */
-        .card-border-glow {
-            box-shadow: 0 0 0 0px rgba(76,175,80,0);
-            transition: box-shadow 0.4s ease, transform 0.3s ease;
-        }
-        .card-border-glow:hover {
-            box-shadow: 0 0 0 2px rgba(76,175,80,0.4), 0 20px 40px rgba(76,175,80,0.1);
-        }
+        .card-border-glow { box-shadow: 0 0 0 0px rgba(76,175,80,0); transition: box-shadow 0.4s ease, transform 0.3s ease; }
+        .card-border-glow:hover { box-shadow: 0 0 0 2px rgba(76,175,80,0.4), 0 20px 40px rgba(76,175,80,0.1); }
 
-        /* ========== 3D TILT FIX CHỐNG KÉO GIÃN ========== */
+        /* ========== 3D TILT FIX LỖI KÉO GIÃN ========== */
         .tilt-card { transform: perspective(1000px); transition: transform 0.1s ease; will-change: transform; }
 
         /* ========== BORDER SHIMMER ========== */
@@ -292,8 +237,7 @@
         .ripple-container { position: relative; overflow: hidden; }
         .ripple {
             position: absolute; border-radius: 50%; background: rgba(76, 175, 80, 0.35);
-            transform: scale(0); animation: ripple-anim 0.6s linear;
-            pointer-events: none; z-index: 10;
+            transform: scale(0); animation: ripple-anim 0.6s linear; pointer-events: none; z-index: 10;
         }
         @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
@@ -302,8 +246,7 @@
         .particle {
             position: absolute; border-radius: 50%;
             background: radial-gradient(circle, rgba(76,175,80,0.6) 0%, transparent 70%);
-            animation: particle-float linear infinite;
-            will-change: transform;
+            animation: particle-float linear infinite; will-change: transform;
         }
         @keyframes particle-float {
             0% { transform: translateY(110vh) scale(0); opacity: 0; }
@@ -315,9 +258,7 @@
         /* ========== ORBITING RINGS on stats ========== */
         .orbit-wrap { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: 2rem; }
         .orbit-ring {
-            position: absolute; border-radius: 50%;
-            border: 1px solid rgba(129,199,132,0.15);
-            animation: orbit-spin linear infinite;
+            position: absolute; border-radius: 50%; border: 1px solid rgba(129,199,132,0.15); animation: orbit-spin linear infinite;
         }
         .orbit-ring::after {
             content: ''; position: absolute; width: 6px; height: 6px; border-radius: 50%;
@@ -333,8 +274,7 @@
         .neon-link::after {
             content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
             background: linear-gradient(90deg, #4caf50, #81c784);
-            box-shadow: 0 0 8px rgba(76,175,80,0.8);
-            transition: width 0.35s ease; border-radius: 1px;
+            box-shadow: 0 0 8px rgba(76,175,80,0.8); transition: width 0.35s ease; border-radius: 1px;
         }
         .neon-link:hover::after, .neon-link.active-link::after { width: 100%; }
         .active-link { color: #006e1c !important; }
@@ -345,8 +285,7 @@
             width: 48px; height: 48px; background: linear-gradient(135deg, #1b5e20, #4caf50);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             cursor: pointer; box-shadow: 0 4px 20px rgba(76,175,80,0.5);
-            opacity: 0; transform: translateY(20px) scale(0.8);
-            transition: opacity 0.3s, transform 0.3s;
+            opacity: 0; transform: translateY(20px) scale(0.8); transition: opacity 0.3s, transform 0.3s;
         }
         #scroll-top.visible { opacity: 1; transform: translateY(0) scale(1); }
         #scroll-top:active { transform: scale(0.9); }
@@ -356,22 +295,14 @@
         .pulse-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
         .pulse-wrap::before, .pulse-wrap::after {
             content: ''; position: absolute; inset: -6px; border-radius: 50%;
-            border: 2px solid rgba(129, 199, 132, 0.5);
-            animation: pulse-ring-anim 2.5s ease-out infinite;
+            border: 2px solid rgba(129, 199, 132, 0.5); animation: pulse-ring-anim 2.5s ease-out infinite;
         }
         .pulse-wrap::after { animation-delay: 1.25s; }
-        @keyframes pulse-ring-anim {
-            0% { transform: scale(0.8); opacity: 1; }
-            100% { transform: scale(1.8); opacity: 0; }
-        }
+        @keyframes pulse-ring-anim { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(1.8); opacity: 0; } }
 
         /* ========== TYPEWRITER ========== */
         .typewriter-cursor::after { content: '|'; animation: blink 0.8s step-start infinite; color: #4caf50; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-        /* ========== WAVE DIVIDER ========== */
-        .wave-divider { line-height: 0; }
-        .wave-divider svg { display: block; }
 
         /* ========== SCROLL REVEAL BASE ========== */
         [data-aos] { opacity: 0; }
@@ -384,6 +315,18 @@
             background: linear-gradient(90deg, #4caf50, #81c784); border-radius: 2px; transition: width 0.8s ease;
         }
         .highlight-word.active::after { width: 100%; }
+
+        /* ========== SPARKLE ========== */
+        .sparkle-wrap { position: relative; }
+        .sparkle {
+            position: absolute; pointer-events: none; z-index: 20;
+            width: 6px; height: 6px; border-radius: 50%; background: #4caf50;
+            animation: sparkle-burst 0.7s ease forwards;
+        }
+        @keyframes sparkle-burst {
+            0% { opacity: 1; transform: translate(0,0) scale(1); }
+            100% { opacity: 0; transform: translate(var(--sx, 0px), var(--sy, 0px)) scale(0); }
+        }
 
         /* ========== TAG BADGE ========== */
         .eco-badge {
@@ -401,6 +344,12 @@
             background: radial-gradient(circle at 30% 50%, rgba(76,175,80,0.15), rgba(27,94,32,0.08));
             filter: blur(30px); animation: blob-morph 8s ease-in-out infinite; pointer-events: none;
         }
+        @keyframes blob-morph {
+            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+            50% { border-radius: 50% 60% 30% 60% / 30% 40% 70% 50%; }
+            75% { border-radius: 40% 60% 60% 30% / 60% 40% 50% 60%; }
+        }
 
         /* ========== STATS PROGRESS BAR ========== */
         .stat-bar { height: 3px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; margin-top: 8px; }
@@ -412,14 +361,10 @@
             color: rgba(76,175,80,0.06); line-height: 1; pointer-events: none; user-select: none; letter-spacing: -8px;
         }
 
-        /* ========== FOOTER GLOW LINK ========== */
-        .glow-link { text-shadow: 0 0 12px rgba(74,222,128,0.5); }
-
         /* ========== SCROLL INDICATOR LINE ========== */
         .scroll-line {
             position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
-            width: 2px; height: 80px; background: rgba(27,94,32,0.1);
-            z-index: 50; border-radius: 2px; overflow: hidden; display: none;
+            width: 2px; height: 80px; background: rgba(27,94,32,0.1); z-index: 50; border-radius: 2px; overflow: hidden; display: none;
         }
         @media (min-width: 1280px) { .scroll-line { display: block; } }
         .scroll-line-fill { width: 100%; background: linear-gradient(180deg, #1b5e20, #4caf50); border-radius: 2px; height: 0; transition: height 0.2s ease; }
@@ -506,13 +451,16 @@
         <div class="loader-petal"></div>
     </div>
     <div class="loader-text mb-6">Đất Sen Hồng</div>
+    
     <div class="loader-bar-wrap" id="loader-bar-wrap"><div class="loader-bar-fill"></div></div>
+    
     <button id="start-btn" class="px-8 py-3 border border-green-500 text-green-400 rounded-full font-bold uppercase tracking-widest text-[10px] hover:bg-green-500 hover:text-white transition-all duration-300 transform scale-90 opacity-0 hidden shadow-[0_0_15px_rgba(76,175,80,0.3)] hover:shadow-[0_0_25px_rgba(76,175,80,0.6)]">
         Bắt đầu khám phá
     </button>
 </div>
 
 <div id="particles" aria-hidden="true"></div>
+
 <div id="progress-bar"></div>
 
 <div class="scroll-line" aria-hidden="true">
@@ -570,9 +518,9 @@
                     Sinh Thái <br>
                     <span class="gradient-text">Tràm Chim</span>
                 </h1>
-                <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto animate-slide-up" style="animation-delay: 0.4s;">
-                    Hành trình về miền Đất Sen Hồng, khám phá Vườn Quốc gia Tràm Chim — Khu Ramsar thứ 2000 của thế giới với hệ sinh thái hoang sơ tuyệt đẹp.
-                </p>
+                
+                <p id="hero-subtitle" class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto animate-slide-up" style="animation-delay: 0.4s;"></p>
+                
                 <div class="flex flex-wrap gap-3 pointer-events-auto animate-scale-in" style="animation-delay: 0.6s;">
                     <a href="#explore" class="magnetic-btn ripple-container w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs tracking-wider">
                         <span class="material-symbols-outlined text-base">auto_stories</span> Khám phá ngay
@@ -841,27 +789,25 @@
                     startBtn.style.transform = 'scale(1)';
                 }, 50);
             }
-        }, 1200);
+        }, 1200); 
     });
 
     document.getElementById('start-btn').addEventListener('click', function() {
+        // Tích hợp kích hoạt âm thanh ngay lập tức để không bị trình duyệt cảnh báo
+        if(window.DongThapSound) {
+            window.DongThapSound.init();
+            window.DongThapSound.playLoadComplete();
+        }
+        
         document.getElementById('loading-screen').classList.add('hidden');
         
+        var heroImg = document.getElementById('hero-img');
+        if (heroImg) heroImg.classList.add('revealed');
         setTimeout(function() {
-            if(window.DongThapSound) {
-                window.DongThapSound.init();
-                window.DongThapSound.playLoadComplete();
-            }
-            
-            var heroImg = document.getElementById('hero-img');
-            if (heroImg) heroImg.classList.add('revealed');
-            
-            setTimeout(function() {
-                document.querySelectorAll('.img-reveal:not(#hero-img)').forEach(function(img, i) {
-                    setTimeout(function() { img.classList.add('revealed'); }, i * 150);
-                });
-            }, 400);
-        }, 50);
+            document.querySelectorAll('.img-reveal:not(#hero-img)').forEach(function(img, i) {
+                setTimeout(function() { img.classList.add('revealed'); }, i * 150);
+            });
+        }, 400);
     });
 
     /* ============ PAGE TRANSITION ============ */
@@ -917,14 +863,18 @@
     var subtitle = document.getElementById('hero-subtitle');
     var text = 'Hành trình về miền Đất Sen Hồng, khám phá Vườn Quốc gia Tràm Chim — Khu Ramsar thứ 2000 của thế giới với hệ sinh thái hoang sơ tuyệt đẹp.';
     var i = 0;
-    subtitle.style.borderRight = '2px solid #4caf50';
-    function type() {
-        if (i < text.length) {
-            subtitle.textContent += text[i++];
-            setTimeout(type, 26);
-        } else { subtitle.style.borderRight = 'none'; subtitle.classList.remove('typewriter-cursor'); }
+    
+    // Kiểm tra an toàn trước khi chạy Typewriter (tránh lỗi null)
+    if(subtitle) {
+        subtitle.style.borderRight = '2px solid #4caf50';
+        function type() {
+            if (i < text.length) {
+                subtitle.textContent += text[i++];
+                setTimeout(type, 26);
+            } else { subtitle.style.borderRight = 'none'; subtitle.classList.remove('typewriter-cursor'); }
+        }
+        setTimeout(type, 1400);
     }
-    setTimeout(type, 1400);
 
     /* ============ PARTICLES ============ */
     var container = document.getElementById('particles');
@@ -934,7 +884,7 @@
         el.className = 'particle';
         var size = Math.random() * 6 + 3;
         el.style.cssText = 'width:' + size + 'px;height:' + size + 'px;left:' + Math.random() * 100 + '%;animation-duration:' + (Math.random() * 10 + 8) + 's;animation-delay:' + (Math.random() * 8) + 's;';
-        container.appendChild(el);
+        if (container) container.appendChild(el);
     }
 
     /* ============ SPARKLE ON CARD HOVER ============ */
@@ -1136,7 +1086,9 @@
                     header.classList.remove('bg-white/70', 'backdrop-blur-lg', 'shadow-md');
                 }
 
-                document.getElementById('scroll-top').classList.toggle('visible', winScroll > 300);
+                var scrollTopBtn = document.getElementById('scroll-top');
+                if (scrollTopBtn) scrollTopBtn.classList.toggle('visible', winScroll > 300);
+
                 ticking = false;
             });
             ticking = true;
@@ -1346,33 +1298,38 @@
     panel.id = 'sound-panel';
     panel.innerHTML = `
       <style>
-        #sound-panel { position:fixed;bottom:84px;right:20px;z-index:200;display:flex;flex-direction:column;align-items:flex-end;gap:8px; }
-        #sound-toggle-btn { width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#1b5e20,#4caf50);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(76,175,80,0.5);transition:transform 0.2s,box-shadow 0.2s;position:relative;overflow:hidden; }
-        #sound-toggle-btn:hover { transform:scale(1.1);box-shadow:0 6px 28px rgba(76,175,80,0.7); }
+        #sound-panel { position:fixed; bottom:84px; right:20px; z-index:200; display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+        #sound-toggle-btn { width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,#1b5e20,#4caf50); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(76,175,80,0.5); transition:transform 0.2s ease,box-shadow 0.2s ease; position:relative; overflow:hidden; }
+        #sound-toggle-btn:hover { transform:scale(1.1); box-shadow:0 6px 28px rgba(76,175,80,0.7); }
         #sound-toggle-btn:active { transform:scale(0.92); }
-        #sound-toggle-btn svg { width:22px;height:22px;fill:white; }
-        #sound-toggle-btn.ambient-active::before,#sound-toggle-btn.ambient-active::after { content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(129,199,132,0.6);animation:sound-pulse 2s ease-out infinite; }
+        #sound-toggle-btn svg { width:22px; height:22px; fill:white; transition:opacity 0.2s; }
+        #sound-toggle-btn.muted svg { opacity:0.5; }
+        #sound-toggle-btn.ambient-active::before, #sound-toggle-btn.ambient-active::after { content:''; position:absolute; inset:-4px; border-radius:50%; border:2px solid rgba(129,199,132,0.6); animation:sound-pulse 2s ease-out infinite; }
         #sound-toggle-btn.ambient-active::after { animation-delay:1s; }
-        @keyframes sound-pulse { 0%{transform:scale(1);opacity:1;}100%{transform:scale(1.7);opacity:0;} }
-        #sound-submenu { display:none;flex-direction:column;gap:6px;align-items:flex-end;animation:fadeSlideUp 0.25s ease forwards; }
+        @keyframes sound-pulse { 0% { transform:scale(1); opacity:1; } 100% { transform:scale(1.7); opacity:0; } }
+        #sound-submenu { display:none; flex-direction:column; gap:6px; align-items:flex-end; animation:fadeSlideUp 0.25s ease forwards; }
         #sound-submenu.open { display:flex; }
-        @keyframes fadeSlideUp { from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);} }
-        .sound-sub-btn { display:flex;align-items:center;gap:8px;background:white;border:1.5px solid rgba(27,94,32,0.2);border-radius:24px;padding:6px 14px 6px 10px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#1b5e20;cursor:pointer;white-space:nowrap;box-shadow:0 2px 12px rgba(0,0,0,0.08);transition:all 0.2s ease; }
-        .sound-sub-btn:hover { background:#f0fdf4;border-color:#4caf50;transform:translateX(-4px); }
-        .sound-sub-btn.active { background:linear-gradient(135deg,#1b5e20,#4caf50);color:white;border-color:transparent;box-shadow:0 4px 16px rgba(76,175,80,0.4); }
-        .sound-sub-btn svg { width:16px;height:16px;flex-shrink:0; }
+        @keyframes fadeSlideUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .sound-sub-btn { display:flex; align-items:center; gap:8px; background:white; border:1.5px solid rgba(27,94,32,0.2); border-radius:24px; padding:6px 14px 6px 10px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#1b5e20; cursor:pointer; white-space:nowrap; box-shadow:0 2px 12px rgba(0,0,0,0.08); transition:all 0.2s ease; }
+        .sound-sub-btn:hover { background:#f0fdf4; border-color:#4caf50; transform:translateX(-4px); }
+        .sound-sub-btn.active { background:linear-gradient(135deg,#1b5e20,#4caf50); color:white; border-color:transparent; box-shadow:0 4px 16px rgba(76,175,80,0.4); }
+        .sound-sub-btn svg { width:16px; height:16px; flex-shrink:0; }
         .sound-sub-btn.active svg { fill:white; }
         .sound-sub-btn:not(.active) svg { fill:#1b5e20; }
-        #volume-row { display:flex;align-items:center;gap:8px;background:white;border:1.5px solid rgba(27,94,32,0.15);border-radius:24px;padding:6px 14px;box-shadow:0 2px 12px rgba(0,0,0,0.08); }
-        #volume-row svg { width:14px;height:14px;fill:#4caf50;flex-shrink:0; }
-        #vol-slider { -webkit-appearance:none;width:80px;height:3px;border-radius:2px;background:linear-gradient(90deg,#4caf50 var(--pct,70%),#d1d5db var(--pct,70%));outline:none;cursor:pointer; }
-        #vol-slider::-webkit-slider-thumb { -webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#1b5e20;box-shadow:0 1px 4px rgba(0,0,0,0.2);cursor:pointer; }
-        #eq-bars { display:flex;gap:2px;align-items:flex-end;height:16px; }
-        .eq-bar { width:3px;border-radius:1px;background:white;animation:eq-dance 0.6s ease-in-out infinite alternate; }
-        .eq-bar:nth-child(1){height:6px;animation-delay:0s;} .eq-bar:nth-child(2){height:12px;animation-delay:0.1s;} .eq-bar:nth-child(3){height:8px;animation-delay:0.2s;} .eq-bar:nth-child(4){height:14px;animation-delay:0.05s;}
-        @keyframes eq-dance { from{transform:scaleY(0.3);}to{transform:scaleY(1);} }
-        .eq-bar.paused { animation-play-state:paused;transform:scaleY(0.2); }
+        #volume-row { display:flex; align-items:center; gap:8px; background:white; border:1.5px solid rgba(27,94,32,0.15); border-radius:24px; padding:6px 14px; box-shadow:0 2px 12px rgba(0,0,0,0.08); }
+        #volume-row svg { width:14px; height:14px; fill:#4caf50; flex-shrink:0; }
+        #vol-slider { -webkit-appearance:none; width:80px; height:3px; border-radius:2px; background:linear-gradient(90deg,#4caf50 var(--pct,70%),#d1d5db var(--pct,70%)); outline:none; cursor:pointer; }
+        #vol-slider::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:#1b5e20; box-shadow:0 1px 4px rgba(0,0,0,0.2); cursor:pointer; }
+        #eq-bars { display:flex; gap:2px; align-items:flex-end; height:16px; }
+        .eq-bar { width:3px; border-radius:1px; background:white; animation:eq-dance 0.6s ease-in-out infinite alternate; }
+        .eq-bar:nth-child(1) { height:6px; animation-delay:0s; }
+        .eq-bar:nth-child(2) { height:12px; animation-delay:0.1s; }
+        .eq-bar:nth-child(3) { height:8px; animation-delay:0.2s; }
+        .eq-bar:nth-child(4) { height:14px; animation-delay:0.05s; }
+        @keyframes eq-dance { from { transform:scaleY(0.3); } to { transform:scaleY(1); } }
+        .eq-bar.paused { animation-play-state:paused; transform:scaleY(0.2); }
       </style>
+
       <div id="sound-submenu">
         <div id="volume-row">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
@@ -1387,10 +1344,14 @@
           Tắt âm thanh
         </button>
       </div>
+
       <button id="sound-toggle-btn" title="Âm thanh">
-        <div id="eq-bars"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>
+        <div id="eq-bars">
+          <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+        </div>
       </button>
     `;
+
     document.body.appendChild(panel);
 
     let menuOpen = false;
@@ -1401,17 +1362,24 @@
     const volSlider = document.getElementById('vol-slider');
     const eqBars = document.querySelectorAll('.eq-bar');
 
-    mainBtn.addEventListener('click', function() { menuOpen = !menuOpen; submenu.classList.toggle('open', menuOpen); playClick(); });
-
-    btnAmbient.addEventListener('click', function() {
-      getCtx();
-      if (!isAmbientOn) { startAmbient(); btnAmbient.classList.add('active'); mainBtn.classList.add('ambient-active'); playToggle(true); }
-      else { stopAmbient(); btnAmbient.classList.remove('active'); mainBtn.classList.remove('ambient-active'); playToggle(false); }
+    mainBtn.addEventListener('click', function () {
+      menuOpen = !menuOpen;
+      submenu.classList.toggle('open', menuOpen);
+      playClick();
     });
 
-    btnMute.addEventListener('click', function() {
+    btnAmbient.addEventListener('click', function () {
+      getCtx();
+      if (!isAmbientOn) {
+        startAmbient(); btnAmbient.classList.add('active'); mainBtn.classList.add('ambient-active'); playToggle(true);
+      } else {
+        stopAmbient(); btnAmbient.classList.remove('active'); mainBtn.classList.remove('ambient-active'); playToggle(false);
+      }
+    });
+
+    btnMute.addEventListener('click', function () {
       isMuted = !isMuted;
-      masterGain && (masterGain.gain.value = isMuted ? 0 : parseFloat(volSlider.value) / 100);
+      masterGain && (masterGain.gain.value = isMuted ? 0 : (parseFloat(volSlider.value) / 100));
       btnMute.classList.toggle('active', isMuted);
       mainBtn.classList.toggle('muted', isMuted);
       eqBars.forEach(b => b.classList.toggle('paused', isMuted));
@@ -1420,53 +1388,68 @@
         : '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM19 12c0 2.26-1.28 4.22-3.16 5.19l1.42 1.42C19.51 17.26 21 14.8 21 12c0-2.8-1.49-5.26-3.74-6.61l-1.42 1.42C17.72 7.78 19 9.74 19 12z"/>';
     });
 
-    volSlider.addEventListener('input', function() {
+    volSlider.addEventListener('input', function () {
       const v = parseFloat(this.value) / 100;
       if (!isMuted && masterGain) masterGain.gain.value = v;
       this.style.setProperty('--pct', this.value + '%');
-      isMuted = false; btnMute.classList.remove('active'); mainBtn.classList.remove('muted');
+      isMuted = false;
+      btnMute.classList.remove('active');
+      mainBtn.classList.remove('muted');
     });
 
-    document.addEventListener('click', function(e) { if (!panel.contains(e.target) && menuOpen) { menuOpen = false; submenu.classList.remove('open'); } });
+    document.addEventListener('click', function (e) {
+      if (!panel.contains(e.target) && menuOpen) { menuOpen = false; submenu.classList.remove('open'); }
+    });
   }
 
   function init() {
     if (isInitialized) return;
     isInitialized = true;
     getCtx();
-    document.querySelectorAll('a, button, article, .magnetic-btn, .neon-link, .tilt-card').forEach(function(el) {
+
+    document.querySelectorAll('a, button, article, .magnetic-btn, .neon-link, .sound-sub-btn, .tilt-card').forEach(function (el) {
       if (el.id && el.id.startsWith('sound')) return;
-      el.addEventListener('mouseenter', function() { playHover(); });
+      el.addEventListener('mouseenter', function () { playHover(); });
     });
-    document.querySelectorAll('a, button, article').forEach(function(el) {
-      el.addEventListener('click', function() { playClick(); });
+
+    document.querySelectorAll('a, button, article').forEach(function (el) {
+      el.addEventListener('click', function () { playClick(); });
     });
-    window.addEventListener('scroll', function() { playScrollTick(); }, { passive: true });
-    
-    const revealObserver = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) { if (entry.isIntersecting) { playReveal(); revealObserver.unobserve(entry.target); } });
+
+    window.addEventListener('scroll', function () { playScrollTick(); }, { passive: true });
+
+    const revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          playReveal();
+          revealObserver.unobserve(entry.target);
+        }
+      });
     }, { threshold: 0.2 });
-    document.querySelectorAll('article').forEach(function(el) { revealObserver.observe(el); });
+    document.querySelectorAll('article').forEach(function (el) { revealObserver.observe(el); });
 
-    const _orig = window.navigateTo;
-    window.navigateTo = function(href) { playTransition(); setTimeout(function() { if (_orig) _orig(href); else window.location.href = href; }, 120); };
-  }
-
-  function patchCounters() {
-    document.querySelectorAll('.counter').forEach(function(counter) {
-      let orig = counter.textContent;
-      new MutationObserver(function() { if (counter.textContent !== orig) { playCounterTick(); orig = counter.textContent; } }).observe(counter, { characterData: true, childList: true });
-    });
+    var _origNavigateTo = window.navigateTo;
+    window.navigateTo = function (href) {
+      playTransition();
+      setTimeout(function () {
+        if (_origNavigateTo) _origNavigateTo(href);
+        else window.location.href = href;
+      }, 120);
+    };
   }
 
   function boot() {
     createSoundPanel();
-    patchCounters();
   }
 
-  window.DongThapSound = { playClick, playHover, playReveal, playTransition, playLoadComplete, startAmbient, stopAmbient, init };
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', boot); } else { boot(); }
+
+  window.DongThapSound = {
+    init: init,
+    playLoadComplete: playLoadComplete
+  };
 })();
 </script>
-
+    
 </body>
 </html>

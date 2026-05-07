@@ -13,6 +13,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
     
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     
     <script id="tailwind-config">
@@ -130,7 +132,7 @@
         @keyframes loader-pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
         /* ========== CUSTOM CURSOR ========== */
-        @media (pointer: fine) { body { cursor: none; } a, button, [onclick] { cursor: none; } }
+        @media (pointer: fine) { body { cursor: none; } a, button, [onclick], .leaflet-container { cursor: none !important; } }
         #cursor-dot {
             position: fixed; width: 8px; height: 8px; border-radius: 50%;
             background: #4caf50; pointer-events: none; z-index: 99999;
@@ -218,7 +220,7 @@
         .card-border-glow { box-shadow: 0 0 0 0px rgba(76,175,80,0); transition: box-shadow 0.4s ease, transform 0.3s ease; }
         .card-border-glow:hover { box-shadow: 0 0 0 2px rgba(76,175,80,0.4), 0 20px 40px rgba(76,175,80,0.1); }
 
-        /* ========== 3D TILT FIX LỖI KÉO GIÃN ========== */
+        /* ========== 3D TILT FIX ========== */
         .tilt-card { transform: perspective(1000px); transition: transform 0.1s ease; will-change: transform; }
 
         /* ========== BORDER SHIMMER ========== */
@@ -360,6 +362,27 @@
         }
         .group:hover .card-hover-label { transform: translateY(0); }
 
+        /* ========== LEAFLET MAP CUSTOM STYLES ========== */
+        #map-container { position: relative; z-index: 10; }
+        #dong-thap-map { height: 480px; border-radius: 1.5rem; z-index: 10; }
+        @media(min-width:768px) { #dong-thap-map { height: 560px; } }
+        
+        .leaflet-popup-content-wrapper { background: #0a1f0a; border: 1px solid rgba(76,175,80,0.4); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+        .leaflet-popup-content { color: white; font-family: 'Inter', sans-serif; font-size: 13px; margin: 12px 16px; }
+        .leaflet-popup-tip { background: #0a1f0a; }
+        .leaflet-popup-close-button { color: #4caf50 !important; font-size: 18px !important; }
+        .map-popup-title { font-weight: 800; font-size: 14px; margin-bottom: 4px; display: flex; gap: 6px; align-items: center; }
+        .map-popup-desc { color: #a5d6a7; font-size: 11px; line-height: 1.5; }
+        
+        /* Cố định marker với Lat/Lng */
+        .custom-map-marker { position: relative; display: flex; align-items: center; justify-content: center; }
+        .marker-pulse { width: 14px; height: 14px; border-radius: 50%; background: var(--dot-color); border: 2.5px solid white; box-shadow: 0 2px 10px var(--dot-color); position: relative; z-index: 2; }
+        .marker-pulse::before { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--dot-color); animation: map-ping-kf 1.5s cubic-bezier(0,0,0.2,1) infinite; z-index: 1; opacity: 0.7; }
+        @keyframes map-ping-kf { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.4); opacity: 0; } }
+        
+        .map-legend { background: rgba(10,31,10,0.92); backdrop-filter: blur(12px); border: 1px solid rgba(76,175,80,0.3); border-radius: 12px; padding: 14px 18px; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
         /* ========== MOBILE OPTIMIZATIONS ========== */
         @media (max-width: 767px) {
             .float-icon { animation: none !important; }
@@ -400,15 +423,12 @@
 </head>
 <body class="pt-20 md:pt-24">
 
-<!-- ====== PAGE TRANSITION OVERLAY ====== -->
 <div id="page-transition"></div>
 
-<!-- ====== CUSTOM CURSOR ====== -->
 <div id="cursor-dot" aria-hidden="true"></div>
 <div id="cursor-ring" aria-hidden="true"></div>
 <div id="cursor-glow" aria-hidden="true"></div>
 
-<!-- ====== LOADING SCREEN ====== -->
 <div id="loading-screen">
     <div class="loader-lotus">
         <div class="loader-petal"></div>
@@ -426,23 +446,18 @@
     </button>
 </div>
 
-<!-- ====== PARTICLES ====== -->
 <div id="particles" aria-hidden="true"></div>
 
-<!-- ====== PROGRESS BAR ====== -->
 <div id="progress-bar"></div>
 
-<!-- ====== SCROLL INDICATOR LINE ====== -->
 <div class="scroll-line" aria-hidden="true">
     <div class="scroll-line-fill" id="scroll-line-fill"></div>
 </div>
 
-<!-- ====== SCROLL TO TOP ====== -->
 <button id="scroll-top" aria-label="Lên đầu trang" onclick="window.scrollTo({top:0,behavior:'smooth'})">
     <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
 
-<!-- ====== HEADER ====== -->
 <header id="main-header" class="bg-white fixed top-0 w-full z-50 border-b border-gray-200">
     <div class="flex justify-between items-center px-4 md:px-6 py-3 md:py-4 max-w-7xl mx-auto">
         <div class="flex items-center gap-2">
@@ -454,34 +469,28 @@
             <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="tramchim">Sinh thái</a>
             <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="ditichlichsu">Lịch sử</a>
             <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="danhlam">Danh Lam</a>
-            <!-- Link sang trang Cẩm nang đã tạo -->
             <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="camnang.html">Cẩm Nang</a>
         </nav>
     </div>
 </header>
 
 <main>
-    <!-- ====== HERO SECTION ====== -->
     <section class="w-full px-4 max-w-7xl mx-auto mb-8">
         <div class="relative w-full flex flex-col justify-center min-h-[500px] md:min-h-[600px] z-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl">
-            <!-- Parallax glow bg -->
             <div class="absolute inset-0 scale-[1.02] opacity-80 blur-[40px] md:blur-[60px] pointer-events-none -z-10" id="parallax-bg">
                 <img alt="Glow" class="w-full h-full object-cover saturate-150" src="sen-27.jpg"/>
             </div>
-            <!-- Hero image -->
             <div class="absolute inset-0 z-0 pointer-events-none">
                 <img alt="Sen" class="absolute inset-0 w-full h-full object-cover brightness-50 img-reveal" src="sen-27.jpg" id="hero-img"/>
                 <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
                 <div class="absolute inset-0 opacity-[0.03]" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px);"></div>
             </div>
 
-            <!-- Morphing blob decorations -->
             <div class="hidden md:block blob-bg w-64 h-64 md:w-96 md:h-96 absolute right-10 top-10 z-0 opacity-60"></div>
             <div class="hidden md:block absolute right-8 bottom-16 w-3 h-3 border-2 border-green-400/40 rotate-45 animate-[float_4s_ease-in-out_infinite]" aria-hidden="true"></div>
             <div class="hidden md:block absolute right-24 bottom-32 w-2 h-2 bg-green-400/30 rounded-full animate-[float_3s_ease-in-out_infinite_0.5s]" aria-hidden="true"></div>
             <div class="hidden md:block absolute right-16 top-20 w-4 h-4 border border-green-300/30 rounded-full animate-[float_5s_ease-in-out_infinite_1s]" aria-hidden="true"></div>
 
-            <!-- Content -->
             <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
                 <div class="eco-badge mb-4 pointer-events-auto animate-slide-down" style="animation-delay:0.1s;">
                     <span class="material-symbols-outlined" style="font-size:12px;">eco</span>
@@ -499,14 +508,12 @@
         </div>
     </section>
 
-    <!-- ====== WAVE DIVIDER ====== -->
     <div class="wave-divider -mt-8 relative z-10" aria-hidden="true">
         <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:40px;">
             <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#f4f7f4"/>
         </svg>
     </div>
 
-    <!-- ====== STATS SECTION ====== -->
     <section class="max-w-7xl mx-auto px-6 py-12 md:py-20" data-aos="fade-up">
         <div class="gradient-bg rounded-[2rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden border border-green-400/30">
             <div class="orbit-wrap" aria-hidden="true">
@@ -555,7 +562,6 @@
         </div>
     </section>
 
-    <!-- ====== EXPLORE SECTION ====== -->
     <section id="explore" class="max-w-7xl mx-auto px-6 pb-12 md:pb-16">
         <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12 relative" data-aos="fade-up">
             <div class="relative">
@@ -571,7 +577,6 @@
         </div>
 
         <div class="flex flex-col md:grid md:grid-cols-3 gap-8 md:gap-10 mt-6" id="cards-container">
-            <!-- Thẻ 1 -->
             <div class="relative group h-full z-0 sparkle-wrap" data-aos="fade-up" data-aos-delay="100">
                 <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
                     <img src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
@@ -599,7 +604,6 @@
                 </article>
             </div>
 
-            <!-- Thẻ 2 -->
             <div class="relative group h-full z-0 sparkle-wrap" data-aos="fade-up" data-aos-delay="200">
                 <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
                     <img src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/>
@@ -627,7 +631,6 @@
                 </article>
             </div>
 
-            <!-- Thẻ 3 -->
             <div class="relative group h-full z-0 sparkle-wrap" data-aos="fade-up" data-aos-delay="300">
                 <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10">
                     <img src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-110" loading="lazy"/>
@@ -657,10 +660,72 @@
         </div>
     </section>
 
-    <!-- ====== REFERENCES ====== -->
+    <section id="map-section" class="max-w-7xl mx-auto px-6 pb-8 md:pb-16" data-aos="fade-up">
+        <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 relative">
+            <div class="relative">
+                <div class="section-number" aria-hidden="true">02</div>
+                <div class="eco-badge mb-3">
+                    <span class="material-symbols-outlined" style="font-size:11px;">explore</span> Bản đồ tương tác
+                </div>
+                <h3 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">
+                    Khám Phá
+                    <span class="highlight-word" id="hl-bandothap">Bản Đồ</span><br>
+                    <span class="highlight-word" id="hl-dongthap">Đồng Tháp</span>
+                </h3>
+                <div class="w-16 md:w-24 h-1 md:h-1.5 bg-gradient-to-r from-green-600 to-green-400 mt-3" id="map-underline" style="width:0;transition:width 1s ease;"></div>
+            </div>
+            <p class="text-sm text-gray-500 max-w-xs mt-4 md:mt-0 leading-relaxed">Click vào các điểm đánh dấu để xem thông tin chi tiết về từng địa danh.</p>
+        </div>
+
+        <div id="map-container" class="grid md:grid-cols-3 gap-6">
+            <div class="md:col-span-2 relative">
+                <div class="absolute inset-0 -z-10 rounded-[1.75rem] blur-2xl opacity-20 translate-y-4 scale-105" style="background:linear-gradient(135deg,#1b5e20,#4caf50);"></div>
+                <div id="dong-thap-map" class="shadow-2xl border border-green-200/50"></div>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <div class="map-legend text-white">
+                    <div class="text-[10px] font-black uppercase tracking-widest text-green-400 mb-4">Chú giải địa danh</div>
+                    <div class="space-y-3" id="map-legend-list">
+                        </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 border border-green-100 shadow-lg card-glow">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-green-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-white text-lg">info</span>
+                        </div>
+                        <div>
+                            <div class="font-black text-gray-900 text-sm">Tỉnh Đồng Tháp</div>
+                            <div class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Đồng bằng sông Cửu Long</div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center py-1 border-b border-gray-50">
+                            <span class="text-xs text-gray-500">Tỉnh lỵ</span>
+                            <span class="text-xs font-bold text-gray-800">TP. Cao Lãnh</span>
+                        </div>
+                        <div class="flex justify-between items-center py-1 border-b border-gray-50">
+                            <span class="text-xs text-gray-500">Diện tích</span>
+                            <span class="text-xs font-bold text-gray-800">3.374 km²</span>
+                        </div>
+                        <div class="flex justify-between items-center py-1 border-b border-gray-50">
+                            <span class="text-xs text-gray-500">Dân số</span>
+                            <span class="text-xs font-bold text-gray-800">~1.6 triệu người</span>
+                        </div>
+                        <div class="flex justify-between items-center py-1">
+                            <span class="text-xs text-gray-500">Đơn vị hành chính</span>
+                            <span class="text-xs font-bold text-gray-800">12 huyện/thành</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="max-w-7xl mx-auto px-6 py-8 border-t border-gray-200 mt-8 mb-8" data-aos="fade-up">
         <div class="bg-green-50/50 rounded-2xl p-6 md:p-8 border border-green-100 shadow-sm relative overflow-hidden">
-            <div class="section-number" aria-hidden="true">02</div>
+            <div class="section-number" aria-hidden="true">03</div>
             <h4 class="text-green-800 font-black text-lg mb-4 flex items-center gap-2 uppercase tracking-tight">
                 <span class="material-symbols-outlined text-green-600">verified</span>
                 <span class="text-shimmer">Nguồn dữ liệu tham khảo chính thống</span>
@@ -683,7 +748,6 @@
     </section>
 </main>
 
-<!-- ====== FOOTER TÍCH HỢP QR CODE ====== -->
 <footer class="bg-[#111811] text-white py-12 md:py-16 px-6 border-t-[6px] border-green-800 relative overflow-hidden">
     <div class="absolute top-0 left-0 h-[6px] w-full overflow-hidden" aria-hidden="true">
         <div style="height:100%;width:200%;background:linear-gradient(90deg,#1b5e20,#4caf50,#81c784,#4caf50,#1b5e20);animation:shimmer-move 3s linear infinite;background-size:50% 100%;"></div>
@@ -698,14 +762,12 @@
             <a class="hover:text-green-400 transition-all duration-300 neon-link" href="tramchim">Sinh thái</a>
             <a class="hover:text-green-400 transition-all duration-300 neon-link" href="ditichlichsu">Lịch sử</a>
             <a class="hover:text-green-400 transition-all duration-300 neon-link" href="danhlam">Danh Lam</a>
-            <!-- Đã update link Cẩm Nang -->
             <a class="hover:text-green-400 transition-all duration-300 neon-link" href="camnang.html">Cẩm Nang</a>
         </nav>
         
         <div class="text-center lg:text-right bg-green-900/40 p-5 rounded-xl border border-green-800/50 flex flex-col items-center lg:items-end shadow-lg">
             <div class="text-[9px] md:text-[10px] text-green-400 uppercase font-bold tracking-widest mb-3">Quét mã để truy cập web</div>
             <div class="bg-white p-1.5 rounded-lg mb-3 shadow-[0_0_15px_rgba(74,222,128,0.2)] hover:scale-105 transition-transform duration-300 cursor-pointer">
-                <!-- Hình ảnh QR Code -->
                 <img src="xuanphucqr.png" alt="Mã QR Truy cập" class="w-16 h-16 md:w-20 md:h-20 object-contain"/>
             </div>
             <div class="text-[8px] md:text-[10px] text-gray-400 uppercase tracking-widest mb-1">Thực hiện bởi</div>
@@ -715,6 +777,8 @@
         </div>
     </div>
 </footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 (function() {
@@ -830,7 +894,7 @@
         container.appendChild(el);
     }
 
-    /* ============ SPARKLE ON CARD HOVER (FIXED MEMORY LEAK) ============ */
+    /* ============ SPARKLE ON CARD HOVER ============ */
     if (!isReducedMotion) {
         document.querySelectorAll('.sparkle-wrap').forEach(function(wrap) {
             var timer = null;
@@ -900,18 +964,20 @@
     document.querySelectorAll('.counter').forEach(function(el) { counterObs.observe(el); });
 
     /* ============ HIGHLIGHT WORDS ON SCROLL ============ */
-    var hlObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-                var bar = document.getElementById('title-underline');
-                if (bar) bar.style.width = window.innerWidth < 768 ? '64px' : '96px';
+    var hlObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+            if (e.isIntersecting) {
+                e.target.classList.add('active');
+                ['title-underline','map-underline','cards-underline'].forEach(function(id) {
+                    var b = document.getElementById(id);
+                    if (b) b.style.width = window.innerWidth < 768 ? '64px' : '96px';
+                });
             }
         });
     }, { threshold: 0.5 });
-    ['hl-disản','hl-thiênnhiên'].forEach(function(id) {
+    ['hl-disản','hl-thiênnhiên','hl-bandothap','hl-dongthap'].forEach(function(id) {
         var el = document.getElementById(id);
-        if (el) hlObserver.observe(el);
+        if (el) hlObs.observe(el);
     });
 
     /* ============ RIPPLE EFFECT ============ */
@@ -1036,6 +1102,105 @@
             });
         }
     }
+    
+    /* ============ LEAFLET MAP (Đã tích hợp từ code của Claude) ============ */
+    var mapLocations = [
+        { name: 'TP. Cao Lãnh', desc: 'Tỉnh lỵ tỉnh Đồng Tháp', lat: 10.4600, lng: 105.6303, category: 'city' },
+        { name: 'Vườn QG Tràm Chim', desc: 'Khu Ramsar thứ 2000 — 231 loài chim quý hiếm', lat: 10.6725, lng: 105.5447, category: 'eco' },
+        { name: 'Làng hoa Sa Đéc', desc: 'Vùng trồng hoa nổi tiếng nhất miền Nam', lat: 10.2921, lng: 105.7622, category: 'scenic' },
+        { name: 'Gò Tháp', desc: 'Di tích lịch sử - văn hóa cấp Quốc gia', lat: 10.7742, lng: 105.7320, category: 'history' },
+        { name: 'Khu di tích Nguyễn Sinh Sắc', desc: 'Lăng mộ thân phụ Chủ tịch Hồ Chí Minh', lat: 10.4590, lng: 105.6420, category: 'history' },
+        { name: 'Xẻo Quýt', desc: 'Khu du lịch sinh thái rừng tràm đặc sắc', lat: 10.5024, lng: 105.6843, category: 'eco' },
+        { name: 'TP. Sa Đéc', desc: 'Thành phố hoa và di sản kiến trúc Pháp', lat: 10.2996, lng: 105.7571, category: 'city' },
+        { name: 'Tháp Mười', desc: 'Vùng đất ngập nước lịch sử Đồng Tháp Mười', lat: 10.7800, lng: 105.9200, category: 'scenic' },
+        { name: 'Hồng Ngự', desc: 'Cửa khẩu quốc tế Thường Phước', lat: 10.9400, lng: 105.3300, category: 'city' },
+    ];
+
+    var categoryColors = { eco: '#22c55e', history: '#a855f7', scenic: '#06b6d4', city: '#f59e0b' };
+    var categoryLabels = { eco: 'Sinh thái', history: 'Lịch sử & Văn hóa', scenic: 'Danh lam', city: 'Đô thị' };
+
+    // Build legend
+    var legendEl = document.getElementById('map-legend-list');
+    var seen = {};
+    mapLocations.forEach(function(loc) {
+        if (!seen[loc.category]) {
+            seen[loc.category] = true;
+            var row = document.createElement('div');
+            row.className = 'flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity';
+            row.innerHTML = '<div class="legend-dot flex-shrink-0" style="background:'+categoryColors[loc.category]+';"></div><span class="text-[11px] font-bold text-white/80">'+categoryLabels[loc.category]+'</span>';
+            legendEl.appendChild(row);
+        }
+    });
+    // Separator
+    var sep = document.createElement('div'); sep.className = 'border-t border-green-800/40 my-2'; legendEl.appendChild(sep);
+    mapLocations.forEach(function(loc) {
+        var row = document.createElement('div');
+        row.className = 'flex items-start gap-2 cursor-pointer hover:bg-green-900/30 rounded-lg px-2 py-1.5 transition-all -mx-2';
+        row.innerHTML = '<div class="w-2 h-2 rounded-full mt-1 flex-shrink-0" style="background:'+categoryColors[loc.category]+';"></div><div><div class="text-[11px] font-bold text-white/90 leading-tight">'+loc.name+'</div><div class="text-[10px] text-green-400/70">'+categoryLabels[loc.category]+'</div></div>';
+        legendEl.appendChild(row);
+    });
+
+    // Init map
+    var mapInitialized = false;
+    function initMap() {
+        if (mapInitialized) return;
+        mapInitialized = true;
+
+        var map = L.map('dong-thap-map', {
+            center: [10.58, 105.63],
+            zoom: isMobile ? 9 : 10,
+            zoomControl: true,
+            attributionControl: false
+        });
+
+        // Dark tile layer
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; CartoDB', subdomains: 'abcd', maxZoom: 19
+        }).addTo(map);
+
+        L.control.attribution({ prefix: false, position: 'bottomright' }).addTo(map);
+
+        // Draw Đồng Tháp province rough outline polygon
+        var dtPolygon = [
+            [10.95, 105.25],[10.96, 105.40],[10.93, 105.58],[10.88, 105.68],
+            [10.82, 105.76],[10.77, 105.95],[10.70, 106.05],[10.60, 106.02],
+            [10.50, 105.90],[10.38, 105.85],[10.28, 105.80],[10.24, 105.72],
+            [10.22, 105.62],[10.28, 105.52],[10.35, 105.42],[10.40, 105.32],
+            [10.52, 105.25],[10.65, 105.20],[10.78, 105.22],[10.88, 105.22],[10.95, 105.25]
+        ];
+        L.polygon(dtPolygon, {
+            color: 'rgba(76,175,80,0.8)', weight: 2, fill: true,
+            fillColor: 'rgba(76,175,80,0.08)', fillOpacity: 1, dashArray: '6,4'
+        }).addTo(map);
+
+        // Markers với biến màu --dot-color
+        mapLocations.forEach(function(loc) {
+            var dotColor = categoryColors[loc.category];
+            var html = '<div class="marker-pulse" style="--dot-color: ' + dotColor + ';"></div>';
+            var icon = L.divIcon({ html: html, className: 'custom-map-marker', iconSize: [20, 20], iconAnchor: [10, 10] });
+            var marker = L.marker([loc.lat, loc.lng], { icon: icon }).addTo(map);
+            marker.bindPopup('<div class="map-popup-title"><span style="color:'+dotColor+'">⬤</span> '+loc.name+'</div><div class="map-popup-desc">'+loc.desc+'</div>');
+        });
+
+        // Legend rows click → fly to
+        var allRows = legendEl.querySelectorAll('.cursor-pointer');
+        var locRows = Array.from(allRows).slice(Object.keys(seen).length + 1);
+        locRows.forEach(function(row, i) {
+            row.addEventListener('click', function() {
+                var loc = mapLocations[i];
+                map.flyTo([loc.lat, loc.lng], 13, { duration: 1.2 });
+            });
+        });
+    }
+
+    // Wait for loading screen to dismiss to init map properly
+    var ls = document.getElementById('loading-screen');
+    var lsObs = new MutationObserver(function() {
+        if (ls.classList.contains('hidden')) { setTimeout(initMap, 600); lsObs.disconnect(); }
+    });
+    lsObs.observe(ls, { attributes: true });
+    if (ls.classList.contains('hidden')) initMap();
+
 })();
 </script>
 
@@ -1616,6 +1781,5 @@
   };
 })();
 </script>
-    
 </body>
 </html>

@@ -2201,37 +2201,7 @@
 
 <!-- =================== SEASON SLIDER + MOUSE TRAIL =================== -->
 <style>
-/* -------- MOUSE TRAIL -------- */
-.mouse-trail-dot {
-  position: fixed; pointer-events: none; z-index: 99996;
-  border-radius: 50%; transform: translate(-50%,-50%);
-  animation: trail-fade 0.7s ease forwards;
-}
-@keyframes trail-fade {
-  0%   { opacity: 1; transform: translate(-50%,-50%) scale(1); }
-  100% { opacity: 0; transform: translate(-50%,-50%) scale(0); }
-}
-.mouse-spark {
-  position: fixed; pointer-events: none; z-index: 99995;
-  border-radius: 50%; transform: translate(-50%,-50%);
-  animation: spark-fly 0.8s ease forwards;
-  width: 5px; height: 5px;
-}
-@keyframes spark-fly {
-  0%   { opacity: 1; transform: translate(-50%,-50%) scale(1) translate(0,0); }
-  100% { opacity: 0; transform: translate(-50%,-50%) scale(0) translate(var(--sx),var(--sy)); }
-}
-/* Hiệu ứng ripple khi click chuột */
-.click-ripple {
-  position: fixed; pointer-events: none; z-index: 99994;
-  border-radius: 50%; border: 2px solid rgba(76,175,80,0.7);
-  transform: translate(-50%,-50%) scale(0);
-  animation: click-expand 0.6s ease forwards;
-}
-@keyframes click-expand {
-  0%   { transform: translate(-50%,-50%) scale(0); opacity: 1; width: 10px; height: 10px; }
-  100% { transform: translate(-50%,-50%) scale(1); opacity: 0; width: 80px; height: 80px; }
-}
+/* Mouse trail handled via Canvas — no CSS needed */
 
 /* -------- SEASON TRACKER EXPANDED -------- */
 #season-tracker { min-height: 380px; }
@@ -2551,88 +2521,123 @@ function spawnSeasonParticles(layer, color) {
 }
 
 /* ============================================================
-   🖱️ MOUSE TRAIL EFFECT
+   🖱️ CANVAS MOUSE TRAIL — zero DOM churn, 60fps
    ============================================================ */
 var isMobile = window.innerWidth < 768;
 if (!isMobile && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  var trailColors = ['#4caf50','#81c784','#a5d6a7','#c8e6c9','#f9a825','#ff8f00'];
-  var trailQueue = [];
-  var maxTrail = 18;
 
-  function createTrailDot(x, y) {
-    var dot = document.createElement('div');
-    dot.className = 'mouse-trail-dot';
-    var size = 6 + Math.random() * 10;
-    var color = trailColors[Math.floor(Math.random() * trailColors.length)];
-    dot.style.cssText = [
-      'width:' + size + 'px',
-      'height:' + size + 'px',
-      'left:' + x + 'px',
-      'top:' + y + 'px',
-      'background:' + color,
-      'opacity:0.7',
-      'box-shadow:0 0 ' + (size*1.5) + 'px ' + color
-    ].join(';');
-    document.body.appendChild(dot);
-    trailQueue.push(dot);
-    if (trailQueue.length > maxTrail) {
-      var old = trailQueue.shift();
-      if (old.parentNode) old.parentNode.removeChild(old);
-    }
-    dot.addEventListener('animationend', function() {
-      if (dot.parentNode) dot.parentNode.removeChild(dot);
-      var idx = trailQueue.indexOf(dot);
-      if (idx > -1) trailQueue.splice(idx, 1);
-    });
+  /* --- Canvas setup --- */
+  var tc = document.createElement('canvas');
+  tc.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:99994;';
+  document.body.appendChild(tc);
+  var ctx2 = tc.getContext('2d');
+
+  function resizeCanvas() { tc.width = window.innerWidth; tc.height = window.innerHeight; }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas, { passive: true });
+
+  /* --- Particle pool --- */
+  var POOL_SIZE = 120;
+  var particles = [];
+  var trailRGB = [
+    [76,175,80],[129,199,132],[165,214,167],[200,230,201],
+    [249,168,37],[255,143,0],[38,166,154]
+  ];
+
+  for (var pi = 0; pi < POOL_SIZE; pi++) {
+    particles.push({ x:0, y:0, vx:0, vy:0, r:0, life:0, maxLife:0, rgb:[0,0,0], active:false });
   }
 
-  function createSpark(x, y) {
-    for (var i = 0; i < 4; i++) {
-      var spark = document.createElement('div');
-      spark.className = 'mouse-spark';
-      var angle = Math.random() * Math.PI * 2;
-      var dist = 15 + Math.random() * 30;
-      spark.style.cssText = [
-        'left:' + x + 'px',
-        'top:' + y + 'px',
-        'background:' + trailColors[Math.floor(Math.random() * trailColors.length)],
-        '--sx:' + (Math.cos(angle) * dist).toFixed(1) + 'px',
-        '--sy:' + (Math.sin(angle) * dist).toFixed(1) + 'px',
-        'animation-duration:' + (0.5 + Math.random() * 0.4) + 's'
-      ].join(';');
-      document.body.appendChild(spark);
-      spark.addEventListener('animationend', function() {
-        if (spark.parentNode) spark.parentNode.removeChild(spark);
-      });
-    }
+  var poolHead = 0;
+  function spawnParticle(x, y, burst) {
+    var p = particles[poolHead % POOL_SIZE];
+    poolHead++;
+    var rgb = trailRGB[Math.floor(Math.random() * trailRGB.length)];
+    var angle = burst ? Math.random() * Math.PI * 2 : 0;
+    var speed = burst ? (1.5 + Math.random() * 3) : 0;
+    p.x = x; p.y = y;
+    p.vx = Math.cos(angle) * speed;
+    p.vy = Math.sin(angle) * speed - (burst ? 0 : 0);
+    p.r = burst ? (2 + Math.random() * 4) : (3 + Math.random() * 6);
+    p.maxLife = burst ? (18 + Math.random() * 14) : (22 + Math.random() * 18);
+    p.life = p.maxLife;
+    p.rgb = rgb;
+    p.active = true;
   }
 
-  /* Click ripple */
+  /* --- Ripple pool --- */
+  var ripples = [];
+  function spawnRipple(x, y) {
+    ripples.push({ x:x, y:y, r:4, maxR:50, life:1 });
+  }
+
+  /* --- Mouse tracking (raw, no throttle) --- */
+  var mx = -999, my = -999, moved = false;
+  var trailInterval = 0; // frame counter
+
+  document.addEventListener('mousemove', function(e) {
+    mx = e.clientX; my = e.clientY; moved = true;
+  }, { passive: true });
+
   document.addEventListener('click', function(e) {
-    var ripple = document.createElement('div');
-    ripple.className = 'click-ripple';
-    ripple.style.left = e.clientX + 'px';
-    ripple.style.top = e.clientY + 'px';
-    ripple.style.borderColor = trailColors[Math.floor(Math.random() * 3)];
-    document.body.appendChild(ripple);
-    ripple.addEventListener('animationend', function() {
-      if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
-    });
+    spawnRipple(e.clientX, e.clientY);
+    for (var bi = 0; bi < 8; bi++) spawnParticle(e.clientX, e.clientY, true);
   });
 
-  var lastTrail = 0;
-  var lastSpark = 0;
-  document.addEventListener('mousemove', function(e) {
-    var now = Date.now();
-    if (now - lastTrail > 40) {
-      createTrailDot(e.clientX, e.clientY);
-      lastTrail = now;
+  /* --- RAF loop --- */
+  function loop() {
+    requestAnimationFrame(loop);
+    ctx2.clearRect(0, 0, tc.width, tc.height);
+
+    /* Spawn trail particles every 2 frames */
+    trailInterval++;
+    if (moved && trailInterval % 2 === 0) {
+      spawnParticle(mx, my, false);
+      if (trailInterval % 12 === 0) spawnParticle(mx, my, true); /* occasional spark */
     }
-    if (now - lastSpark > 200) {
-      createSpark(e.clientX, e.clientY);
-      lastSpark = now;
+
+    /* Draw & update particles */
+    for (var i = 0; i < POOL_SIZE; i++) {
+      var p = particles[i];
+      if (!p.active) continue;
+      p.life--;
+      if (p.life <= 0) { p.active = false; continue; }
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.08; /* slight gravity on bursts */
+      var alpha = p.life / p.maxLife;
+      var radius = p.r * alpha;
+      var grad = ctx2.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius * 2.5);
+      grad.addColorStop(0, 'rgba(' + p.rgb[0] + ',' + p.rgb[1] + ',' + p.rgb[2] + ',' + (alpha * 0.9) + ')');
+      grad.addColorStop(1, 'rgba(' + p.rgb[0] + ',' + p.rgb[1] + ',' + p.rgb[2] + ',0)');
+      ctx2.beginPath();
+      ctx2.arc(p.x, p.y, radius * 2.5, 0, Math.PI * 2);
+      ctx2.fillStyle = grad;
+      ctx2.fill();
     }
-  }, { passive: true });
+
+    /* Draw ripples */
+    for (var ri = ripples.length - 1; ri >= 0; ri--) {
+      var rp = ripples[ri];
+      rp.r += 3;
+      rp.life -= 0.045;
+      if (rp.life <= 0) { ripples.splice(ri, 1); continue; }
+      ctx2.beginPath();
+      ctx2.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
+      ctx2.strokeStyle = 'rgba(76,175,80,' + rp.life * 0.8 + ')';
+      ctx2.lineWidth = 1.5;
+      ctx2.stroke();
+      /* second ring offset */
+      if (rp.r > 16) {
+        ctx2.beginPath();
+        ctx2.arc(rp.x, rp.y, rp.r - 12, 0, Math.PI * 2);
+        ctx2.strokeStyle = 'rgba(249,168,37,' + rp.life * 0.4 + ')';
+        ctx2.lineWidth = 1;
+        ctx2.stroke();
+      }
+    }
+  }
+  loop();
 }
 
 })();

@@ -12,9 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
-    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     
     <script id="tailwind-config">
@@ -89,7 +87,6 @@
     <style>
         :root { --primary-green: #1b5e20; --accent-green: #4caf50; color-scheme: light only; }
 
-        /* ========== BASE ========== */
         body { background-color: #ffffff; font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; transition: background-color 0.6s ease; }
         #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(90deg, #1b5e20, #4caf50, #81c784); width: 0%; z-index: 200; transition: width 0.1s; }
         #main-header { transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease; }
@@ -97,8 +94,7 @@
         /* ========== PAGE TRANSITION ========== */
         #page-transition {
             position: fixed; inset: 0; z-index: 10000; pointer-events: none;
-            background: #0a1f0a; opacity: 0;
-            transition: opacity 0.4s ease;
+            background: #0a1f0a; opacity: 0; transition: opacity 0.4s ease;
         }
         #page-transition.out { opacity: 1; pointer-events: all; }
 
@@ -114,10 +110,8 @@
         .loader-petal {
             position: absolute; width: 20px; height: 30px;
             background: linear-gradient(135deg, #4caf50, #81c784);
-            border-radius: 50% 50% 50% 0;
-            transform-origin: bottom right;
-            animation: petal-spin 1.6s ease-in-out infinite;
-            opacity: 0.85;
+            border-radius: 50% 50% 50% 0; transform-origin: bottom right;
+            animation: petal-spin 1.6s ease-in-out infinite; opacity: 0.85;
         }
         .loader-petal:nth-child(1) { --r: 0deg; transform: rotate(0deg); animation-delay: 0s; }
         .loader-petal:nth-child(2) { --r: 72deg; transform: rotate(72deg); animation-delay: 0.2s; }
@@ -168,8 +162,7 @@
         #cursor-dot {
             position: fixed; width: 8px; height: 8px; border-radius: 50%;
             background: #4caf50; pointer-events: none; z-index: 99999;
-            transform: translate(-50%, -50%);
-            transition: transform 0.05s linear, width 0.2s ease, height 0.2s ease;
+            transform: translate(-50%, -50%); transition: transform 0.05s linear, width 0.2s ease, height 0.2s ease;
             mix-blend-mode: multiply;
         }
         #cursor-ring {
@@ -181,10 +174,9 @@
         #cursor-ring.hovered { width: 56px; height: 56px; border-color: rgba(76,175,80,1); background: rgba(76,175,80,0.06); }
         #cursor-ring.clicking { transform: translate(-50%, -50%) scale(0.75); }
         #cursor-ring.expand-huge { width: 80px !important; height: 80px !important; border-color: rgba(76,175,80,0.8); background: rgba(76,175,80,0.15); }
-        /* PERF: cursor-glow disabled */
         #cursor-glow { display: none !important; }
 
-        /* ========== GRAIN OVERLAY ========== */
+        /* ========== GRAIN + DOT OVERLAY ========== */
         body::before {
             content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.03;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
@@ -198,8 +190,7 @@
         /* ========== GRADIENT BG ========== */
         .gradient-bg {
             background: linear-gradient(-45deg, #1b5e20, #4caf50, #004d40, #2e7d32) !important;
-            background-size: 400% 400%;
-            animation: gradient-shift 20s ease infinite;
+            background-size: 400% 400%; animation: gradient-shift 20s ease infinite;
         }
         .gradient-text {
             background: linear-gradient(135deg, #1b5e20, #4caf50, #81c784, #1b5e20);
@@ -216,7 +207,6 @@
         }
         @keyframes shimmer-move { to { background-position: 200% center; } }
 
-        /* ========== CLIP-PATH IMAGE REVEAL ========== */
         .img-reveal { opacity: 0; transform: scale(1.05); transition: opacity 1s cubic-bezier(0.77,0,0.175,1), transform 1s ease; }
         .img-reveal.revealed { opacity: 1; transform: scale(1); }
 
@@ -242,7 +232,7 @@
         }
         .border-animate:hover::before { left: 100%; }
 
-        /* ========== WATER RIPPLE ON CARD IMAGE HOVER ========== */
+        /* ========== WATER RIPPLE ========== */
         .card-img-ripple {
             position: absolute; inset: 0; z-index: 6; pointer-events: none;
             background: radial-gradient(circle at 50% 50%, rgba(76,175,80,0) 0%, rgba(76,175,80,0.18) 28%, rgba(76,175,80,0) 50%, rgba(129,199,132,0.1) 65%, rgba(76,175,80,0) 80%);
@@ -260,13 +250,12 @@
         }
         @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
-        /* ========== FLOATING PARTICLES ========== */
+        /* ========== PARTICLES ========== */
         #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
         .particle {
             position: absolute; border-radius: 50%;
             background: radial-gradient(circle, rgba(76,175,80,0.6) 0%, transparent 70%);
             animation: particle-float linear infinite;
-            /* PERF: will-change removed */
         }
         @keyframes particle-float {
             0% { transform: translateY(110vh) scale(0); opacity: 0; }
@@ -275,12 +264,11 @@
             100% { transform: translateY(-20px) scale(0.5); opacity: 0; }
         }
 
-        /* ========== DOM ĐÓM (FIREFLIES) ========== */
+        /* ========== FIREFLIES ========== */
         .firefly {
             position: fixed; border-radius: 50%; width: 4px; height: 4px;
             background: radial-gradient(circle, rgba(255,245,80,1) 0%, rgba(120,255,100,0.5) 50%, transparent 70%);
             pointer-events: none; z-index: 0;
-            /* PERF: will-change removed */
         }
         @keyframes firefly-blink {
             0%,100% { opacity: 0.08; box-shadow: 0 0 2px 1px rgba(255,240,80,0.15); transform: translate(0,0) scale(0.6); }
@@ -298,8 +286,7 @@
         }
         @keyframes fall {
             0% { transform: translateY(-10vh) rotate(0deg) scale(0.5); opacity: 0; }
-            10% { opacity: 0.8; }
-            90% { opacity: 0.8; }
+            10% { opacity: 0.8; } 90% { opacity: 0.8; }
             100% { transform: translateY(110vh) rotate(360deg) scale(1); opacity: 0; }
         }
 
@@ -339,7 +326,7 @@
         #scroll-top:active { transform: scale(0.9); }
         #scroll-top svg { width: 20px; height: 20px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* ========== PULSE RING ON STAT ICONS ========== */
+        /* ========== PULSE RING ========== */
         .pulse-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
         .pulse-wrap::before, .pulse-wrap::after {
             content: ''; position: absolute; inset: -6px; border-radius: 50%;
@@ -352,7 +339,6 @@
         .typewriter-cursor::after { content: '|'; animation: blink 0.8s step-start infinite; color: #4caf50; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        /* ========== SCROLL REVEAL BASE ========== */
         [data-aos] { opacity: 0; }
         .magnetic-btn { display: inline-flex; transition: transform 0.2s ease; }
 
@@ -383,6 +369,10 @@
             background: radial-gradient(circle at 30% 50%, rgba(76,175,80,0.15), rgba(27,94,32,0.08));
             filter: blur(30px); animation: blob-morph 8s ease-in-out infinite; pointer-events: none;
         }
+        @keyframes blob-morph {
+            0%,100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+        }
 
         /* ========== STATS PROGRESS BAR ========== */
         .stat-bar { height: 3px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; margin-top: 8px; }
@@ -395,7 +385,7 @@
             font-family: 'Playfair Display', serif;
         }
 
-        /* ========== LOTUS STEM SCROLL INDICATOR ========== */
+        /* ========== LOTUS STEM ========== */
         #lotus-stem-wrap {
             position: fixed; left: 14px; top: 50%; transform: translateY(-50%);
             width: 32px; height: 120px; z-index: 50; display: none; pointer-events: none;
@@ -404,8 +394,7 @@
         #lotus-stem-svg { width: 100%; height: 100%; overflow: visible; }
         #lotus-stem-track { stroke: rgba(27,94,32,0.12); }
         #lotus-stem-fill { 
-            stroke: url(#lotusGrad); 
-            stroke-dasharray: 200; stroke-dashoffset: 200;
+            stroke: url(#lotusGrad); stroke-dasharray: 200; stroke-dashoffset: 200;
             transition: stroke-dashoffset 0.2s ease;
             filter: drop-shadow(0 0 3px rgba(76,175,80,0.5));
         }
@@ -416,8 +405,10 @@
 
         /* ========== HOVER CARD LABEL ========== */
         .card-hover-label {
-            position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(27,94,32,0.9) 0%, transparent 100%);
-            color: white; padding: 20px 16px 12px; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(27,94,32,0.9) 0%, transparent 100%);
+            color: white; padding: 20px 16px 12px;
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
             font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; z-index: 15;
         }
         .group:hover .card-hover-label { transform: translateY(0); }
@@ -498,6 +489,48 @@
         body.night #theme-toggle { background: linear-gradient(135deg, #0a1f0a, #1b4a20); border-color: rgba(76,175,80,0.6); box-shadow: 0 2px 12px rgba(76,175,80,0.4), 0 0 0 1px rgba(76,175,80,0.2); }
         body.night #theme-toggle::before { content: '🌙'; transform: translateY(-50%) translateX(24px); background: #0f2510; font-size: 10px; }
 
+        /* ========== HAMBURGER MENU ========== */
+        #hamburger-btn {
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 5px; cursor: pointer; transition: background 0.2s ease;
+            background: transparent; border: none; padding: 0; flex-shrink: 0;
+        }
+        #hamburger-btn:hover, #hamburger-btn:active { background: rgba(76,175,80,0.08); }
+        .hb-line {
+            display: block; width: 22px; height: 2px; border-radius: 2px;
+            background: #1b5e20; transition: transform 0.3s ease, opacity 0.3s ease, width 0.3s ease;
+            transform-origin: center;
+        }
+        #hamburger-btn.open .hb-line:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        #hamburger-btn.open .hb-line:nth-child(2) { opacity: 0; width: 0; }
+        #hamburger-btn.open .hb-line:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        body.night .hb-line { background: #81c784; }
+
+        /* ========== MOBILE DRAWER ========== */
+        #mobile-menu {
+            overflow: hidden; max-height: 0;
+            transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+            background: #fff; border-top: 1px solid rgba(76,175,80,0.1);
+        }
+        #mobile-menu.open { max-height: 500px; }
+        .mobile-nav-link {
+            display: flex; align-items: center; gap-x: 12px; gap: 12px;
+            padding: 12px 16px; border-radius: 12px;
+            font-size: 14px; font-weight: 700; color: #374151;
+            transition: background 0.2s ease, color 0.2s ease;
+            text-decoration: none;
+        }
+        .mobile-nav-link:hover, .mobile-nav-link:active { background: rgba(76,175,80,0.08); color: #1b5e20; }
+        .mobile-nav-link.active { background: rgba(76,175,80,0.1); color: #1b5e20; font-weight: 900; }
+        .mobile-nav-link .material-symbols-outlined { font-size: 20px; color: #4caf50; flex-shrink: 0; }
+        body.night #mobile-menu { background: #070f07; border-top-color: rgba(76,175,80,0.15); }
+        body.night .mobile-nav-link { color: #a5d6a7; }
+        body.night .mobile-nav-link:hover { background: rgba(76,175,80,0.12); color: #81c784; }
+        body.night .mobile-nav-link.active { background: rgba(76,175,80,0.15); color: #81c784; }
+        /* Bottom safe-area padding for drawer */
+        #mobile-menu-inner { padding: 12px 16px 20px; }
+
         /* ========== DARK MODE ========== */
         body.night { background-color: #070f07; }
         body.night::after { background-image: radial-gradient(circle, rgba(76,175,80,0.04) 1px, transparent 1px); }
@@ -529,26 +562,22 @@
         body.night .bg-green-50\/50 .text-green-800 { color: #a5d6a7 !important; }
         body.night .bg-green-50\/50 strong { color: #81c784 !important; }
         body.night .card-img-ripple { background: radial-gradient(circle at 50% 50%, rgba(255,200,50,0) 0%, rgba(255,200,50,0.15) 28%, rgba(255,200,50,0) 50%, rgba(200,255,100,0.08) 65%, rgba(255,200,50,0) 80%); }
-        body { transition: background-color 0.7s ease; }
+        body.night .flip-card-front { background: #050e05; }
+        body.night #season-tracker { border-color: rgba(76,175,80,0.3); }
 
-        /* ========== MOBILE OPTIMIZATIONS ========== */
-        @media (max-width: 767px) {
-            .float-icon { animation: none !important; }
-            .blob-bg { animation: none !important; border-radius: 50% !important; }
-            .gradient-bg { animation: none !important; background: linear-gradient(160deg, #1b5e20 0%, #2e7d32 50%, #1b5e20 100%) !important; }
-            .gradient-text { animation: none !important; }
-            .text-shimmer { animation: none !important; -webkit-text-fill-color: #1b5e20; }
-            .orbit-wrap, .section-number, #parallax-bg, #particles, #petals-container { display: none !important; }
-            .eco-badge, .animate-pop-bounce { animation: none !important; }
-            .card-shine::after { display: none !important; }
-            .stat-bar-fill { transition-duration: 1s !important; }
-            .card-img-ripple { display: none !important; }
-            .quote-watermark { font-size: 150px; }
-            .card-hover-label { display: none !important; }
-            .tilt-card { transform: none !important; }
-            #theme-toggle { width: 44px; height: 24px; }
+        /* ========== WATER RIPPLE RING ========== */
+        .card-img-ripple-ring { position: absolute; inset: 0; z-index: 6; pointer-events: none; border-radius: inherit; overflow: hidden; }
+        .card-img-ripple-ring .ring { position: absolute; top: 50%; left: 50%; border-radius: 50%; border: 1.5px solid rgba(76,175,80,0); transform: translate(-50%,-50%) scale(0); opacity: 0; }
+        .group:hover .card-img-ripple-ring .ring:nth-child(1) { animation: water-ring 1.6s ease-out 0s infinite; }
+        .group:hover .card-img-ripple-ring .ring:nth-child(2) { animation: water-ring 1.6s ease-out 0.32s infinite; }
+        .group:hover .card-img-ripple-ring .ring:nth-child(3) { animation: water-ring 1.6s ease-out 0.64s infinite; }
+        .group:hover .card-img-ripple-ring .ring:nth-child(4) { animation: water-ring 1.6s ease-out 0.96s infinite; }
+        @keyframes water-ring {
+            0%   { width: 20px; height: 20px; border-color: rgba(76,175,80,0.8); transform: translate(-50%,-50%) scale(0); opacity: 1; }
+            100% { width: 300px; height: 300px; border-color: rgba(76,175,80,0); transform: translate(-50%,-50%) scale(1); opacity: 0; }
         }
-        @keyframes slide-up-mobile { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
+        .card-img-ripple-ring::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(76,175,80,0.12) 0%, transparent 60%); opacity: 0; transition: opacity 0.5s ease; pointer-events: none; border-radius: inherit; }
+        .group:hover .card-img-ripple-ring::after { opacity: 1; }
 
         /* ========== LIQUID GLASS BANNER ========== */
         .liquid-glass-banner { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
@@ -563,33 +592,22 @@
             66%     { border-radius: 55% 45% 60% 40% / 40% 55% 45% 60%; transform: translate(-20px,30px) scale(0.95); }
         }
 
-        /* ========== WATER RING ON CARD IMAGE ========== */
-        .card-img-ripple-ring { position: absolute; inset: 0; z-index: 6; pointer-events: none; border-radius: inherit; overflow: hidden; }
-        .card-img-ripple-ring .ring { position: absolute; top: 50%; left: 50%; border-radius: 50%; border: 1.5px solid rgba(76,175,80,0); transform: translate(-50%,-50%) scale(0); opacity: 0; }
-        .group:hover .card-img-ripple-ring .ring:nth-child(1) { animation: water-ring 1.6s ease-out 0s infinite; }
-        .group:hover .card-img-ripple-ring .ring:nth-child(2) { animation: water-ring 1.6s ease-out 0.32s infinite; }
-        .group:hover .card-img-ripple-ring .ring:nth-child(3) { animation: water-ring 1.6s ease-out 0.64s infinite; }
-        .group:hover .card-img-ripple-ring .ring:nth-child(4) { animation: water-ring 1.6s ease-out 0.96s infinite; }
-        @keyframes water-ring {
-            0%   { width: 20px; height: 20px; border-color: rgba(76,175,80,0.8); transform: translate(-50%,-50%) scale(0); opacity: 1; }
-            100% { width: 300px; height: 300px; border-color: rgba(76,175,80,0); transform: translate(-50%,-50%) scale(1); opacity: 0; }
-        }
-        .card-img-ripple-ring::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(76,175,80,0.12) 0%, transparent 60%); opacity: 0; transition: opacity 0.5s ease; pointer-events: none; border-radius: inherit; }
-        .group:hover .card-img-ripple-ring::after { opacity: 1; }
-
         /* ========== SEASON TRACKER ========== */
         #season-tracker { position: relative; overflow: hidden; border-radius: 2rem; border: 1px solid rgba(76,175,80,0.2); transition: background 1s ease; min-height: 380px; }
         .season-bg { position: absolute; inset: 0; transition: opacity 1s ease; background-size: cover; background-position: center; }
         .season-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.4) 100%); }
-        .season-content { position: relative; z-index: 10; padding: 2.5rem; }
+        .season-content { position: relative; z-index: 10; padding: 2rem; }
+        @media(min-width:768px) { .season-content { padding: 2.5rem; } }
         #season-slider { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; outline: none; cursor: pointer; background: linear-gradient(90deg, var(--season-color, #4caf50) var(--pct, 50%), rgba(255,255,255,0.2) var(--pct, 50%)); }
-        #season-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: white; box-shadow: 0 2px 12px rgba(0,0,0,0.3), 0 0 0 3px var(--season-color, #4caf50); cursor: pointer; transition: box-shadow 0.3s ease; }
+        #season-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; background: white; box-shadow: 0 2px 12px rgba(0,0,0,0.3), 0 0 0 3px var(--season-color, #4caf50); cursor: pointer; transition: box-shadow 0.3s ease; }
         .season-months { display: flex; justify-content: space-between; padding: 0 2px; margin-top: 8px; }
-        .season-month { font-size: 9px; font-weight: 800; text-transform: uppercase; color: rgba(255,255,255,0.5); letter-spacing: 1px; }
+        .season-month { font-size: 9px; font-weight: 800; text-transform: uppercase; color: rgba(255,255,255,0.5); letter-spacing: 1px; cursor: pointer; padding: 4px 2px; }
         .season-month.active { color: white; }
-        #season-name { font-size: 2rem; font-weight: 900; font-family: 'Playfair Display', serif; transition: all 0.6s ease; }
+        #season-name { font-size: 1.6rem; font-weight: 900; font-family: 'Playfair Display', serif; transition: all 0.6s ease; }
+        @media(min-width:768px) { #season-name { font-size: 2rem; } }
         #season-desc { font-size: 0.875rem; color: rgba(255,255,255,0.85); transition: all 0.6s ease; line-height: 1.7; }
-        #season-icon { font-size: 64px; transition: all 0.6s ease; filter: drop-shadow(0 0 20px currentColor); }
+        #season-icon { font-size: 56px; transition: all 0.6s ease; filter: drop-shadow(0 0 20px currentColor); }
+        @media(min-width:768px) { #season-icon { font-size: 64px; } }
         .season-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); backdrop-filter: blur(8px); color: white; transition: all 0.4s ease; }
 
         /* ========== FLIP CARDS ========== */
@@ -602,16 +620,72 @@
         .flip-card-front .dish-icon { font-size: 80px; line-height: 1; filter: drop-shadow(0 4px 20px rgba(0,0,0,0.5)); transition: transform 0.4s ease; }
         .flip-card:hover .flip-card-front .dish-icon { transform: scale(1.08); }
         .food-ingredient { background: rgba(76,175,80,0.12); border: 1px solid rgba(76,175,80,0.25); border-radius: 999px; padding: 3px 12px; font-size: 10px; font-weight: 700; color: #81c784; display: inline-block; margin: 3px; }
-        body.night .flip-card-front { background: #050e05; }
-        body.night #season-tracker { border-color: rgba(76,175,80,0.3); }
+
+        /* ========== MOBILE OPTIMIZATIONS ========== */
+        @media (max-width: 767px) {
+            /* Re-enable gradient animations (slower for performance) */
+            .gradient-bg { animation-duration: 30s !important; }
+            .gradient-text { animation-duration: 16s !important; }
+            
+            /* Keep floating icon but slower */
+            .float-icon { animation-duration: 4s !important; }
+            
+            /* Blob: simpler border-radius, keep animation but slower */
+            .blob-bg { animation-duration: 14s !important; }
+            
+            /* Hide heavy parallax & orbit, but keep particles & petals */
+            .orbit-wrap, #parallax-bg { display: none !important; }
+            
+            /* Section number smaller */
+            .section-number { font-size: 72px !important; right: 0 !important; top: -30px !important; }
+            
+            /* Shimmer text: keep animation */
+            .text-shimmer { animation-duration: 4s !important; }
+            
+            /* Badge animation keep */
+            .eco-badge { animation-duration: 4s !important; }
+            
+            /* stat bar */
+            .stat-bar-fill { transition-duration: 1.2s !important; }
+            
+            /* Quote watermark smaller */
+            .quote-watermark { font-size: 100px; }
+            
+            /* Card label: show on mobile as well (touch-friendly) */
+            .card-hover-label { transform: translateY(0) !important; font-size: 9px !important; padding: 12px 12px 8px !important; }
+            
+            /* Tilt: disable */
+            .tilt-card { transform: none !important; }
+            
+            /* Theme toggle size */
+            #theme-toggle { width: 44px !important; height: 24px !important; }
+            #theme-toggle::before { font-size: 10px !important; }
+            body.night #theme-toggle::before { transform: translateY(-50%) translateX(20px) !important; }
+
+            /* Touch-friendly tap targets */
+            .season-month { font-size: 8px; padding: 6px 1px; }
+            #season-slider::-webkit-slider-thumb { width: 32px; height: 32px; }
+            
+            /* Flip cards: bigger touch area hint */
+            .flip-card-front .dish-icon { font-size: 64px; }
+            
+            /* Hero section mobile text */
+            #hero-title { font-size: 2rem !important; line-height: 1.2 !important; }
+        }
+
+        /* ========== MOBILE HERO FIX ========== */
+        @media (max-width: 480px) {
+            .section-number { display: none; }
+            #hero-title { font-size: 1.75rem !important; }
+            .quote-watermark { font-size: 70px; }
+        }
     </style>
 </head>
-<body class="pt-20 md:pt-24">
+<body class="pt-16 md:pt-24">
 
 <div id="page-transition"></div>
 <div id="cursor-dot" aria-hidden="true"></div>
 <div id="cursor-ring" aria-hidden="true"></div>
-<!-- cursor-glow removed for performance -->
 
 <div id="loading-screen">
     <div class="loader-lotus">
@@ -643,20 +717,61 @@
     <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
 </button>
 
+<!-- ========== HEADER (REDESIGNED FOR MOBILE) ========== -->
 <header id="main-header" class="bg-white fixed top-0 w-full z-50 border-b border-gray-200">
-    <div class="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 max-w-7xl mx-auto gap-3">
-        <div class="flex items-center gap-2 flex-shrink-0">
+    <div class="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 max-w-7xl mx-auto">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2 flex-shrink-0 no-underline" style="text-decoration:none;">
             <span class="material-symbols-outlined text-green-700 text-2xl md:text-3xl float-icon">landscape</span>
-            <div class="glitch text-lg md:text-2xl font-black text-green-900 tracking-tight uppercase leading-none" data-text="Đồng Tháp">Đồng Tháp</div>
-        </div>
-        <nav class="flex gap-3 md:gap-8 text-[10px] md:text-xs font-black uppercase">
+            <div class="text-lg md:text-2xl font-black text-green-900 tracking-tight uppercase leading-none">Đồng Tháp</div>
+        </a>
+
+        <!-- Desktop nav -->
+        <nav class="hidden md:flex gap-8 text-xs font-black uppercase">
             <a class="text-green-700 border-b-2 border-green-700 pb-1 neon-link active-link" href="#">Trang chủ</a>
             <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="tramchim">Sinh thái</a>
             <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="ditichlichsu">Lịch sử</a>
             <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="danhlam">Danh Lam</a>
             <a class="text-gray-400 hover:text-green-700 transition-all duration-300 neon-link" href="camnang.html">Cẩm Nang</a>
         </nav>
-        <button id="theme-toggle" aria-label="Chuyển chế độ ngày/đêm" title="Ngày / Đêm"></button>
+
+        <!-- Right controls: theme toggle + hamburger -->
+        <div class="flex items-center gap-2.5">
+            <!-- Theme toggle - ALWAYS VISIBLE -->
+            <button id="theme-toggle" aria-label="Chuyển chế độ ngày/đêm" title="Sáng / Tối"></button>
+            <!-- Hamburger - mobile only -->
+            <button id="hamburger-btn" class="md:hidden" aria-label="Mở menu điều hướng" aria-expanded="false">
+                <span class="hb-line"></span>
+                <span class="hb-line"></span>
+                <span class="hb-line"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile slide-down menu -->
+    <div id="mobile-menu" aria-hidden="true">
+        <div id="mobile-menu-inner">
+            <a class="mobile-nav-link active" href="#">
+                <span class="material-symbols-outlined">home</span> Trang chủ
+            </a>
+            <a class="mobile-nav-link" href="tramchim">
+                <span class="material-symbols-outlined">park</span> Sinh thái
+            </a>
+            <a class="mobile-nav-link" href="ditichlichsu">
+                <span class="material-symbols-outlined">history_edu</span> Lịch sử
+            </a>
+            <a class="mobile-nav-link" href="danhlam">
+                <span class="material-symbols-outlined">landscape</span> Danh Lam
+            </a>
+            <a class="mobile-nav-link" href="camnang.html">
+                <span class="material-symbols-outlined">menu_book</span> Cẩm Nang
+            </a>
+            <!-- Quick theme info in drawer -->
+            <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between px-2">
+                <span class="text-xs text-gray-400 font-bold uppercase tracking-widest">Chủ đề giao diện</span>
+                <span class="text-xs text-green-600 font-black" id="theme-label-mobile">Chế độ sáng</span>
+            </div>
+        </div>
     </div>
 </header>
 
@@ -671,15 +786,15 @@
                 <div class="absolute inset-0 bg-gradient-to-r from-green-900/90 via-black/40 to-transparent"></div>
             </div>
             <div class="hidden md:block blob-bg w-64 h-64 md:w-96 md:h-96 absolute right-10 top-10 z-0 opacity-60"></div>
-            <div class="relative z-10 p-8 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
+            <div class="relative z-10 p-6 md:p-12 text-white w-full md:w-2/3 pointer-events-none">
                 <div class="eco-badge mb-4 pointer-events-auto animate-slide-down" style="animation-delay:0.1s;">
                     <span class="material-symbols-outlined" style="font-size:12px;">eco</span> Đất Sen Hồng
                 </div>
-                <h1 id="hero-title" class="text-3xl md:text-5xl lg:text-7xl font-black mb-4 uppercase leading-normal tracking-tight pointer-events-auto" style="animation-delay: 0.2s;">
+                <h1 id="hero-title" class="font-black mb-4 uppercase leading-tight tracking-tight pointer-events-auto" style="animation-delay: 0.2s; font-size: clamp(1.75rem, 6vw, 4.5rem);">
                     Tìm Hiểu Về <br><span class="gradient-text">Đồng Tháp</span>
                 </h1>
                 <p class="text-sm md:text-xl text-gray-200 mb-6 md:mb-10 leading-relaxed max-w-xl pointer-events-auto animate-slide-up" style="animation-delay: 0.4s;" id="hero-subtitle"></p>
-                <a href="#explore" class="magnetic-btn ripple-container w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-6 py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs pointer-events-auto animate-scale-in" style="animation-delay: 0.6s;">
+                <a href="#explore" class="magnetic-btn ripple-container w-fit inline-flex items-center gap-2 bg-green-600 text-white font-bold px-5 py-3 md:px-6 md:py-3 rounded-sm shadow-lg hover:bg-green-500 transition-all border border-green-400 uppercase text-xs pointer-events-auto animate-scale-in" style="animation-delay: 0.6s;">
                     <span class="material-symbols-outlined">auto_stories</span> Khám phá di sản
                 </a>
             </div>
@@ -692,78 +807,79 @@
         </svg>
     </div>
 
-    <section class="max-w-7xl mx-auto px-6 py-12 md:py-20" data-aos="fade-up">
-        <div class="gradient-bg rounded-[2rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden border border-green-400/30">
+    <section class="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-20" data-aos="fade-up">
+        <div class="gradient-bg rounded-[2rem] p-6 md:p-12 text-white shadow-2xl relative overflow-hidden border border-green-400/30">
             <div class="orbit-wrap" aria-hidden="true"><div class="orbit-ring"></div><div class="orbit-ring"></div><div class="orbit-ring"></div></div>
             <div class="blob-bg w-72 h-72 absolute -bottom-10 -left-10 opacity-40"></div>
-            <div class="absolute -top-24 -right-24 text-white/10" aria-hidden="true"><span class="material-symbols-outlined" style="font-size: 300px;">local_florist</span></div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center relative z-10">
+            <div class="absolute -top-24 -right-24 text-white/10 hidden md:block" aria-hidden="true"><span class="material-symbols-outlined" style="font-size: 300px;">local_florist</span></div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12 text-center relative z-10">
                 <div class="flex flex-col items-center gap-2">
-                    <div class="pulse-wrap"><span class="material-symbols-outlined text-4xl mb-2 text-green-200">map</span></div>
-                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="5939">0</span></div>
-                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Km² Diện Tích</div>
+                    <div class="pulse-wrap"><span class="material-symbols-outlined text-3xl md:text-4xl mb-2 text-green-200">map</span></div>
+                    <div class="text-3xl md:text-5xl font-black"><span class="counter" data-target="5939">0</span></div>
+                    <div class="text-[9px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Km² Diện Tích</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="92"></div></div>
                 </div>
                 <div class="flex flex-col items-center gap-2">
-                    <div class="pulse-wrap"><span class="material-symbols-outlined text-4xl mb-2 text-green-200">nature_people</span></div>
-                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="130">0</span>+</div>
-                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Loài Thực Vật Đặc Hữu</div>
+                    <div class="pulse-wrap"><span class="material-symbols-outlined text-3xl md:text-4xl mb-2 text-green-200">nature_people</span></div>
+                    <div class="text-3xl md:text-5xl font-black"><span class="counter" data-target="130">0</span>+</div>
+                    <div class="text-[9px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Loài Thực Vật</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="75"></div></div>
                 </div>
                 <div class="flex flex-col items-center gap-2">
-                    <div class="pulse-wrap"><span class="material-symbols-outlined text-4xl mb-2 text-green-200">account_balance</span></div>
-                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="17">0</span></div>
-                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Di Tích Lịch Sử QG</div>
+                    <div class="pulse-wrap"><span class="material-symbols-outlined text-3xl md:text-4xl mb-2 text-green-200">account_balance</span></div>
+                    <div class="text-3xl md:text-5xl font-black"><span class="counter" data-target="17">0</span></div>
+                    <div class="text-[9px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Di Tích QG</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="60"></div></div>
                 </div>
                 <div class="flex flex-col items-center gap-2">
-                    <div class="pulse-wrap"><span class="material-symbols-outlined text-4xl mb-2 text-green-200">flutter_dash</span></div>
-                    <div class="text-4xl md:text-5xl font-black"><span class="counter" data-target="231">0</span></div>
-                    <div class="text-[10px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Loài chim</div>
+                    <div class="pulse-wrap"><span class="material-symbols-outlined text-3xl md:text-4xl mb-2 text-green-200">flutter_dash</span></div>
+                    <div class="text-3xl md:text-5xl font-black"><span class="counter" data-target="231">0</span></div>
+                    <div class="text-[9px] md:text-xs opacity-80 uppercase tracking-widest font-bold">Loài chim</div>
                     <div class="stat-bar w-full"><div class="stat-bar-fill" data-width="40"></div></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-6 pb-12 md:pb-16" data-aos="fade-up">
+    <section class="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-16" data-aos="fade-up">
         <div class="quote-banner">
             <div class="quote-watermark">"</div>
-            <h2 class="relative z-10 text-2xl md:text-4xl lg:text-5xl font-display italic text-center mb-6 leading-snug" style="color: #e8f5e9;">"Tháp Mười đẹp nhất bông sen<br>Việt Nam đẹp nhất có tên Bác Hồ"</h2>
+            <h2 class="relative z-10 text-xl md:text-4xl lg:text-5xl font-display italic text-center mb-6 leading-snug" style="color: #e8f5e9;">"Tháp Mười đẹp nhất bông sen<br>Việt Nam đẹp nhất có tên Bác Hồ"</h2>
             <p class="relative z-10 text-[10px] md:text-xs uppercase tracking-[0.3em] font-black" style="color: #ca8a04;">Ca dao Việt Nam</p>
         </div>
     </section>
 
-    <section id="map-section" class="max-w-7xl mx-auto px-6 pb-8 md:pb-16" data-aos="fade-up">
-        <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 relative">
+    <section id="map-section" class="max-w-7xl mx-auto px-4 md:px-6 pb-8 md:pb-16" data-aos="fade-up">
+        <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-6 md:mb-8 relative">
             <div class="relative">
                 <div class="section-number" aria-hidden="true">01</div>
                 <div class="eco-badge mb-3"><span class="material-symbols-outlined" style="font-size:11px;">explore</span> Bản đồ tương tác</div>
-                <h3 class="font-display text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight" style="font-family:'Playfair Display',serif;">Khám Phá <span class="highlight-word" id="hl-bandothap">Địa Danh</span></h3>
+                <h3 class="font-display text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Khám Phá <span class="highlight-word" id="hl-bandothap">Địa Danh</span></h3>
                 <div class="w-0 h-1 bg-gradient-to-r from-green-600 to-green-400 mt-3 rounded-full transition-all duration-1000" id="map-underline"></div>
             </div>
-            <p class="text-sm text-gray-500 max-w-xs mt-4 md:mt-0 leading-relaxed">Click vào các điểm đánh dấu để xem thông tin chi tiết về từng địa danh.</p>
+            <p class="text-sm text-gray-500 max-w-xs mt-3 md:mt-0 leading-relaxed">Nhấn vào điểm đánh dấu để xem thông tin chi tiết.</p>
         </div>
-        <div id="map-container" class="grid lg:grid-cols-3 gap-6 items-stretch">
-            <div class="lg:col-span-2 flex flex-col gap-6 h-full">
-                <div class="relative flex-grow rounded-[1.5rem] overflow-hidden shadow-2xl border border-green-200/50" style="min-height: 480px;">
+        <div id="map-container" class="grid lg:grid-cols-3 gap-5 md:gap-6 items-stretch">
+            <div class="lg:col-span-2 flex flex-col gap-5 md:gap-6 h-full">
+                <div class="relative flex-grow rounded-[1.5rem] overflow-hidden shadow-2xl border border-green-200/50" style="min-height: 340px;">
                     <div id="dong-thap-map" class="absolute inset-0 w-full h-full z-10"></div>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="bg-white rounded-2xl p-4 md:p-5 border border-green-100 shadow-md feature-card cursor-default group/fcard">
-                        <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-3 shadow-sm relative z-10"><span class="material-symbols-outlined">sailing</span></div>
-                        <h5 class="font-black text-gray-900 text-sm mb-1 relative z-10">Du lịch Sông nước</h5>
-                        <p class="text-[11px] text-gray-500 leading-relaxed font-medium relative z-10">Trải nghiệm chèo xuồng ba lá, len lỏi giữa rừng tràm xanh ngát.</p>
+                <!-- Feature cards - stack on mobile -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+                    <div class="bg-white rounded-2xl p-4 border border-green-100 shadow-md feature-card cursor-default">
+                        <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-3 shadow-sm"><span class="material-symbols-outlined">sailing</span></div>
+                        <h5 class="font-black text-gray-900 text-sm mb-1">Du lịch Sông nước</h5>
+                        <p class="text-[11px] text-gray-500 leading-relaxed font-medium">Chèo xuồng ba lá, len lỏi giữa rừng tràm xanh ngát.</p>
                     </div>
-                    <div class="bg-white rounded-2xl p-4 md:p-5 border border-green-100 shadow-md feature-card cursor-default group/fcard">
-                        <div class="w-10 h-10 rounded-full bg-pink-50 text-pink-600 flex items-center justify-center mb-3 shadow-sm relative z-10"><span class="material-symbols-outlined">local_florist</span></div>
-                        <h5 class="font-black text-gray-900 text-sm mb-1 relative z-10">Thủ phủ Hoa Sen</h5>
-                        <p class="text-[11px] text-gray-500 leading-relaxed font-medium relative z-10">Check-in cùng những đầm sen bát ngát rực rỡ nhất miền Tây.</p>
+                    <div class="bg-white rounded-2xl p-4 border border-green-100 shadow-md feature-card cursor-default">
+                        <div class="w-10 h-10 rounded-full bg-pink-50 text-pink-600 flex items-center justify-center mb-3 shadow-sm"><span class="material-symbols-outlined">local_florist</span></div>
+                        <h5 class="font-black text-gray-900 text-sm mb-1">Thủ phủ Hoa Sen</h5>
+                        <p class="text-[11px] text-gray-500 leading-relaxed font-medium">Check-in đầm sen bát ngát rực rỡ nhất miền Tây.</p>
                     </div>
-                    <div class="bg-white rounded-2xl p-4 md:p-5 border border-green-100 shadow-md feature-card cursor-default group/fcard">
-                        <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center mb-3 shadow-sm relative z-10"><span class="material-symbols-outlined">restaurant</span></div>
-                        <h5 class="font-black text-gray-900 text-sm mb-1 relative z-10">Ẩm thực Khẩn hoang</h5>
-                        <p class="text-[11px] text-gray-500 leading-relaxed font-medium relative z-10">Thưởng thức cá lóc nướng trui, lẩu mắm, nem chua trứ danh.</p>
+                    <div class="bg-white rounded-2xl p-4 border border-green-100 shadow-md feature-card cursor-default">
+                        <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center mb-3 shadow-sm"><span class="material-symbols-outlined">restaurant</span></div>
+                        <h5 class="font-black text-gray-900 text-sm mb-1">Ẩm thực Khẩn hoang</h5>
+                        <p class="text-[11px] text-gray-500 leading-relaxed font-medium">Cá lóc nướng trui, lẩu mắm, nem chua trứ danh.</p>
                     </div>
                 </div>
             </div>
@@ -775,20 +891,20 @@
                 <div class="bg-white rounded-2xl p-5 border border-green-100 shadow-lg">
                     <div class="flex items-center gap-3 mb-4">
                         <div class="w-10 h-10 rounded-xl bg-green-600 flex items-center justify-center shadow-md"><span class="material-symbols-outlined text-white text-lg">info</span></div>
-                        <div><div class="font-black text-gray-900 text-sm">Tỉnh Đồng Tháp</div><div class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Đồng bằng sông Cửu Long</div></div>
+                        <div><div class="font-black text-gray-900 text-sm">Tỉnh Đồng Tháp</div><div class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">ĐBSCL</div></div>
                     </div>
                     <div class="space-y-2">
-                        <div class="flex justify-between items-center py-1.5 border-b border-gray-50"><span class="text-xs text-gray-500">Trung tâm hành chính</span><span class="text-xs font-black text-gray-800">TP. Cao Lãnh</span></div>
+                        <div class="flex justify-between items-center py-1.5 border-b border-gray-50"><span class="text-xs text-gray-500">Trung tâm</span><span class="text-xs font-black text-gray-800">TP. Cao Lãnh</span></div>
                         <div class="flex justify-between items-center py-1.5 border-b border-gray-50"><span class="text-xs text-gray-500">Diện tích</span><span class="text-xs font-black text-gray-800">5.938,64 km²</span></div>
-                        <div class="flex justify-between items-center py-1.5 border-b border-gray-50"><span class="text-xs text-gray-500">Dân số</span><span class="text-xs font-black text-gray-800">~4,37 triệu người</span></div>
-                        <div class="flex justify-between items-center py-1.5"><span class="text-xs text-gray-500">Đơn vị hành chính</span><span class="text-xs font-black text-gray-800">102 cấp xã</span></div>
+                        <div class="flex justify-between items-center py-1.5 border-b border-gray-50"><span class="text-xs text-gray-500">Dân số</span><span class="text-xs font-black text-gray-800">~4,37 triệu</span></div>
+                        <div class="flex justify-between items-center py-1.5"><span class="text-xs text-gray-500">Hành chính</span><span class="text-xs font-black text-gray-800">102 cấp xã</span></div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="explore" class="max-w-7xl mx-auto px-6 pb-12 md:pb-16">
+    <section id="explore" class="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-16">
         <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12 relative" data-aos="fade-up">
             <div class="relative">
                 <div class="section-number" aria-hidden="true">02</div>
@@ -796,63 +912,63 @@
                 <div class="w-16 md:w-24 h-1 md:h-1.5 bg-gradient-to-r from-green-600 to-green-400 mt-3" id="cards-underline" style="width:0;transition:width 1s ease;"></div>
             </div>
         </div>
-        <div class="flex flex-col md:grid md:grid-cols-3 gap-8 md:gap-10 mt-6" id="cards-container">
+        <div class="flex flex-col md:grid md:grid-cols-3 gap-6 md:gap-10 mt-4" id="cards-container">
             <div class="relative group h-full z-0 sparkle-wrap" data-aos="fade-up" data-aos-delay="100">
-                <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10"><img src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/></div>
+                <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10 hidden md:block"><img src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/></div>
                 <article onclick="navigateTo('tramchim')" class="relative tilt-card card-glow card-shine card-border-glow ripple-container bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
                     <div class="h-48 md:h-64 overflow-hidden relative">
-                        <img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110 img-reveal" src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" loading="lazy"/>
+                        <img class="w-full h-full object-cover grayscale-[20%] transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110 img-reveal" src="vuon-quoc-gia-tram-chim-dong-thap-4.jpg" loading="lazy"/>
                         <div class="card-img-ripple-ring"><div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div></div>
                         <div class="absolute top-3 left-3 z-20"><span class="eco-badge bg-white/80 text-green-800 border-green-300"><span class="material-symbols-outlined" style="font-size:10px;">water</span> Ramsar</span></div>
                         <div class="card-hover-label">Khám phá ngay →</div>
                     </div>
-                    <div class="p-6 md:p-8 flex-grow flex flex-col">
-                        <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-widest mb-2 uppercase float-icon">Sinh thái ngập nước</div>
-                        <h4 class="text-xl md:text-2xl font-black text-gray-900 mb-3">Vườn Quốc gia Tràm Chim</h4>
-                        <p class="text-gray-600 mb-6 text-xs md:text-sm flex-grow">Khám phá khu Ramsar thứ 2000 của thế giới với loài Sếu đầu đỏ quý hiếm.</p>
-                        <div class="mt-auto flex items-center justify-between border-t pt-4"><span class="text-[10px] font-bold text-green-800 uppercase">Khám phá ngay</span><span class="material-symbols-outlined text-green-700 group-hover:translate-x-2 transition-transform">east</span></div>
+                    <div class="p-5 md:p-8 flex-grow flex flex-col">
+                        <div class="text-[9px] font-bold text-green-700 tracking-widest mb-2 uppercase float-icon">Sinh thái ngập nước</div>
+                        <h4 class="text-lg md:text-2xl font-black text-gray-900 mb-2 md:mb-3">Vườn Quốc gia Tràm Chim</h4>
+                        <p class="text-gray-600 mb-4 md:mb-6 text-xs md:text-sm flex-grow">Khu Ramsar thứ 2000 của thế giới với Sếu đầu đỏ quý hiếm.</p>
+                        <div class="mt-auto flex items-center justify-between border-t pt-3 md:pt-4"><span class="text-[10px] font-bold text-green-800 uppercase">Khám phá ngay</span><span class="material-symbols-outlined text-green-700 group-hover:translate-x-2 transition-transform">east</span></div>
                     </div>
                 </article>
             </div>
             <div class="relative group h-full z-0 sparkle-wrap" data-aos="fade-up" data-aos-delay="200">
-                <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10"><img src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/></div>
+                <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10 hidden md:block"><img src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-125" loading="lazy"/></div>
                 <article onclick="navigateTo('ditichlichsu')" class="relative tilt-card card-glow card-shine card-border-glow ripple-container bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
                     <div class="h-48 md:h-64 overflow-hidden relative">
-                        <img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110 img-reveal" src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" loading="lazy"/>
+                        <img class="w-full h-full object-cover grayscale-[20%] transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110 img-reveal" src="khu-di-tich-nguyen-sinh-sac-tiep-tuc-phat-huy-hon-nua-gia-tri-di-san-van-hoa-dan-toc-16-.8241.jpg" loading="lazy"/>
                         <div class="card-img-ripple-ring"><div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div></div>
                         <div class="absolute top-3 left-3 z-20"><span class="eco-badge bg-white/80 text-green-800 border-green-300"><span class="material-symbols-outlined" style="font-size:10px;">history_edu</span> Di tích QG</span></div>
                         <div class="card-hover-label">Khám phá ngay →</div>
                     </div>
-                    <div class="p-6 md:p-8 flex-grow flex flex-col">
-                        <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-widest mb-2 uppercase float-icon" style="animation-delay: 0.1s;">Dấu ấn thời gian</div>
-                        <h4 class="text-xl md:text-2xl font-black text-gray-900 mb-3">Di tích Lịch sử &amp; Văn hóa</h4>
-                        <p class="text-gray-600 mb-6 text-xs md:text-sm flex-grow">Ngược dòng lịch sử tìm về các giá trị văn hóa tại Xẻo Quýt, Gò Tháp và Lăng Cụ Phó bảng.</p>
-                        <div class="mt-auto flex items-center justify-between border-t pt-4"><span class="text-[10px] font-bold text-green-800 uppercase">Khám phá ngay</span><span class="material-symbols-outlined text-green-700 group-hover:translate-x-2 transition-transform">east</span></div>
+                    <div class="p-5 md:p-8 flex-grow flex flex-col">
+                        <div class="text-[9px] font-bold text-green-700 tracking-widest mb-2 uppercase float-icon" style="animation-delay: 0.1s;">Dấu ấn thời gian</div>
+                        <h4 class="text-lg md:text-2xl font-black text-gray-900 mb-2 md:mb-3">Di tích Lịch sử &amp; Văn hóa</h4>
+                        <p class="text-gray-600 mb-4 md:mb-6 text-xs md:text-sm flex-grow">Ngược dòng lịch sử về Xẻo Quýt, Gò Tháp và Lăng Cụ Phó bảng.</p>
+                        <div class="mt-auto flex items-center justify-between border-t pt-3 md:pt-4"><span class="text-[10px] font-bold text-green-800 uppercase">Khám phá ngay</span><span class="material-symbols-outlined text-green-700 group-hover:translate-x-2 transition-transform">east</span></div>
                     </div>
                 </article>
             </div>
             <div class="relative group h-full z-0 sparkle-wrap" data-aos="fade-up" data-aos-delay="300">
-                <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10"><img src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-110" loading="lazy"/></div>
+                <div class="absolute -inset-6 translate-y-4 scale-[1.05] opacity-85 blur-3xl group-hover:opacity-100 group-hover:blur-[80px] group-hover:scale-110 transition-all duration-700 pointer-events-none -z-10 hidden md:block"><img src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" class="w-full h-full object-cover rounded-3xl saturate-200 brightness-110" loading="lazy"/></div>
                 <article onclick="navigateTo('danhlam')" class="relative tilt-card card-glow card-shine card-border-glow ripple-container bg-white rounded-2xl overflow-hidden cursor-pointer flex flex-col h-full z-10 border-animate">
                     <div class="h-48 md:h-64 overflow-hidden relative">
-                        <img class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110 img-reveal" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" loading="lazy"/>
+                        <img class="w-full h-full object-cover grayscale-[20%] transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110 img-reveal" src="Lang-Hoa-Sa-Dec-Ruc--01.jpg" loading="lazy"/>
                         <div class="card-img-ripple-ring"><div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div></div>
                         <div class="absolute top-3 left-3 z-20"><span class="eco-badge bg-white/80 text-green-800 border-green-300"><span class="material-symbols-outlined" style="font-size:10px;">local_florist</span> Làng hoa</span></div>
                         <div class="card-hover-label">Khám phá ngay →</div>
                     </div>
-                    <div class="p-6 md:p-8 flex-grow flex flex-col">
-                        <div class="text-[8px] md:text-[10px] font-bold text-green-700 tracking-widest mb-2 uppercase float-icon" style="animation-delay: 0.2s;">Sắc màu xứ sở</div>
-                        <h4 class="text-xl md:text-2xl font-black text-gray-900 mb-3">Danh Lam Thắng Cảnh</h4>
-                        <p class="text-gray-600 mb-6 text-xs md:text-sm flex-grow">Trải nghiệm nét độc đáo của Làng hoa Sa Đéc và vẻ đẹp thanh bình của Đồng Tháp Mười.</p>
-                        <div class="mt-auto flex items-center justify-between border-t pt-4"><span class="text-[10px] font-bold text-green-800 uppercase">Khám phá ngay</span><span class="material-symbols-outlined text-green-700 group-hover:translate-x-2 transition-transform">east</span></div>
+                    <div class="p-5 md:p-8 flex-grow flex flex-col">
+                        <div class="text-[9px] font-bold text-green-700 tracking-widest mb-2 uppercase float-icon" style="animation-delay: 0.2s;">Sắc màu xứ sở</div>
+                        <h4 class="text-lg md:text-2xl font-black text-gray-900 mb-2 md:mb-3">Danh Lam Thắng Cảnh</h4>
+                        <p class="text-gray-600 mb-4 md:mb-6 text-xs md:text-sm flex-grow">Làng hoa Sa Đéc và vẻ đẹp thanh bình của Đồng Tháp Mười.</p>
+                        <div class="mt-auto flex items-center justify-between border-t pt-3 md:pt-4"><span class="text-[10px] font-bold text-green-800 uppercase">Khám phá ngay</span><span class="material-symbols-outlined text-green-700 group-hover:translate-x-2 transition-transform">east</span></div>
                     </div>
                 </article>
             </div>
         </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-6 pb-12 md:pb-16" data-aos="fade-up">
-        <div class="relative mb-8">
+    <section class="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-16" data-aos="fade-up">
+        <div class="relative mb-6 md:mb-8">
             <div class="section-number" aria-hidden="true">03</div>
             <div class="eco-badge mb-3"><span class="material-symbols-outlined" style="font-size:11px;">calendar_month</span> Theo dấu thời gian</div>
             <h3 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Lịch Mùa Vụ <span class="highlight-word">Đồng Tháp</span></h3>
@@ -864,11 +980,11 @@
             <div class="season-bg" id="season-bg-4" style="background:linear-gradient(135deg,#4a148c,#6a1b9a,#283593);opacity:0;"></div>
             <div class="season-overlay"></div>
             <div class="season-content">
-                <div class="flex flex-col md:flex-row items-start md:items-center gap-8">
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8">
                     <div class="flex-grow">
                         <div id="season-tag" class="season-tag mb-4" style="--season-color:#f9a825;"><span class="material-symbols-outlined" style="font-size:12px;">sunny</span><span id="season-label">Mùa Khô &amp; Tết</span></div>
                         <div id="season-name" class="text-white mb-3">Làng Hoa Sa Đéc Rực Rỡ</div>
-                        <p id="season-desc" class="text-white/80 mb-6 max-w-lg">Tháng 1-3, hàng triệu chậu hoa khoe sắc tại Làng hoa Sa Đéc.</p>
+                        <p id="season-desc" class="text-white/80 mb-5 max-w-lg">Tháng 1-3, hàng triệu chậu hoa khoe sắc tại Làng hoa Sa Đéc.</p>
                         <div class="space-y-3">
                             <div class="text-white/60 text-[10px] font-black uppercase tracking-widest">Kéo để khám phá theo tháng</div>
                             <input type="range" id="season-slider" min="1" max="12" value="2" style="--pct:8%;--season-color:#f9a825;">
@@ -877,27 +993,27 @@
                             </div>
                         </div>
                     </div>
-                    <div class="text-center flex-shrink-0 hidden md:block">
+                    <div class="text-center flex-shrink-0 flex md:flex-col items-center gap-4">
                         <div id="season-icon" class="text-yellow-300">🌸</div>
-                        <div id="season-temp" class="text-white/60 text-xs font-bold mt-2 uppercase tracking-widest">Nhiệt độ: 28-36°C</div>
+                        <div id="season-temp" class="text-white/60 text-xs font-bold uppercase tracking-widest">28-36°C</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-6 pb-12 md:pb-16" data-aos="fade-up">
-        <div class="relative mb-8">
+    <section class="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-16" data-aos="fade-up">
+        <div class="relative mb-6 md:mb-8">
             <div class="section-number" aria-hidden="true">04</div>
             <div class="eco-badge mb-3"><span class="material-symbols-outlined" style="font-size:11px;">restaurant_menu</span> Hương vị phù sa</div>
             <h3 class="text-2xl md:text-4xl font-black text-gray-900 uppercase tracking-tight">Đặc Sản <span class="highlight-word" id="hl-dongthap">Khẩn Hoang</span></h3>
-            <p class="text-gray-500 mt-2 text-sm max-w-lg">Lật thẻ để khám phá bí quyết làm nên hương vị độc đáo của vùng Đất Sen Hồng.</p>
+            <p class="text-gray-500 mt-2 text-sm max-w-lg">Nhấn vào thẻ để khám phá bí quyết làm nên hương vị độc đáo.</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8">
             <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="fade-up" data-aos-delay="100">
                 <div class="flip-card-inner">
                     <div class="flip-card-front flex flex-col items-center justify-center p-6 text-center"><div class="dish-icon mb-4">🍜</div><div class="text-white font-black text-xl mb-1">Hủ Tiếu Sa Đéc</div><div class="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">Đặc sản số 1</div><div class="text-green-300/60 text-xs">Nhấn để xem bí quyết ↓</div></div>
-                    <div class="flip-card-back"><div class="text-4xl mb-4">🍜</div><div class="text-white font-black text-lg mb-2">Hủ Tiếu Sa Đéc</div><p class="text-green-200 text-xs leading-relaxed mb-4">Sợi hủ tiếu được làm từ gạo tươi cán mỏng, nước lèo hầm xương suốt đêm tạo vị ngọt thanh khó quên.</p><div class="flex flex-wrap justify-center gap-1"><span class="food-ingredient">Sợi gạo tươi</span><span class="food-ingredient">Xương heo</span><span class="food-ingredient">Tôm khô</span><span class="food-ingredient">Hẹ xắt nhỏ</span><span class="food-ingredient">Giá sống</span></div></div>
+                    <div class="flip-card-back"><div class="text-4xl mb-4">🍜</div><div class="text-white font-black text-lg mb-2">Hủ Tiếu Sa Đéc</div><p class="text-green-200 text-xs leading-relaxed mb-4">Sợi hủ tiếu từ gạo tươi cán mỏng, nước lèo hầm xương suốt đêm tạo vị ngọt thanh khó quên.</p><div class="flex flex-wrap justify-center gap-1"><span class="food-ingredient">Sợi gạo tươi</span><span class="food-ingredient">Xương heo</span><span class="food-ingredient">Tôm khô</span><span class="food-ingredient">Hẹ xắt nhỏ</span><span class="food-ingredient">Giá sống</span></div></div>
                 </div>
             </div>
             <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="fade-up" data-aos-delay="200">
@@ -909,66 +1025,61 @@
             <div class="flip-card" onclick="this.classList.toggle('flipped')" data-aos="fade-up" data-aos-delay="300">
                 <div class="flip-card-inner">
                     <div class="flip-card-front flex flex-col items-center justify-center p-6 text-center"><div class="dish-icon mb-4">🐟</div><div class="text-white font-black text-xl mb-1">Cá Lóc Nướng Trui</div><div class="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">Hương vị đồng quê</div><div class="text-green-300/60 text-xs">Nhấn để xem bí quyết ↓</div></div>
-                    <div class="flip-card-back"><div class="text-4xl mb-4">🐟</div><div class="text-white font-black text-lg mb-2">Cá Lóc Nướng Trui</div><p class="text-green-200 text-xs leading-relaxed mb-4">Cá lóc đồng tươi nguyên con vùi vào đống rơm đốt. Lớp vảy cháy xém giữ trọn vị ngọt béo tự nhiên.</p><div class="flex flex-wrap justify-center gap-1"><span class="food-ingredient">Cá lóc đồng</span><span class="food-ingredient">Rơm khô</span><span class="food-ingredient">Mắm me</span><span class="food-ingredient">Bún tươi</span><span class="food-ingredient">Rau sông</span></div></div>
+                    <div class="flip-card-back"><div class="text-4xl mb-4">🐟</div><div class="text-white font-black text-lg mb-2">Cá Lóc Nướng Trui</div><p class="text-green-200 text-xs leading-relaxed mb-4">Cá lóc đồng tươi nguyên con vùi vào đống rơm đốt, giữ trọn vị ngọt béo tự nhiên.</p><div class="flex flex-wrap justify-center gap-1"><span class="food-ingredient">Cá lóc đồng</span><span class="food-ingredient">Rơm khô</span><span class="food-ingredient">Mắm me</span><span class="food-ingredient">Bún tươi</span><span class="food-ingredient">Rau sông</span></div></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-6 pb-12 md:pb-16" data-aos="fade-up">
-        <a href="https://dongthap-xuanphuc.vercel.app/camnang" target="_blank" class="block relative group overflow-hidden rounded-[2.5rem] shadow-2xl border border-green-400/20 card-glow">
+    <section class="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-16" data-aos="fade-up">
+        <a href="https://dongthap-xuanphuc.vercel.app/camnang" target="_blank" class="block relative group overflow-hidden rounded-[2rem] md:rounded-[2.5rem] shadow-2xl border border-green-400/20 card-glow">
             <div class="absolute inset-0 z-0">
                 <img src="a1-1750486668570197012920.png" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Cẩm nang Đồng Tháp"/>
                 <div class="absolute inset-0 bg-gradient-to-r from-[#071407]/95 via-green-900/80 to-transparent mix-blend-multiply"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
                 <div class="liquid-glass-banner"><div class="liquid-glass-blob"></div><div class="liquid-glass-blob"></div><div class="liquid-glass-blob"></div><div class="liquid-glass-highlight"></div></div>
             </div>
-            <div class="relative z-10 p-8 md:p-14 lg:p-20 flex flex-col md:flex-row items-center justify-between gap-8 h-full">
+            <div class="relative z-10 p-6 md:p-14 lg:p-20 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8">
                 <div class="max-w-2xl">
                     <div class="eco-badge bg-green-500/20 text-green-200 border-green-400/50 mb-4 backdrop-blur-md"><span class="material-symbols-outlined" style="font-size:12px;">menu_book</span> Hành trang điện tử</div>
-                    <h3 class="text-3xl md:text-5xl lg:text-6xl font-black text-white uppercase tracking-tight mb-4 drop-shadow-lg font-display" style="font-family:'Playfair Display',serif;">Cẩm Nang <span class="text-green-400">Du Lịch</span></h3>
-                    <p class="text-green-50/90 text-sm md:text-lg leading-relaxed mb-8 font-medium drop-shadow-md">Toàn tập bí kíp lưu trú, thưởng thức đặc sản, gợi ý di chuyển và hàng ngàn mẹo vặt hữu ích.</p>
-                    <div class="inline-flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white font-black px-8 py-4 rounded-full group-hover:from-green-400 group-hover:to-green-500 transition-all uppercase text-xs tracking-widest border border-green-400">
-                        Mở Cẩm Nang Ngay <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                    </div>
-                </div>
-                <div class="hidden lg:flex justify-center items-center relative mr-12">
-                    <div class="w-48 h-48 bg-gradient-to-br from-[#1b5e20] to-[#0a1f0a] rounded-full border border-green-500/30 flex items-center justify-center shadow-[0_0_40px_rgba(74,222,128,0.2)] animate-float">
-                        <span class="material-symbols-outlined text-green-400" style="font-size: 80px;">luggage</span>
+                    <h3 class="text-2xl md:text-5xl lg:text-6xl font-black text-white uppercase tracking-tight mb-3 md:mb-4 drop-shadow-lg font-display" style="font-family:'Playfair Display',serif;">Cẩm Nang <span class="text-green-400">Du Lịch</span></h3>
+                    <p class="text-green-50/90 text-sm md:text-lg leading-relaxed mb-6 md:mb-8 font-medium drop-shadow-md">Toàn tập bí kíp lưu trú, đặc sản, di chuyển và hàng ngàn mẹo hữu ích.</p>
+                    <div class="inline-flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white font-black px-6 py-3 md:px-8 md:py-4 rounded-full hover:from-green-400 hover:to-green-500 transition-all uppercase text-xs tracking-widest border border-green-400">
+                        Mở Cẩm Nang <span class="material-symbols-outlined text-base group-hover:translate-x-1 transition-transform">arrow_forward</span>
                     </div>
                 </div>
             </div>
         </a>
     </section>
 
-    <section class="max-w-7xl mx-auto px-6 py-8 border-t border-gray-200 mt-8 mb-8" data-aos="fade-up">
-        <div class="bg-green-50/50 rounded-2xl p-6 md:p-8 border border-green-100 shadow-sm relative overflow-hidden">
-            <div class="section-number" aria-hidden="true">04</div>
-            <h4 class="text-green-800 font-black text-lg mb-4 flex items-center gap-2 uppercase tracking-tight"><span class="material-symbols-outlined text-green-600">verified</span><span class="text-shimmer">Nguồn dữ liệu tham khảo chính thống</span></h4>
-            <ul class="space-y-3 text-sm md:text-base text-gray-700 relative z-10">
-                <li class="flex items-start gap-3"><span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5">check_circle</span><span><strong>Cổng Thông tin điện tử tỉnh Đồng Tháp (dongthap.gov.vn):</strong> Số liệu cập nhật mới nhất về diện tích tự nhiên, dân số và đơn vị hành chính cấp xã.</span></li>
-                <li class="flex items-start gap-3"><span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5">check_circle</span><span><strong>Cục Di sản Văn hóa - Bộ VH,TT&amp;DL (dsvh.gov.vn):</strong> Thông tin xếp hạng và hồ sơ quản lý 17 Di tích Lịch sử - Văn hóa cấp Quốc gia.</span></li>
-                <li class="flex items-start gap-3"><span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5">check_circle</span><span><strong>Ban Quản lý Vườn Quốc gia Tràm Chim:</strong> Báo cáo thống kê hệ sinh thái đất ngập nước, danh mục bảo tồn 130+ loài thực vật đặc hữu và 231 loài chim.</span></li>
+    <section class="max-w-7xl mx-auto px-4 md:px-6 py-8 border-t border-gray-200 mt-4 mb-8" data-aos="fade-up">
+        <div class="bg-green-50/50 rounded-2xl p-5 md:p-8 border border-green-100 shadow-sm relative overflow-hidden">
+            <div class="section-number" aria-hidden="true">05</div>
+            <h4 class="text-green-800 font-black text-base md:text-lg mb-4 flex items-center gap-2 uppercase tracking-tight"><span class="material-symbols-outlined text-green-600">verified</span><span class="text-shimmer">Nguồn dữ liệu tham khảo</span></h4>
+            <ul class="space-y-3 text-sm text-gray-700 relative z-10">
+                <li class="flex items-start gap-3"><span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5">check_circle</span><span><strong>Cổng TTĐT tỉnh Đồng Tháp (dongthap.gov.vn):</strong> Số liệu cập nhật mới nhất về diện tích, dân số và đơn vị hành chính.</span></li>
+                <li class="flex items-start gap-3"><span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5">check_circle</span><span><strong>Cục Di sản Văn hóa (dsvh.gov.vn):</strong> Thông tin xếp hạng 17 Di tích Lịch sử - Văn hóa cấp Quốc gia.</span></li>
+                <li class="flex items-start gap-3"><span class="material-symbols-outlined text-green-600 text-[20px] mt-0.5">check_circle</span><span><strong>Ban Quản lý VQG Tràm Chim:</strong> Thống kê hệ sinh thái đất ngập nước, 130+ loài thực vật và 231 loài chim.</span></li>
             </ul>
         </div>
     </section>
 </main>
 
-<footer class="bg-[#111811] text-white py-12 md:py-16 px-6 border-t-[6px] border-green-800 relative overflow-hidden">
+<footer class="bg-[#111811] text-white py-10 md:py-16 px-4 md:px-6 border-t-[6px] border-green-800 relative overflow-hidden">
     <div class="absolute top-0 left-0 h-[6px] w-full overflow-hidden" aria-hidden="true"><div style="height:100%;width:200%;background:linear-gradient(90deg,#1b5e20,#4caf50,#81c784,#4caf50,#1b5e20);animation:shimmer-move 3s linear infinite;background-size:50% 100%;"></div></div>
     <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-8 relative z-10">
         <div class="text-center lg:text-left">
             <div class="text-2xl md:text-3xl font-black text-green-500 uppercase">Đồng Tháp</div>
             <p class="text-gray-400 text-xs md:text-sm max-w-md italic mt-2">Hệ thống số hóa thông tin giáo dục địa phương.</p>
         </div>
-        <nav class="flex flex-wrap justify-center gap-4 text-[10px] md:text-xs font-bold uppercase text-gray-500">
-            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="index.html">Trang chủ</a>
-            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="tramchim">Sinh thái</a>
-            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="ditichlichsu">Lịch sử</a>
-            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="danhlam">Danh Lam</a>
-            <a class="hover:text-green-400 transition-all duration-300 neon-link" href="https://dongthap-xuanphuc.vercel.app/camnang">Cẩm Nang</a>
+        <nav class="flex flex-wrap justify-center gap-3 md:gap-4 text-[10px] md:text-xs font-bold uppercase text-gray-500">
+            <a class="hover:text-green-400 transition-all duration-300 neon-link py-1" href="index.html">Trang chủ</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link py-1" href="tramchim">Sinh thái</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link py-1" href="ditichlichsu">Lịch sử</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link py-1" href="danhlam">Danh Lam</a>
+            <a class="hover:text-green-400 transition-all duration-300 neon-link py-1" href="https://dongthap-xuanphuc.vercel.app/camnang">Cẩm Nang</a>
         </nav>
-        <div class="text-center lg:text-right bg-green-900/40 p-5 rounded-xl border border-green-800/50 flex flex-col items-center lg:items-end shadow-lg">
+        <div class="text-center bg-green-900/40 p-5 rounded-xl border border-green-800/50 flex flex-col items-center shadow-lg">
             <div class="text-[9px] md:text-[10px] text-green-400 uppercase font-bold tracking-widest mb-3">Quét mã để truy cập web</div>
             <div class="bg-white p-1.5 rounded-lg mb-3 shadow-[0_0_15px_rgba(74,222,128,0.2)] hover:scale-105 transition-transform duration-300 cursor-pointer"><img src="xuanphucqr.png" alt="Mã QR Truy cập" class="w-16 h-16 md:w-20 md:h-20 object-contain"/></div>
             <div class="text-[8px] md:text-[10px] text-gray-400 uppercase tracking-widest mb-1">Thực hiện bởi</div>
@@ -1024,7 +1135,49 @@
         }
     });
 
-    /* ============ CUSTOM CURSOR (dot + ring only, no glow) ============ */
+    /* ============ HAMBURGER MENU ============ */
+    var hbBtn = document.getElementById('hamburger-btn');
+    var mobileMenu = document.getElementById('mobile-menu');
+    var menuOpen = false;
+
+    function closeMenu() {
+        menuOpen = false;
+        hbBtn.classList.remove('open');
+        hbBtn.setAttribute('aria-expanded', 'false');
+        mobileMenu.classList.remove('open');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+    }
+
+    if (hbBtn && mobileMenu) {
+        hbBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            menuOpen = !menuOpen;
+            hbBtn.classList.toggle('open', menuOpen);
+            hbBtn.setAttribute('aria-expanded', menuOpen ? 'true' : 'false');
+            mobileMenu.classList.toggle('open', menuOpen);
+            mobileMenu.setAttribute('aria-hidden', menuOpen ? 'false' : 'true');
+        });
+        // Close when nav link clicked
+        mobileMenu.querySelectorAll('a').forEach(function(a) {
+            a.addEventListener('click', function() { closeMenu(); });
+        });
+        // Close on outside click
+        document.addEventListener('click', function(e) {
+            if (menuOpen && !hbBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                closeMenu();
+            }
+        });
+        // Close on scroll (mobile UX best practice)
+        var scrollTimer = null;
+        window.addEventListener('scroll', function() {
+            if (menuOpen) {
+                clearTimeout(scrollTimer);
+                scrollTimer = setTimeout(closeMenu, 80);
+            }
+        }, { passive: true });
+    }
+
+    /* ============ CUSTOM CURSOR (desktop only) ============ */
     if (!isTouch) {
         var dot = document.getElementById('cursor-dot');
         var ring = document.getElementById('cursor-ring');
@@ -1054,28 +1207,28 @@
     var text = 'Cẩm nang giáo dục trực tuyến về vùng Đất Sen Hồng, nơi hội tụ di sản văn hóa hào hùng và hệ sinh thái thiên nhiên trù phú.';
     var i = 0;
     subtitle.classList.add('typewriter-cursor');
-    function type() { if (i < text.length) { subtitle.textContent += text[i++]; setTimeout(type, 28); } else { subtitle.classList.remove('typewriter-cursor'); } }
+    function type() { if (i < text.length) { subtitle.textContent += text[i++]; setTimeout(type, isMobile ? 22 : 28); } else { subtitle.classList.remove('typewriter-cursor'); } }
     setTimeout(type, 1400);
 
-    /* ============ PARTICLES (reduced: desktop 8, mobile 0) ============ */
-    function createRegularParticles() {
+    /* ============ PARTICLES ============ */
+    function createParticles() {
         var container = document.getElementById('particles');
         container.innerHTML = '';
-        var count = isMobile ? 0 : 8;
+        var count = isMobile ? 5 : 10;
         for (var p = 0; p < count; p++) {
             var el = document.createElement('div');
             el.className = 'particle';
-            var size = Math.random() * 6 + 3;
-            el.style.cssText = 'width:' + size + 'px;height:' + size + 'px;left:' + Math.random() * 100 + '%;animation-duration:' + (Math.random() * 10 + 8) + 's;animation-delay:' + (Math.random() * 8) + 's;';
+            var size = Math.random() * 5 + 2;
+            el.style.cssText = 'width:' + size + 'px;height:' + size + 'px;left:' + Math.random() * 100 + '%;animation-duration:' + (Math.random() * 10 + 10) + 's;animation-delay:' + (Math.random() * 10) + 's;';
             container.appendChild(el);
         }
     }
 
-    /* ============ FIREFLIES (reduced: desktop 20, mobile 10) ============ */
+    /* ============ FIREFLIES ============ */
     function createFireflies() {
         var container = document.getElementById('particles');
         container.innerHTML = '';
-        var count = isMobile ? 10 : 20;
+        var count = isMobile ? 12 : 22;
         for (var fi = 0; fi < count; fi++) {
             var el = document.createElement('div');
             el.className = 'firefly';
@@ -1083,7 +1236,7 @@
             var delay = (Math.random() * 8).toFixed(2);
             var dx = ((Math.random() - 0.5) * 80).toFixed(0);
             var dy = ((Math.random() - 0.5) * 80).toFixed(0);
-            var size = (2.5 + Math.random() * 3).toFixed(1);
+            var size = (2 + Math.random() * 3).toFixed(1);
             el.style.top = (5 + Math.random() * 88) + '%';
             el.style.left = (2 + Math.random() * 94) + '%';
             el.style.width = size + 'px'; el.style.height = size + 'px';
@@ -1093,18 +1246,18 @@
         }
     }
 
-    createRegularParticles();
+    createParticles();
 
-    /* ============ PETALS (reduced: desktop 10, mobile 4) ============ */
+    /* ============ PETALS ============ */
     var petalContainer = document.getElementById('petals-container');
     if(petalContainer && !isReducedMotion) {
-        var petalCount = isMobile ? 4 : 10;
+        var petalCount = isMobile ? 6 : 12;
         for (var pi = 0; pi < petalCount; pi++) {
             var petal = document.createElement('div');
             petal.className = 'falling-petal';
             petal.style.left = Math.random() * 100 + '%';
             petal.style.animationDelay = Math.random() * 20 + 's';
-            petal.style.animationDuration = (Math.random() * 15 + 10) + 's';
+            petal.style.animationDuration = (Math.random() * 15 + 12) + 's';
             petal.style.transform = 'scale(' + (Math.random() * 0.8 + 0.4) + ')';
             petalContainer.appendChild(petal);
         }
@@ -1112,15 +1265,22 @@
 
     /* ============ THEME TOGGLE ============ */
     var isNightMode = false;
+    var themeLabelMobile = document.getElementById('theme-label-mobile');
+
+    function updateThemeLabel() {
+        if (themeLabelMobile) themeLabelMobile.textContent = isNightMode ? 'Chế độ tối 🌙' : 'Chế độ sáng ☀️';
+    }
+
     function toggleTheme() {
         isNightMode = !isNightMode;
         document.body.classList.toggle('night', isNightMode);
+        updateThemeLabel();
         if (isNightMode) {
             createFireflies();
             var wave = document.querySelector('.wave-divider path');
             if (wave) wave.setAttribute('fill', '#070f07');
         } else {
-            createRegularParticles();
+            createParticles();
             var wave = document.querySelector('.wave-divider path');
             if (wave) wave.setAttribute('fill', '#fff');
         }
@@ -1136,9 +1296,10 @@
             }, 100);
         }
     } catch(e) {}
+    updateThemeLabel();
     document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
 
-    /* ============ SPARKLE ============ */
+    /* ============ SPARKLE (desktop only) ============ */
     if (!isReducedMotion && !isMobile) {
         document.querySelectorAll('.sparkle-wrap').forEach(function(wrap) {
             var timer = null;
@@ -1162,8 +1323,26 @@
         });
     }
 
+    /* ============ TOUCH RIPPLE for mobile cards ============ */
+    if (isTouch) {
+        document.querySelectorAll('article[onclick]').forEach(function(card) {
+            card.addEventListener('touchstart', function(e) {
+                var rect = card.getBoundingClientRect();
+                var touch = e.touches[0];
+                var x = touch.clientX - rect.left;
+                var y = touch.clientY - rect.top;
+                var size = Math.max(rect.width, rect.height) * 1.4;
+                var ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                ripple.style.cssText = 'width:' + size + 'px;height:' + size + 'px;top:' + (y-size/2) + 'px;left:' + (x-size/2) + 'px;';
+                card.appendChild(ripple);
+                ripple.addEventListener('animationend', function() { ripple.remove(); });
+            }, { passive: true });
+        });
+    }
+
     /* ============ INTERSECTION OBSERVER ============ */
-    var observerOpts = { threshold: isMobile ? 0.15 : 0.1, rootMargin: '0px 0px -50px 0px' };
+    var observerOpts = { threshold: 0.1, rootMargin: '0px 0px -30px 0px' };
     var observer = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
             if (entry.isIntersecting) {
@@ -1187,14 +1366,17 @@
             if (counter.classList.contains('counted')) return;
             counter.classList.add('counted');
             var target = parseInt(counter.getAttribute('data-target'));
-            var duration = 2000, inc = target / (duration / 16), cur = 0;
+            var duration = 1800, inc = target / (duration / 16), cur = 0;
             var timer = setInterval(function() {
                 cur += inc;
                 if (cur >= target) { counter.textContent = target; clearInterval(timer); }
                 else { counter.textContent = Math.floor(cur); }
             }, 16);
-            var bar = counter.closest('.flex') && counter.closest('.flex').querySelector('.stat-bar-fill');
-            if (bar) bar.style.width = bar.getAttribute('data-width') + '%';
+            var container = counter.closest('.flex');
+            if (container) {
+                var bar = container.querySelector('.stat-bar-fill');
+                if (bar) bar.style.width = bar.getAttribute('data-width') + '%';
+            }
             counterObs.unobserve(counter);
         });
     }, observerOpts);
@@ -1207,7 +1389,7 @@
                 e.target.classList.add('active');
                 ['title-underline','map-underline','cards-underline'].forEach(function(id) {
                     var b = document.getElementById(id);
-                    if (b) b.style.width = window.innerWidth < 768 ? '64px' : '96px';
+                    if (b) b.style.width = window.innerWidth < 768 ? '56px' : '96px';
                 });
             }
         });
@@ -1251,13 +1433,13 @@
             card.addEventListener('mouseleave', function() {
                 isHovered = false;
                 card.style.transition = 'transform 0.5s ease';
-                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1,1,1)';
                 setTimeout(function() { card.style.transition = 'transform 0.1s ease'; }, 500);
             });
         });
     }
 
-    /* ============ MAGNETIC BUTTON ============ */
+    /* ============ MAGNETIC BUTTON (desktop only) ============ */
     if (!isMobile) {
         document.querySelectorAll('.magnetic-btn').forEach(function(btn) {
             btn.addEventListener('mousemove', function(e) {
@@ -1281,8 +1463,15 @@
                 }
                 document.getElementById('progress-bar').style.width = (winScroll / height * 100) + '%';
                 var header = document.getElementById('main-header');
-                if (winScroll > 80) { header.classList.remove('bg-white'); header.classList.add('bg-white/70', 'backdrop-blur-lg', 'shadow-md'); }
-                else { header.classList.add('bg-white'); header.classList.remove('bg-white/70', 'backdrop-blur-lg', 'shadow-md'); }
+                if (winScroll > 60) {
+                    header.style.backgroundColor = isNightMode ? 'rgba(7,15,7,0.97)' : 'rgba(255,255,255,0.85)';
+                    header.style.backdropFilter = 'blur(16px)';
+                    header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.08)';
+                } else {
+                    header.style.backgroundColor = '';
+                    header.style.backdropFilter = '';
+                    header.style.boxShadow = '';
+                }
                 document.getElementById('scroll-top').classList.toggle('visible', winScroll > 300);
                 ticking = false;
             });
@@ -1296,8 +1485,8 @@
         { id: 'tramchim', name: 'Vườn QG Tràm Chim', desc: 'Khu Ramsar thứ 2000 — 231 loài chim quý hiếm', lat: 10.7329, lng: 105.5342, category: 'eco' },
         { id: 'langhoa', name: 'Làng hoa Sa Đéc', desc: 'Vùng trồng hoa nổi tiếng nhất miền Nam', lat: 10.3129, lng: 105.7516, category: 'scenic' },
         { id: 'gothap', name: 'Gò Tháp', desc: 'Di tích lịch sử - văn hóa cấp Quốc gia', lat: 10.5982, lng: 105.8086, category: 'history' },
-        { id: 'phobang', name: 'Khu di tích Nguyễn Sinh Sắc', desc: 'Lăng mộ thân phụ Chủ tịch Hồ Chí Minh', lat: 10.4465, lng: 105.6298, category: 'history' },
-        { id: 'xeoquyt', name: 'Xẻo Quýt', desc: 'Khu du lịch sinh thái rừng tràm đặc sắc', lat: 10.4497, lng: 105.8458, category: 'eco' },
+        { id: 'phobang', name: 'KDT Nguyễn Sinh Sắc', desc: 'Lăng mộ thân phụ Chủ tịch Hồ Chí Minh', lat: 10.4465, lng: 105.6298, category: 'history' },
+        { id: 'xeoquyt', name: 'Xẻo Quýt', desc: 'Du lịch sinh thái rừng tràm đặc sắc', lat: 10.4497, lng: 105.8458, category: 'eco' },
         { id: 'sadec', name: 'TP. Sa Đéc', desc: 'Thành phố hoa và di sản kiến trúc Pháp', lat: 10.2934, lng: 105.7588, category: 'city' },
         { id: 'thapmuoi', name: 'Tháp Mười', desc: 'Vùng đất ngập nước lịch sử Đồng Tháp Mười', lat: 10.6067, lng: 105.8119, category: 'scenic' },
         { id: 'hongngu', name: 'Hồng Ngự', desc: 'Thành phố biên giới, cửa ngõ giao thương', lat: 10.8031, lng: 105.3421, category: 'city' },
@@ -1323,7 +1512,8 @@
     function initMap() {
         if (mapInitialized || typeof L === 'undefined' || !document.getElementById('dong-thap-map')) return;
         mapInitialized = true;
-        map = L.map('dong-thap-map', { center: [10.55, 105.65], zoom: isMobile ? 9 : 10, zoomControl: true, attributionControl: false });
+        var initialZoom = isMobile ? 9 : 10;
+        map = L.map('dong-thap-map', { center: [10.55, 105.65], zoom: initialZoom, zoomControl: true, attributionControl: false });
         L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains: ['mt0','mt1','mt2','mt3'] }).addTo(map);
         var dtPolygon = [[10.95,105.25],[10.96,105.40],[10.93,105.58],[10.88,105.68],[10.82,105.76],[10.77,105.95],[10.70,106.05],[10.60,106.02],[10.50,105.90],[10.38,105.85],[10.28,105.80],[10.24,105.72],[10.22,105.62],[10.28,105.52],[10.35,105.42],[10.40,105.32],[10.52,105.25],[10.65,105.20],[10.78,105.22],[10.88,105.22],[10.95,105.25]];
         L.polygon(dtPolygon, { color:'rgba(76,175,80,0.8)', weight:2, fill:true, fillColor:'rgba(76,175,80,0.08)', fillOpacity:1, dashArray:'6,4' }).addTo(map);
@@ -1358,7 +1548,7 @@
   'use strict';
   var isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth < 768);
   var ctx = null, masterGain = null, ambientNodes = [], isMuted = false, isAmbientOn = false;
-  var ambientLoop = null, birdLoop = null, isInitialized = false;
+  var birdLoop = null, isInitialized = false;
 
   function getCtx() {
     if (!ctx) { ctx = new (window.AudioContext || window.webkitAudioContext)(); masterGain = ctx.createGain(); masterGain.gain.setValueAtTime(0.7, ctx.currentTime); masterGain.connect(ctx.destination); }
@@ -1380,7 +1570,7 @@
     var c = getCtx(), t = c.currentTime;
     var osc = c.createOscillator(), g = c.createGain();
     osc.type = 'sine'; osc.frequency.setValueAtTime(880, t); osc.frequency.exponentialRampToValueAtTime(1200, t + 0.12);
-    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.08, t + 0.02); g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.06, t + 0.02); g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
     osc.connect(g); g.connect(masterGain); osc.start(t); osc.stop(t + 0.3);
   }
   function playClick() {
@@ -1388,7 +1578,7 @@
     var c = getCtx(), t = c.currentTime;
     var osc = c.createOscillator(), g = c.createGain();
     osc.type = 'triangle'; osc.frequency.setValueAtTime(320, t); osc.frequency.exponentialRampToValueAtTime(80, t + 0.1);
-    g.gain.setValueAtTime(0.25, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    g.gain.setValueAtTime(0.2, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
     osc.connect(g); g.connect(masterGain); osc.start(t); osc.stop(t + 0.15);
   }
   function playTransition() {
@@ -1405,8 +1595,8 @@
     var buf = c.createBuffer(2, bufSize, c.sampleRate);
     for (var ch = 0; ch < 2; ch++) { var d = buf.getChannelData(ch); for (var i = 0; i < bufSize; i++) d[i] = Math.random() * 2 - 1; }
     var noise = c.createBufferSource(); noise.buffer = buf; noise.loop = true;
-    var lpf = c.createBiquadFilter(); lpf.type = 'lowpass'; lpf.frequency.value = 600;
-    var ambGain = c.createGain(); ambGain.gain.value = 0.08;
+    var lpf = c.createBiquadFilter(); lpf.type = 'lowpass'; lpf.frequency.value = 500;
+    var ambGain = c.createGain(); ambGain.gain.value = 0.06;
     noise.connect(lpf); lpf.connect(ambGain); ambGain.connect(masterGain); noise.start();
     ambientNodes.push(noise, ambGain);
     (function chirp() {
@@ -1415,7 +1605,7 @@
       var freq = 1800 + Math.random() * 1400;
       var osc = c.createOscillator(), g = c.createGain();
       osc.type = 'sine'; osc.frequency.setValueAtTime(freq, t2); osc.frequency.linearRampToValueAtTime(freq * 1.15, t2 + 0.04);
-      g.gain.setValueAtTime(0, t2); g.gain.linearRampToValueAtTime(0.06, t2 + 0.02); g.gain.exponentialRampToValueAtTime(0.001, t2 + 0.14);
+      g.gain.setValueAtTime(0, t2); g.gain.linearRampToValueAtTime(0.05, t2 + 0.02); g.gain.exponentialRampToValueAtTime(0.001, t2 + 0.14);
       osc.connect(g); g.connect(masterGain); osc.start(t2); osc.stop(t2 + 0.2);
       birdLoop = setTimeout(chirp, (2 + Math.random() * 4) * 1000);
     })();
@@ -1438,11 +1628,11 @@
   function createSoundPanel() {
     var panel = document.createElement('div');
     panel.id = 'sound-panel';
-    panel.innerHTML = '<style>#sound-panel{position:fixed;bottom:84px;right:20px;z-index:200;display:flex;flex-direction:column;align-items:flex-end;gap:8px}#sound-toggle-btn{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#1b5e20,#4caf50);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(76,175,80,.5);transition:transform .2s ease,box-shadow .2s ease;overflow:hidden}#sound-toggle-btn:hover{transform:scale(1.1)}#sound-toggle-btn svg{width:22px;height:22px;fill:white}#sound-submenu{display:none;flex-direction:column;gap:6px;align-items:flex-end}#sound-submenu.open{display:flex}.sound-sub-btn{display:flex;align-items:center;gap:8px;background:white;border:1.5px solid rgba(27,94,32,.2);border-radius:24px;padding:6px 14px 6px 10px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#1b5e20;cursor:pointer;white-space:nowrap;box-shadow:0 2px 12px rgba(0,0,0,.08);transition:all .2s ease}.sound-sub-btn:hover{background:#f0fdf4;border-color:#4caf50}.sound-sub-btn.active{background:linear-gradient(135deg,#1b5e20,#4caf50);color:white;border-color:transparent}.sound-sub-btn svg{width:16px;height:16px;flex-shrink:0;fill:#1b5e20}.sound-sub-btn.active svg{fill:white}#volume-row{display:flex;align-items:center;gap:8px;background:white;border:1.5px solid rgba(27,94,32,.15);border-radius:24px;padding:6px 14px;box-shadow:0 2px 12px rgba(0,0,0,.08)}#volume-row svg{width:14px;height:14px;fill:#4caf50}#vol-slider{-webkit-appearance:none;width:80px;height:3px;border-radius:2px;background:linear-gradient(90deg,#4caf50 var(--pct,70%),#d1d5db var(--pct,70%));outline:none;cursor:pointer}#vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#1b5e20}#eq-bars{display:flex;gap:2px;align-items:flex-end;height:16px}.eq-bar{width:3px;border-radius:1px;background:white;animation:eq-dance .6s ease-in-out infinite alternate}.eq-bar:nth-child(1){height:6px;animation-delay:0s}.eq-bar:nth-child(2){height:12px;animation-delay:.1s}.eq-bar:nth-child(3){height:8px;animation-delay:.2s}.eq-bar:nth-child(4){height:14px;animation-delay:.05s}@keyframes eq-dance{from{transform:scaleY(.3)}to{transform:scaleY(1)}}body.night .sound-sub-btn{background:#0c1e0c;color:#81c784;border-color:rgba(76,175,80,.3)}body.night #volume-row{background:#0c1e0c;border-color:rgba(76,175,80,.2)}</style><div id="sound-submenu"><div id="volume-row"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg><input type="range" id="vol-slider" min="0" max="100" value="70"></div><button class="sound-sub-btn" id="btn-ambient"><svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 19.5 3.82 19.5 2 23 8 20c1.85-.93 3.33-2.5 4.52-4.36C15.36 14.5 19 16 19 16c-3-4-2-8-2-8z"/></svg>Tiếng thiên nhiên</button><button class="sound-sub-btn" id="btn-mute"><svg viewBox="0 0 24 24" id="mute-icon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM19 12c0 2.26-1.28 4.22-3.16 5.19l1.42 1.42C19.51 17.26 21 14.8 21 12c0-2.8-1.49-5.26-3.74-6.61l-1.42 1.42C17.72 7.78 19 9.74 19 12z"/></svg>Tắt âm thanh</button></div><button id="sound-toggle-btn" title="Âm thanh"><div id="eq-bars"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div></button>';
+    panel.innerHTML = '<style>#sound-panel{position:fixed;bottom:80px;right:16px;z-index:200;display:flex;flex-direction:column;align-items:flex-end;gap:8px}#sound-toggle-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1b5e20,#4caf50);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(76,175,80,.5);transition:transform .2s ease;overflow:hidden}@media(min-width:768px){#sound-toggle-btn{width:48px;height:48px}}#sound-toggle-btn:hover{transform:scale(1.1)}#sound-toggle-btn svg{width:20px;height:20px;fill:white}#sound-submenu{display:none;flex-direction:column;gap:6px;align-items:flex-end}#sound-submenu.open{display:flex}.sound-sub-btn{display:flex;align-items:center;gap:8px;background:white;border:1.5px solid rgba(27,94,32,.2);border-radius:24px;padding:6px 14px 6px 10px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#1b5e20;cursor:pointer;white-space:nowrap;box-shadow:0 2px 12px rgba(0,0,0,.08);transition:all .2s ease}.sound-sub-btn:hover{background:#f0fdf4;border-color:#4caf50}.sound-sub-btn.active{background:linear-gradient(135deg,#1b5e20,#4caf50);color:white;border-color:transparent}.sound-sub-btn svg{width:16px;height:16px;flex-shrink:0;fill:#1b5e20}.sound-sub-btn.active svg{fill:white}#volume-row{display:flex;align-items:center;gap:8px;background:white;border:1.5px solid rgba(27,94,32,.15);border-radius:24px;padding:6px 14px;box-shadow:0 2px 12px rgba(0,0,0,.08)}#volume-row svg{width:14px;height:14px;fill:#4caf50}#vol-slider{-webkit-appearance:none;width:72px;height:3px;border-radius:2px;background:linear-gradient(90deg,#4caf50 var(--pct,70%),#d1d5db var(--pct,70%));outline:none;cursor:pointer}#vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#1b5e20}#eq-bars{display:flex;gap:2px;align-items:flex-end;height:16px}.eq-bar{width:3px;border-radius:1px;background:white;animation:eq-dance .6s ease-in-out infinite alternate}.eq-bar:nth-child(1){height:6px;animation-delay:0s}.eq-bar:nth-child(2){height:12px;animation-delay:.1s}.eq-bar:nth-child(3){height:8px;animation-delay:.2s}.eq-bar:nth-child(4){height:14px;animation-delay:.05s}@keyframes eq-dance{from{transform:scaleY(.3)}to{transform:scaleY(1)}}body.night .sound-sub-btn{background:#0c1e0c;color:#81c784;border-color:rgba(76,175,80,.3)}body.night #volume-row{background:#0c1e0c;border-color:rgba(76,175,80,.2)}</style><div id="sound-submenu"><div id="volume-row"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg><input type="range" id="vol-slider" min="0" max="100" value="70"></div><button class="sound-sub-btn" id="btn-ambient"><svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 19.5 3.82 19.5 2 23 8 20c1.85-.93 3.33-2.5 4.52-4.36C15.36 14.5 19 16 19 16c-3-4-2-8-2-8z"/></svg>Tiếng thiên nhiên</button><button class="sound-sub-btn" id="btn-mute"><svg viewBox="0 0 24 24" id="mute-icon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM19 12c0 2.26-1.28 4.22-3.16 5.19l1.42 1.42C19.51 17.26 21 14.8 21 12c0-2.8-1.49-5.26-3.74-6.61l-1.42 1.42C17.72 7.78 19 9.74 19 12z"/></svg>Tắt âm thanh</button></div><button id="sound-toggle-btn" title="Âm thanh"><div id="eq-bars"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div></button>';
     document.body.appendChild(panel);
-    var menuOpen = false, mainBtn = document.getElementById('sound-toggle-btn'), submenu = document.getElementById('sound-submenu');
+    var menuOpen2 = false, mainBtn = document.getElementById('sound-toggle-btn'), submenu = document.getElementById('sound-submenu');
     var btnAmbient = document.getElementById('btn-ambient'), btnMute = document.getElementById('btn-mute'), volSlider = document.getElementById('vol-slider');
-    mainBtn.addEventListener('click', function() { menuOpen = !menuOpen; submenu.classList.toggle('open', menuOpen); playClick(); });
+    mainBtn.addEventListener('click', function() { menuOpen2 = !menuOpen2; submenu.classList.toggle('open', menuOpen2); playClick(); });
     btnAmbient.addEventListener('click', function() {
       getCtx();
       if (!isAmbientOn) { startAmbient(); btnAmbient.classList.add('active'); playToggle(true); }
@@ -1459,7 +1649,7 @@
       this.style.setProperty('--pct', this.value + '%');
       isMuted = false; btnMute.classList.remove('active');
     });
-    document.addEventListener('click', function(e) { if (!panel.contains(e.target) && menuOpen) { menuOpen = false; submenu.classList.remove('open'); } });
+    document.addEventListener('click', function(e) { if (!panel.contains(e.target) && menuOpen2) { menuOpen2 = false; submenu.classList.remove('open'); } });
   }
 
   function init() {
@@ -1480,12 +1670,13 @@
 </script>
 
 <style>
-#season-tracker { min-height: 380px; }
-.season-highlights { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+#season-tracker { min-height: 360px; }
+.season-highlights { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
 .season-highlight-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; font-size: 10px; font-weight: 700; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); color: white; }
-.season-activities { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); gap: 8px; margin-top: 16px; }
-.season-activity { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); backdrop-filter: blur(8px); transition: all 0.35s ease; }
-.season-activity:hover { background: rgba(255,255,255,0.18); transform: translateY(-2px); }
+.season-activities { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap: 6px; margin-top: 12px; }
+@media(max-width:767px) { .season-activities { grid-template-columns: 1fr 1fr; } }
+.season-activity { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 8px 10px; display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); backdrop-filter: blur(8px); transition: all 0.35s ease; }
+.season-activity:active { background: rgba(255,255,255,0.18); transform: scale(0.97); }
 .season-activity span { font-size: 18px; }
 #season-content-inner { transition: opacity 0.35s ease, transform 0.35s ease; }
 #season-content-inner.fading { opacity: 0; transform: translateY(8px); }
@@ -1499,24 +1690,24 @@
 (function() {
 'use strict';
 var seasonData = [
-  { label: 'Mùa Khô & Tết', name: 'Làng Hoa Sa Đéc Rực Rỡ', desc: 'Hàng triệu chậu hoa khoe sắc tại Làng hoa Sa Đéc, không khí Tết tràn ngập hương thơm và sắc màu rực rỡ trên mọi nẻo đường.', icon: '🌸', temp: '26–34°C', color: '#f9a825', bg: 1, tagIcon: 'sunny', highlights: ['Tết Nguyên Đán', 'Làng hoa Sa Đéc', 'Lễ hội hoa xuân'], activities: [['🌺','Tham quan làng hoa'],['🎊','Lễ hội Tết'],['🚤','Du thuyền sông'],['📸','Check-in hoa']] },
-  { label: 'Mùa Hoa Nở Rộ', name: 'Sắc Xuân Đồng Tháp', desc: 'Tháng 2 là đỉnh điểm của mùa hoa tại Sa Đéc. Hàng ngàn loài hoa đua nhau nở, từ hoa hồng, cúc, đến vạn thọ rực vàng khắp nơi.', icon: '🌼', temp: '26–35°C', color: '#ff8f00', bg: 1, tagIcon: 'local_florist', highlights: ['Hoa vạn thọ', 'Chợ hoa xuân', 'Festival hoa'], activities: [['🌻','Ngắm vườn hoa'],['🛶','Chèo xuồng sen'],['🍜','Ẩm thực xuân'],['🎭','Đờn ca tài tử']] },
-  { label: 'Cuối Xuân - Đầu Hạ', name: 'Gò Tháp & Di Tích Mùa Xuân', desc: 'Thời tiết mát mẻ lý tưởng để khám phá Gò Tháp, Xẻo Quýt. Lúa xuân bắt đầu trổ bông, đồng ruộng xanh mướt như thảm nhung.', icon: '🌾', temp: '27–36°C', color: '#8bc34a', bg: 2, tagIcon: 'grass', highlights: ['Gò Tháp di tích', 'Xẻo Quýt sinh thái', 'Lúa xuân trổ bông'], activities: [['🏛️','Tham quan di tích'],['🌿','Rừng tràm Xẻo Quýt'],['🦜','Ngắm chim'],['🎣','Câu cá đồng']] },
-  { label: 'Đầu Mùa Mưa', name: 'Sen Hồng Bắt Đầu Nở', desc: 'Những cơn mưa đầu mùa tưới tắm ruộng đồng. Đầm sen Tháp Mười bắt đầu nở những đóa sen hồng đầu tiên, báo hiệu mùa sen rực rỡ sắp đến.', icon: '🌧️', temp: '28–37°C', color: '#26a69a', bg: 2, tagIcon: 'water_drop', highlights: ['Sen hồng chớm nở', 'Mưa đầu mùa', 'Đồng Tháp Mười xanh'], activities: [['🌹','Ngắm sen chớm nở'],['🌈','Ngắm mưa đồng bằng'],['🐸','Sinh thái đồng ruộng'],['🌱','Lúa hè thu']] },
-  { label: 'Mùa Sen Chớm Nở', name: 'Đầm Sen Tháp Mười', desc: 'Tháng 5 đầm sen bắt đầu vào vụ chính. Hàng ngàn đóa sen hồng nở rộ trên mặt nước, cánh đồng thơm ngát mùi hoa đặc trưng của miền Tây.', icon: '🌺', temp: '28–37°C', color: '#e91e63', bg: 2, tagIcon: 'local_florist', highlights: ['Sen mùa chính', 'Hái sen sáng sớm', 'Chụp ảnh đầm sen'], activities: [['🛶','Chèo xuồng trong đầm sen'],['☀️','Ngắm bình minh'],['🍃','Hái sen'],['📷','Nhiếp ảnh sen']] },
-  { label: 'Mùa Sen Rực Rỡ', name: 'Thiên Đường Sen Hồng Đồng Tháp', desc: 'Đây là tháng đẹp nhất của mùa sen! Cánh đồng sen Đồng Tháp Mười trải dài hàng km, hồng rực cả chân trời.', icon: '🪷', temp: '27–36°C', color: '#c2185b', bg: 2, tagIcon: 'eco', highlights: ['Sen nở đỉnh điểm', 'Festival sen Đồng Tháp', 'Chụp ảnh đẹp nhất'], activities: [['🚤','Du thuyền đầm sen'],['🎨','Vẽ tranh đồng sen'],['🍵','Trà ướp sen'],['🛍️','Mua đặc sản sen']] },
-  { label: 'Mùa Mưa Đỉnh Điểm', name: 'Vườn QG Tràm Chim Mùa Mưa', desc: 'Mùa mưa đỉnh điểm biến Tràm Chim thành thiên đường chim nước. Sếu đầu đỏ quý hiếm về trú ngụ, rừng tràm xanh ngắt phản chiếu mặt nước bạc.', icon: '🦩', temp: '26–35°C', color: '#0288d1', bg: 3, tagIcon: 'flutter_dash', highlights: ['Sếu đầu đỏ', 'Rừng tràm ngập nước', 'Chim di trú'], activities: [['🔭','Ngắm chim Sếu'],['🌳','Khám phá rừng tràm'],['🚣','Chèo xuồng trong rừng'],['🦅','Birdwatching']] },
-  { label: 'Mùa Nước Bắt Đầu', name: 'Con Nước Về Đồng Tháp', desc: 'Nước bắt đầu dâng cao, mang theo phù sa màu mỡ và tôm cá dồi dào. Người dân hối hả đặt lờ, giăng lưới, nô nức đón mùa nước.', icon: '🌊', temp: '26–34°C', color: '#01579b', bg: 3, tagIcon: 'waves', highlights: ['Mùa nước lên', 'Đánh bắt thủy sản', 'Phù sa màu mỡ'], activities: [['🐟','Đánh cá đồng'],['⛵','Du thuyền mùa nước'],['🌾','Thu lúa hè thu'],['🦆','Nuôi vịt đồng']] },
-  { label: 'Mùa Nước Nổi Đỉnh', name: 'Lũ Đẹp - Mùa Vàng Đồng Bằng', desc: 'Tháng 9 nước dâng cao nhất năm, tạo nên khung cảnh huyền ảo. Cá linh non tươi ngon, bông điên điển vàng rực nổi bềnh bồng trên mặt nước.', icon: '🐠', temp: '25–33°C', color: '#4527a0', bg: 4, tagIcon: 'water', highlights: ['Cá linh non', 'Bông điên điển', 'Cảnh lũ huyền ảo'], activities: [['🎣','Bắt cá linh non'],['🌼','Hái bông điên điển'],['🏊','Lễ hội sông nước'],['🍲','Lẩu mắm mùa nước']] },
-  { label: 'Nước Rút - Thu Hoạch', name: 'Mùa Vàng Lúa Thu Đông', desc: 'Nước rút để lộ những cánh đồng phù sa màu mỡ. Nông dân khẩn trương xuống giống lúa thu đông. Không khí tấp nập, rộn ràng từ đồng ruộng đến bờ sông.', icon: '🌾', temp: '26–34°C', color: '#5d4037', bg: 4, tagIcon: 'agriculture', highlights: ['Thu hoạch lúa', 'Đồng ruộng phù sa', 'Không khí nhà nông'], activities: [['🚜','Trải nghiệm gặt lúa'],['🌅','Bình minh cánh đồng'],['🎋','Mùa trồng sen'],['🦢','Chim di trú về']] },
-  { label: 'Đầu Mùa Khô', name: 'Làng Nghề & Đặc Sản Cuối Năm', desc: 'Thời tiết mát mẻ dễ chịu, trời trong xanh không mưa. Lý tưởng tham quan làng nghề truyền thống, thưởng thức nem Lai Vung và hủ tiếu Sa Đéc đặc sản.', icon: '🏮', temp: '25–33°C', color: '#ef6c00', bg: 1, tagIcon: 'storefront', highlights: ['Làng nghề nem Lai Vung', 'Hủ tiếu Sa Đéc', 'Thời tiết lý tưởng'], activities: [['🥢','Nem Lai Vung'],['🍜','Hủ tiếu Sa Đéc'],['🏺','Làng nghề truyền thống'],['🚴','Đạp xe khám phá']] },
-  { label: 'Mùa Khô Chính', name: 'Chuẩn Bị Tết & Lễ Hội Cuối Năm', desc: 'Không khí Tết bắt đầu tràn ngập từ tháng 12. Làng hoa Sa Đéc rực rỡ chuẩn bị vụ hoa Tết, các chợ hoa họp tấp nập.', icon: '🎍', temp: '24–32°C', color: '#f57f17', bg: 1, tagIcon: 'celebration', highlights: ['Chuẩn bị hoa Tết', 'Chợ hoa cuối năm', 'Lễ hội tất niên'], activities: [['🌷','Trồng hoa Tết'],['🎁','Chợ Tết Sa Đéc'],['🎶','Đờn ca tài tử'],['🧧','Lễ hội cuối năm']] }
+  { label: 'Mùa Khô & Tết', name: 'Làng Hoa Sa Đéc Rực Rỡ', desc: 'Hàng triệu chậu hoa khoe sắc tại Làng hoa Sa Đéc. Không khí Tết rộn ràng khắp nẻo đường.', icon: '🌸', temp: '26–34°C', color: '#f9a825', bg: 1, tagIcon: 'sunny', highlights: ['Tết Nguyên Đán', 'Làng hoa Sa Đéc', 'Lễ hội hoa xuân'], activities: [['🌺','Tham quan làng hoa'],['🎊','Lễ hội Tết'],['🚤','Du thuyền sông'],['📸','Check-in hoa']] },
+  { label: 'Mùa Hoa Nở Rộ', name: 'Sắc Xuân Đồng Tháp', desc: 'Tháng 2 là đỉnh điểm mùa hoa tại Sa Đéc. Hàng ngàn loài hoa đua nhau nở rực rỡ.', icon: '🌼', temp: '26–35°C', color: '#ff8f00', bg: 1, tagIcon: 'local_florist', highlights: ['Hoa vạn thọ', 'Chợ hoa xuân', 'Festival hoa'], activities: [['🌻','Ngắm vườn hoa'],['🛶','Chèo xuồng sen'],['🍜','Ẩm thực xuân'],['🎭','Đờn ca tài tử']] },
+  { label: 'Cuối Xuân - Đầu Hạ', name: 'Gò Tháp & Di Tích Mùa Xuân', desc: 'Thời tiết mát mẻ lý tưởng khám phá Gò Tháp, Xẻo Quýt. Lúa xuân bắt đầu trổ bông.', icon: '🌾', temp: '27–36°C', color: '#8bc34a', bg: 2, tagIcon: 'grass', highlights: ['Gò Tháp di tích', 'Xẻo Quýt sinh thái', 'Lúa xuân trổ bông'], activities: [['🏛️','Tham quan di tích'],['🌿','Rừng tràm Xẻo Quýt'],['🦜','Ngắm chim'],['🎣','Câu cá đồng']] },
+  { label: 'Đầu Mùa Mưa', name: 'Sen Hồng Bắt Đầu Nở', desc: 'Mưa đầu mùa tưới tắm ruộng đồng. Đầm sen Tháp Mười chớm nở những đóa hồng đầu tiên.', icon: '🌧️', temp: '28–37°C', color: '#26a69a', bg: 2, tagIcon: 'water_drop', highlights: ['Sen hồng chớm nở', 'Mưa đầu mùa', 'Đồng Tháp Mười xanh'], activities: [['🌹','Ngắm sen chớm nở'],['🌈','Ngắm mưa đồng bằng'],['🐸','Sinh thái đồng ruộng'],['🌱','Lúa hè thu']] },
+  { label: 'Mùa Sen Chớm Nở', name: 'Đầm Sen Tháp Mười', desc: 'Tháng 5 đầm sen vào vụ chính. Hàng ngàn đóa sen hồng nở rộ, hương thơm ngát trời.', icon: '🌺', temp: '28–37°C', color: '#e91e63', bg: 2, tagIcon: 'local_florist', highlights: ['Sen mùa chính', 'Hái sen sáng sớm', 'Chụp ảnh đầm sen'], activities: [['🛶','Chèo xuồng đầm sen'],['☀️','Ngắm bình minh'],['🍃','Hái sen'],['📷','Nhiếp ảnh sen']] },
+  { label: 'Mùa Sen Rực Rỡ', name: 'Thiên Đường Sen Hồng', desc: 'Đẹp nhất năm! Cánh đồng sen trải dài hàng km, hồng rực cả chân trời Đồng Tháp Mười.', icon: '🪷', temp: '27–36°C', color: '#c2185b', bg: 2, tagIcon: 'eco', highlights: ['Sen nở đỉnh điểm', 'Festival sen', 'Chụp ảnh đẹp nhất'], activities: [['🚤','Du thuyền đầm sen'],['🎨','Vẽ tranh đồng sen'],['🍵','Trà ướp sen'],['🛍️','Mua đặc sản sen']] },
+  { label: 'Mùa Mưa Đỉnh Điểm', name: 'Tràm Chim Mùa Mưa', desc: 'Mùa mưa biến Tràm Chim thành thiên đường chim nước. Sếu đầu đỏ quý hiếm về trú ngụ.', icon: '🦩', temp: '26–35°C', color: '#0288d1', bg: 3, tagIcon: 'flutter_dash', highlights: ['Sếu đầu đỏ', 'Rừng tràm ngập nước', 'Chim di trú'], activities: [['🔭','Ngắm chim Sếu'],['🌳','Khám phá rừng tràm'],['🚣','Chèo xuồng rừng'],['🦅','Birdwatching']] },
+  { label: 'Mùa Nước Bắt Đầu', name: 'Con Nước Về Đồng Tháp', desc: 'Nước dâng mang phù sa màu mỡ và tôm cá dồi dào. Người dân đặt lờ giăng lưới hối hả.', icon: '🌊', temp: '26–34°C', color: '#01579b', bg: 3, tagIcon: 'waves', highlights: ['Mùa nước lên', 'Đánh bắt thủy sản', 'Phù sa màu mỡ'], activities: [['🐟','Đánh cá đồng'],['⛵','Du thuyền mùa nước'],['🌾','Thu lúa hè thu'],['🦆','Nuôi vịt đồng']] },
+  { label: 'Mùa Nước Nổi Đỉnh', name: 'Lũ Đẹp - Mùa Vàng Đồng Bằng', desc: 'Nước dâng cao nhất năm. Cá linh non tươi ngon, bông điên điển vàng nổi bềnh bồng.', icon: '🐠', temp: '25–33°C', color: '#4527a0', bg: 4, tagIcon: 'water', highlights: ['Cá linh non', 'Bông điên điển', 'Cảnh lũ huyền ảo'], activities: [['🎣','Bắt cá linh non'],['🌼','Hái bông điên điển'],['🏊','Lễ hội sông nước'],['🍲','Lẩu mắm mùa nước']] },
+  { label: 'Nước Rút - Thu Hoạch', name: 'Mùa Vàng Lúa Thu Đông', desc: 'Nước rút lộ cánh đồng phù sa màu mỡ. Nông dân hối hả xuống giống lúa thu đông.', icon: '🌾', temp: '26–34°C', color: '#5d4037', bg: 4, tagIcon: 'agriculture', highlights: ['Thu hoạch lúa', 'Đồng ruộng phù sa', 'Không khí nhà nông'], activities: [['🚜','Trải nghiệm gặt lúa'],['🌅','Bình minh cánh đồng'],['🎋','Mùa trồng sen'],['🦢','Chim di trú về']] },
+  { label: 'Đầu Mùa Khô', name: 'Làng Nghề & Đặc Sản Cuối Năm', desc: 'Thời tiết mát mẻ, trời trong. Lý tưởng tham quan làng nghề và thưởng thức đặc sản.', icon: '🏮', temp: '25–33°C', color: '#ef6c00', bg: 1, tagIcon: 'storefront', highlights: ['Nem Lai Vung', 'Hủ tiếu Sa Đéc', 'Thời tiết lý tưởng'], activities: [['🥢','Nem Lai Vung'],['🍜','Hủ tiếu Sa Đéc'],['🏺','Làng nghề truyền thống'],['🚴','Đạp xe khám phá']] },
+  { label: 'Mùa Khô Chính', name: 'Chuẩn Bị Tết & Lễ Hội Cuối Năm', desc: 'Không khí Tết bắt đầu tràn ngập. Làng hoa Sa Đéc rực rỡ chuẩn bị vụ hoa Tết.', icon: '🎍', temp: '24–32°C', color: '#f57f17', bg: 1, tagIcon: 'celebration', highlights: ['Chuẩn bị hoa Tết', 'Chợ hoa cuối năm', 'Lễ hội tất niên'], activities: [['🌷','Trồng hoa Tết'],['🎁','Chợ Tết Sa Đéc'],['🎶','Đờn ca tài tử'],['🧧','Lễ hội cuối năm']] }
 ];
 
 function updateSeason(month) {
   var d = seasonData[month - 1]; if (!d) return;
   var inner = document.getElementById('season-content-inner');
-  if (inner) { inner.classList.add('fading'); setTimeout(function() { renderSeasonContent(d); inner.classList.remove('fading'); }, 300); }
+  if (inner) { inner.classList.add('fading'); setTimeout(function() { renderSeasonContent(d); inner.classList.remove('fading'); }, 280); }
   else { renderSeasonContent(d); }
   for (var i = 1; i <= 4; i++) { var bg = document.getElementById('season-bg-' + i); if (bg) bg.style.opacity = (i === d.bg) ? '1' : '0'; }
   var slider = document.getElementById('season-slider');
@@ -1542,12 +1733,12 @@ window.addEventListener('DOMContentLoaded', function() {
   var tracker = document.getElementById('season-tracker');
   if (tracker) {
     var pl = document.createElement('div'); pl.className = 'season-particle-layer'; tracker.insertBefore(pl, tracker.firstChild);
-    for (var i = 0; i < 8; i++) { /* reduced from 18 */
+    for (var i = 0; i < 6; i++) {
       var p = document.createElement('div'); p.className = 's-particle';
       var size = 4 + Math.random() * 8;
       p.style.width = size + 'px'; p.style.height = size + 'px';
       p.style.left = (Math.random() * 100) + '%'; p.style.background = '#4caf50';
-      p.style.animationDuration = (8 + Math.random() * 12) + 's'; p.style.animationDelay = (Math.random() * 12) + 's';
+      p.style.animationDuration = (10 + Math.random() * 14) + 's'; p.style.animationDelay = (Math.random() * 12) + 's';
       pl.appendChild(p);
     }
   }
@@ -1565,13 +1756,12 @@ window.addEventListener('DOMContentLoaded', function() {
     for (var m = 1; m <= 12; m++) {
       (function(month) {
         var el = document.getElementById('sm-' + month);
-        if (el) { el.style.cursor = 'pointer'; el.addEventListener('click', function() { var sl = document.getElementById('season-slider'); if (sl) sl.value = month; updateSeason(month); }); }
+        if (el) { el.addEventListener('click', function() { var sl = document.getElementById('season-slider'); if (sl) sl.value = month; updateSeason(month); }); }
       })(m);
     }
     updateSeason(parseInt(slider.value));
   }
 });
-/* NOTE: Canvas mouse trail has been REMOVED for performance */
 })();
 </script>
 </body>

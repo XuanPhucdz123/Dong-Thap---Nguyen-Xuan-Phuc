@@ -88,8 +88,20 @@
         :root { --primary-green: #1b5e20; --accent-green: #4caf50; color-scheme: light only; }
 
         body { background-color: #f4f7f4; font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; transition: background-color 0.6s ease; }
+        
+        /* HIDE SCROLLBAR */
+        ::-webkit-scrollbar { display: none; }
+        body { -ms-overflow-style: none; scrollbar-width: none; }
+        
         #progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: linear-gradient(90deg, #1b5e20, #4caf50, #81c784); width: 0%; z-index: 200; transition: width 0.1s; }
-        #main-header { transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease; }
+        
+        /* HEADER KÍNH TRONG SUỐT CHO CẨM NANG */
+        #main-header { 
+            background-color: rgba(255,255,255,0.7) !important; 
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            transition: background-color 0.4s ease, box-shadow 0.4s ease;
+        }
+        body.night #main-header { background-color: rgba(7,15,7,0.6) !important; }
 
         /* ========== PAGE TRANSITION ========== */
         #page-transition {
@@ -387,11 +399,6 @@
         /* ========== DARK MODE ========== */
         body.night { background-color: #070f07; }
         body.night::after { background-image: radial-gradient(circle, rgba(76,175,80,0.04) 1px, transparent 1px); }
-        body.night #main-header { background-color: rgba(7,15,7,0.95) !important; border-color: rgba(76,175,80,0.15) !important; }
-        body.night #main-header .text-green-900 { color: #81c784 !important; }
-        body.night #main-header .text-gray-400 { color: rgba(165,214,167,0.6) !important; }
-        body.night #main-header .hover\:text-green-700:hover { color: #4caf50 !important; }
-        body.night #main-header .active-link { color: #4caf50 !important; }
         body.night #theme-toggle { background: linear-gradient(135deg, #0a1f0a, #1b4a20); border-color: rgba(76,175,80,0.6); box-shadow: 0 2px 12px rgba(76,175,80,0.4), 0 0 0 1px rgba(76,175,80,0.2); }
         body.night #theme-toggle::before { content: '🌙'; transform: translateY(-50%) translateX(24px); background: #0f2510; font-size: 10px; }
         body.night .hb-line { background: #81c784; }
@@ -442,6 +449,20 @@
             #theme-toggle::before { font-size: 10px !important; }
             body.night #theme-toggle::before { transform: translateY(-50%) translateX(20px) !important; }
         }
+
+        /* ========== TIMELINE LƯỢN SÓNG (ZICZAC CHỮ S) ========== */
+        .tl-dot { fill: #fff; stroke: #d1d5db; stroke-width: 2; transition: all 0.4s ease; }
+        body.night .tl-dot { fill: #070f07; stroke: #374151; }
+        .tl-dot.active { stroke: #4caf50; fill: #e8f5e9; r: 6.5; filter: drop-shadow(0 0 6px rgba(76,175,80,0.6)); }
+        body.night .tl-dot.active { fill: #0a1f0a; }
+
+        .tl-label {
+            position: absolute; transform: translateY(-50%) translateX(-10px);
+            font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+            color: #9ca3af; opacity: 0; transition: all 0.4s ease; pointer-events: none;
+        }
+        .tl-label.active { opacity: 1; transform: translateY(-50%) translateX(0); color: #1b5e20; }
+        body.night .tl-label.active { color: #81c784; }
     </style>
 </head>
 <body class="pt-16 md:pt-24">
@@ -468,6 +489,33 @@
 <div id="particles" aria-hidden="true"></div>
 
 <div id="progress-bar"></div>
+
+<div id="guide-timeline" class="hidden xl:block fixed left-4 top-1/2 -translate-y-1/2 z-40 w-16 h-[300px] pointer-events-none">
+    <svg viewBox="0 0 60 300" class="w-full h-full overflow-visible">
+        <defs>
+            <linearGradient id="camnangGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"   stop-color="#1b5e20"/>
+                <stop offset="30%"  stop-color="#4caf50"/>
+                <stop offset="60%"  stop-color="#f59e0b"/>
+                <stop offset="85%"  stop-color="#ef4444"/>
+                <stop offset="100%" stop-color="#81c784"/>
+            </linearGradient>
+        </defs>
+        <path d="M 30 10 C 70 50, 70 60, 30 100 C -10 140, -10 160, 30 200 C 70 240, 70 260, 30 290" stroke="rgba(76,175,80,0.15)" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path id="lotus-path-fill" d="M 30 10 C 70 50, 70 60, 30 100 C -10 140, -10 160, 30 200 C 70 240, 70 260, 30 290" stroke="url(#camnangGrad)" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="350" stroke-dashoffset="350" style="transition: stroke-dashoffset 0.15s ease-out; filter: drop-shadow(0 0 6px rgba(76,175,80,0.5));"/>
+        
+        <circle class="tl-dot" cx="30" cy="10" r="4.5" data-idx="0"/>
+        <circle class="tl-dot" cx="30" cy="100" r="4.5" data-idx="1"/>
+        <circle class="tl-dot" cx="30" cy="200" r="4.5" data-idx="2"/>
+        <circle class="tl-dot" cx="30" cy="290" r="4.5" data-idx="3"/>
+    </svg>
+    <div class="absolute inset-0">
+        <div class="tl-label" style="top: 3.5%; left: 45px;">Địa lý</div>
+        <div class="tl-label" style="top: 33.5%; left: 45px;">Ẩm thực</div>
+        <div class="tl-label" style="top: 66.5%; left: 45px;">Lưu trú</div>
+        <div class="tl-label" style="top: 96.5%; left: 45px;">Bí kíp</div>
+    </div>
+</div>
 
 <button id="scroll-top" aria-label="Lên đầu trang" onclick="window.scrollTo({top:0,behavior:'smooth'})">
     <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg>
@@ -599,7 +647,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[280px]" id="cards-container">
             <article class="lg:col-span-2 tilt-card sparkle-wrap relative group z-0 rounded-3xl overflow-hidden shadow-lg border border-gray-100 cursor-pointer food-card card-glow card-border-glow ripple-container rv-zoom">
-                <img src="image-252.png" alt="Hủ tiếu Sa Đéc" class="absolute inset-0 w-full h-full object-cover rv-img">
+                <img src="hu-tieu-sa-dec-anh-bia.png" alt="Hủ tiếu Sa Đéc" class="absolute inset-0 w-full h-full object-cover rv-img" onerror="this.src='image-252.png'">
                 <div class="absolute inset-0 food-gradient flex flex-col justify-end p-6 md:p-8 text-white">
                     <span class="bg-orange-500 text-white text-[10px] font-bold px-2 py-1 rounded w-fit mb-2 uppercase tracking-wider">Đặc sản Sa Đéc</span>
                     <h3 class="text-2xl md:text-3xl font-black mb-2 drop-shadow-md">Hủ Tiếu Sa Đéc</h3>
@@ -773,7 +821,6 @@
         document.getElementById('loading-screen').classList.add('hidden');
         var heroImg = document.getElementById('hero-img');
         if (heroImg) heroImg.classList.add('revealed');
-        /* Scroll reveal system will handle the rest */
     });
 
     /* ============ PAGE TRANSITION ============ */
@@ -886,6 +933,14 @@
 
     function toggleTheme() {
         isNightMode = !isNightMode; document.body.classList.toggle('night', isNightMode); updateThemeLabel();
+        
+        var header = document.getElementById('main-header');
+        if (window.scrollY > 60) {
+            header.style.backgroundColor = isNightMode ? 'rgba(7,15,7,0.85)' : 'rgba(255,255,255,0.95)';
+        } else {
+            header.style.backgroundColor = isNightMode ? 'rgba(7,15,7,0.5)' : 'rgba(255,255,255,0.7)';
+        }
+
         if (isNightMode) { createFireflies(); } else { createParticles(); }
         try { localStorage.setItem('dt-theme', isNightMode ? 'night' : 'day'); } catch(e) {}
     }
@@ -986,7 +1041,7 @@
         });
     }
 
-    /* ============ OPTIMIZED SCROLL ============ */
+    /* ============ OPTIMIZED SCROLL & WAVY TIMELINE ============ */
     var ticking = false;
     window.addEventListener('scroll', function() {
         if (!ticking) {
@@ -998,16 +1053,72 @@
                 
                 var header = document.getElementById('main-header');
                 if (winScroll > 60) {
-                    header.style.backgroundColor = isNightMode ? 'rgba(7,15,7,0.97)' : 'rgba(255,255,255,0.85)';
-                    header.style.backdropFilter = 'blur(16px)';
+                    header.style.backgroundColor = isNightMode ? 'rgba(7,15,7,0.85)' : 'rgba(255,255,255,0.95)';
                     header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.08)';
                 } else {
-                    header.style.backgroundColor = '';
-                    header.style.backdropFilter = '';
+                    header.style.backgroundColor = isNightMode ? 'rgba(7,15,7,0.5)' : 'rgba(255,255,255,0.7)';
                     header.style.boxShadow = '';
                 }
 
                 document.getElementById('scroll-top').classList.toggle('visible', winScroll > 300);
+
+                /* ---- TIMELINE CẨM NANG LƯỢN SÓNG (INDEX COLOR) ---- */
+                var sections = document.querySelectorAll('main > section:not(:first-child)');
+                var dots = document.querySelectorAll('.tl-dot');
+                var labels = document.querySelectorAll('.tl-label');
+                var tlFill = document.getElementById('lotus-path-fill');
+
+                if (sections.length && dots.length && tlFill) {
+                    var timelineProgress = winScroll / height;
+                    var pctObj = timelineProgress * 100;
+                    
+                    tlFill.style.strokeDashoffset = 350 - (timelineProgress * 350);
+
+                    // Hiệu ứng đổi màu Glow theo phần trăm giống file index
+                    var glowColor;
+                    if (pctObj < 25)      glowColor = 'rgba(76,175,80,0.8)';
+                    else if (pctObj < 50) glowColor = 'rgba(245,158,11,0.8)';
+                    else if (pctObj < 75) glowColor = 'rgba(239,68,68,0.8)';
+                    else                  glowColor = 'rgba(129,199,132,0.9)';
+                    tlFill.style.filter = 'drop-shadow(0 0 6px ' + glowColor + ')';
+
+                    var currentIdx = 0;
+                    sections.forEach(function(sec, idx) {
+                        var rect = sec.getBoundingClientRect();
+                        if (rect.top <= window.innerHeight * 0.4) {
+                            currentIdx = idx;
+                        }
+                    });
+
+                    dots.forEach(function(dot, idx) {
+                        if (idx === currentIdx) { 
+                            dot.classList.add('active'); 
+                            if(idx === 0) dot.style.stroke = '#4caf50';
+                            else if(idx === 1) dot.style.stroke = '#f59e0b';
+                            else if(idx === 2) dot.style.stroke = '#ef4444';
+                            else dot.style.stroke = '#81c784';
+                        } 
+                        else { 
+                            dot.classList.remove('active'); 
+                            dot.style.stroke = '';
+                        }
+                    });
+                    
+                    labels.forEach(function(lbl, idx) {
+                        if (idx === currentIdx) { 
+                            lbl.classList.add('active'); 
+                            if(idx === 0) { lbl.style.color = '#1b5e20'; lbl.style.textShadow = '0 0 8px rgba(76,175,80,0.3)'; }
+                            else if(idx === 1) { lbl.style.color = '#b45309'; lbl.style.textShadow = '0 0 8px rgba(245,158,11,0.3)'; }
+                            else if(idx === 2) { lbl.style.color = '#b91c1c'; lbl.style.textShadow = '0 0 8px rgba(239,68,68,0.3)'; }
+                            else { lbl.style.color = '#1b5e20'; lbl.style.textShadow = '0 0 8px rgba(129,199,132,0.3)'; }
+                        } 
+                        else { 
+                            lbl.classList.remove('active'); 
+                            lbl.style.color = ''; lbl.style.textShadow = '';
+                        }
+                    });
+                }
+
                 ticking = false;
             });
             ticking = true;
@@ -1018,7 +1129,7 @@
 </script>
 
 <script>
-/* ============ SCROLL REVEAL SYSTEM (NEW) ============ */
+/* ============ SCROLL REVEAL SYSTEM (FIXED BUG) ============ */
 (function() {
 'use strict';
 var isMobile  = window.innerWidth < 768;
@@ -1043,24 +1154,26 @@ function onLoadingDone() {
 }
 
 function setupImageReveal() {
-    var imgs = document.querySelectorAll('.img-reveal:not(#hero-img):not(.revealed)');
-    if (!imgs.length) return;
     var imgOpts = { threshold: isMobile ? 0.05 : 0.12, rootMargin: '0px 0px -30px 0px' };
-    var imgObs = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-            if (!entry.isIntersecting) return;
-            var img = entry.target;
-            img.classList.add('rv-img');
-            requestAnimationFrame(function() {
+
+    var imgs = document.querySelectorAll('.img-reveal:not(#hero-img):not(.revealed)');
+    if (imgs.length > 0) {
+        var imgObs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (!entry.isIntersecting) return;
+                var img = entry.target;
+                img.classList.add('rv-img');
                 requestAnimationFrame(function() {
-                    img.classList.add('rv-in');
-                    img.classList.add('revealed');
+                    requestAnimationFrame(function() {
+                        img.classList.add('rv-in');
+                        img.classList.add('revealed');
+                    });
                 });
+                imgObs.unobserve(img);
             });
-            imgObs.unobserve(img);
-        });
-    }, imgOpts);
-    imgs.forEach(function(img) { imgObs.observe(img); });
+        }, imgOpts);
+        imgs.forEach(function(img) { imgObs.observe(img); });
+    }
 
     document.querySelectorAll('.food-card img:not(.img-reveal)').forEach(function(img) {
         img.classList.add('rv-img');

@@ -378,30 +378,112 @@
         .stat-bar { height: 3px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; margin-top: 8px; }
         .stat-bar-fill { height: 100%; background: linear-gradient(90deg, #81c784, #fff); border-radius: 2px; width: 0; transition: width 1.5s cubic-bezier(0.4,0,0.2,1); }
 
-        /* ========== SECTION NUMBER ========== */
+        /* ========== SCROLL REVEAL - ẢNH VÀO ========== */
+        /* Trạng thái ẩn ban đầu */
+        .rv-img {
+            opacity: 0;
+            transform: scale(1.06) translateY(18px);
+            will-change: opacity, transform;
+            transition: none;
+        }
+        .rv-img.rv-in {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            transition: opacity 0.85s cubic-bezier(0.22,1,0.36,1),
+                        transform 0.85s cubic-bezier(0.22,1,0.36,1);
+            will-change: auto;
+        }
+
+        /* Trạng thái ẩn cho CHỮ */
+        .rv-text {
+            opacity: 0;
+            transform: translateY(36px);
+            will-change: opacity, transform;
+            transition: none;
+        }
+        .rv-text.rv-in {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1),
+                        transform 0.7s cubic-bezier(0.22,1,0.36,1);
+            will-change: auto;
+        }
+        /* Stagger delays */
+        .rv-d1 { transition-delay: 0.06s !important; }
+        .rv-d2 { transition-delay: 0.13s !important; }
+        .rv-d3 { transition-delay: 0.20s !important; }
+        .rv-d4 { transition-delay: 0.27s !important; }
+        .rv-d5 { transition-delay: 0.34s !important; }
+        .rv-d6 { transition-delay: 0.41s !important; }
+
+        /* Trượt từ trái/phải vào */
+        .rv-left  { opacity: 0; transform: translateX(-50px); will-change: opacity,transform; transition: none; }
+        .rv-right { opacity: 0; transform: translateX(50px);  will-change: opacity,transform; transition: none; }
+        .rv-left.rv-in, .rv-right.rv-in {
+            opacity: 1; transform: translateX(0);
+            transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+                        transform 0.75s cubic-bezier(0.22,1,0.36,1);
+            will-change: auto;
+        }
+        /* Scale zoom in */
+        .rv-zoom { opacity: 0; transform: scale(0.88); will-change: opacity,transform; transition: none; }
+        .rv-zoom.rv-in {
+            opacity: 1; transform: scale(1);
+            transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+                        transform 0.75s cubic-bezier(0.22,1,0.36,1);
+            will-change: auto;
+        }
+
+        /* ========== LOTUS STEM ENHANCED ========== */
+        #lotus-stem-wrap {
+            position: fixed; left: 16px; top: 50%; transform: translateY(-50%);
+            width: 52px; height: 200px; z-index: 50; display: none; pointer-events: none;
+        }
+        @media (min-width: 1024px) { #lotus-stem-wrap { display: block; } }
+        #lotus-stem-svg { width: 100%; height: 100%; overflow: visible; }
+        #lotus-stem-track { stroke: rgba(27,94,32,0.15); stroke-width: 2; }
+        #lotus-stem-fill {
+            stroke: url(#lotusGradEnhanced);
+            stroke-dasharray: 300; stroke-dashoffset: 300;
+            stroke-width: 3.5;
+            transition: stroke-dashoffset 0.15s ease;
+            filter: drop-shadow(0 0 6px rgba(76,175,80,0.7));
+        }
+        /* Vòng tròn đánh dấu trên stem */
+        .stem-dot {
+            fill: none;
+            stroke: rgba(76,175,80,0.3);
+            stroke-width: 1;
+            r: 5;
+            animation: stem-dot-pulse 2.5s ease-in-out infinite;
+        }
+        .stem-dot.active { stroke: #4caf50; fill: rgba(76,175,80,0.15); }
+        @keyframes stem-dot-pulse {
+            0%,100% { r: 5; opacity: 0.4; }
+            50%      { r: 7; opacity: 1; }
+        }
+        .lotus-bud { transition: opacity 0.4s ease, transform 0.4s ease; transform-origin: center bottom; }
+        .lotus-bud.bloomed { opacity: 1 !important; animation: bud-bloom2 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+        @keyframes bud-bloom2 {
+            from { transform: scale(0) translateY(6px); opacity: 0; }
+            to   { transform: scale(1.2) translateY(0);  opacity: 1; }
+        }
+        /* Label % nhỏ bên cạnh */
+        #stem-pct-label {
+            position: absolute; left: 56px; top: 50%; transform: translateY(-50%);
+            font-size: 9px; font-weight: 900; color: #4caf50;
+            letter-spacing: 1px; opacity: 0; transition: opacity 0.3s ease;
+            text-shadow: 0 0 8px rgba(76,175,80,0.6);
+            white-space: nowrap; pointer-events: none; user-select: none;
+        }
+        #lotus-stem-wrap:hover #stem-pct-label { opacity: 1; }
+
         .section-number {
             font-size: 120px; font-weight: 900; position: absolute; right: -10px; top: -40px;
             color: rgba(76,175,80,0.06); line-height: 1; pointer-events: none; user-select: none; letter-spacing: -8px;
             font-family: 'Playfair Display', serif;
         }
 
-        /* ========== LOTUS STEM ========== */
-        #lotus-stem-wrap {
-            position: fixed; left: 14px; top: 50%; transform: translateY(-50%);
-            width: 32px; height: 120px; z-index: 50; display: none; pointer-events: none;
-        }
-        @media (min-width: 1280px) { #lotus-stem-wrap { display: block; } }
-        #lotus-stem-svg { width: 100%; height: 100%; overflow: visible; }
-        #lotus-stem-track { stroke: rgba(27,94,32,0.12); }
-        #lotus-stem-fill { 
-            stroke: url(#lotusGrad); stroke-dasharray: 200; stroke-dashoffset: 200;
-            transition: stroke-dashoffset 0.2s ease;
-            filter: drop-shadow(0 0 3px rgba(76,175,80,0.5));
-        }
-        .lotus-bud { transition: opacity 0.4s ease, transform 0.4s ease; transform-origin: center bottom; }
-        .lotus-bud.bloomed { opacity: 1 !important; }
-        @keyframes bud-bloom { from { transform: scale(0) translateY(4px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-        .lotus-bud.bloomed { animation: bud-bloom 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
 
         /* ========== HOVER CARD LABEL ========== */
         .card-hover-label {
@@ -564,6 +646,7 @@
         body.night .card-img-ripple { background: radial-gradient(circle at 50% 50%, rgba(255,200,50,0) 0%, rgba(255,200,50,0.15) 28%, rgba(255,200,50,0) 50%, rgba(200,255,100,0.08) 65%, rgba(255,200,50,0) 80%); }
         body.night .flip-card-front { background: #050e05; }
         body.night #season-tracker { border-color: rgba(76,175,80,0.3); }
+        body.night #stem-pct-label { color: #81c784; text-shadow: 0 0 10px rgba(76,175,80,0.8); }
 
         /* ========== WATER RIPPLE RING ========== */
         .card-img-ripple-ring { position: absolute; inset: 0; z-index: 6; pointer-events: none; border-radius: inherit; overflow: hidden; }
@@ -704,12 +787,63 @@
 <div id="progress-bar"></div>
 
 <div id="lotus-stem-wrap" aria-hidden="true">
-    <svg id="lotus-stem-svg" viewBox="0 0 32 120" xmlns="http://www.w3.org/2000/svg">
-        <defs><linearGradient id="lotusGrad" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#1b5e20"/><stop offset="100%" stop-color="#81c784"/></linearGradient></defs>
-        <path id="lotus-stem-track" d="M16,118 Q10,90 16,60 Q22,30 16,2" stroke="rgba(27,94,32,0.12)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <path id="lotus-stem-fill" d="M16,118 Q10,90 16,60 Q22,30 16,2" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <g id="stem-bud-top" class="lotus-bud" opacity="0" transform="translate(16,2)"><ellipse cx="0" cy="-4" rx="3" ry="5" fill="#4caf50" opacity="0.9"/><ellipse cx="-3" cy="-2" rx="2" ry="4" fill="#81c784" opacity="0.8" transform="rotate(-25)"/><ellipse cx="3" cy="-2" rx="2" ry="4" fill="#81c784" opacity="0.8" transform="rotate(25)"/></g>
-        <g id="stem-leaf-mid" class="lotus-bud" opacity="0" transform="translate(22,60)"><ellipse cx="0" cy="0" rx="6" ry="3" fill="#4caf50" opacity="0.7" transform="rotate(-30)"/></g>
+    <div id="stem-pct-label">0%</div>
+    <svg id="lotus-stem-svg" viewBox="0 0 52 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <!-- Gradient nâng cao: xanh → vàng → cam → xanh lá sáng -->
+            <linearGradient id="lotusGradEnhanced" x1="0" y1="1" x2="0" y2="0">
+                <stop id="lgStop0" offset="0%"   stop-color="#1b5e20"/>
+                <stop id="lgStop1" offset="30%"  stop-color="#4caf50"/>
+                <stop id="lgStop2" offset="60%"  stop-color="#f59e0b"/>
+                <stop id="lgStop3" offset="85%"  stop-color="#ef4444"/>
+                <stop id="lgStop4" offset="100%" stop-color="#81c784"/>
+            </linearGradient>
+            <!-- Gradient gốc (tương thích ngược) -->
+            <linearGradient id="lotusGrad" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0%" stop-color="#1b5e20"/>
+                <stop offset="100%" stop-color="#81c784"/>
+            </linearGradient>
+            <!-- Filter glow -->
+            <filter id="stemGlow" x="-40%" y="-10%" width="180%" height="120%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+        </defs>
+
+        <!-- Track mờ -->
+        <path id="lotus-stem-track"
+              d="M26,196 Q18,155 26,100 Q34,45 26,4"
+              stroke="rgba(27,94,32,0.15)" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+        <!-- Fill chính có màu sắc -->
+        <path id="lotus-stem-fill"
+              d="M26,196 Q18,155 26,100 Q34,45 26,4"
+              fill="none" stroke-linecap="round" filter="url(#stemGlow)"/>
+
+        <!-- Dot điểm mốc giữa -->
+        <circle id="stem-mid-dot" class="stem-dot" cx="26" cy="100" r="5"/>
+
+        <!-- Nụ hoa trên đỉnh -->
+        <g id="stem-bud-top" class="lotus-bud" opacity="0" transform="translate(26,4)">
+            <!-- Thân nụ -->
+            <ellipse cx="0" cy="-5" rx="4" ry="7" fill="#4caf50" opacity="0.95"/>
+            <!-- Cánh trái -->
+            <ellipse cx="-4" cy="-3" rx="2.5" ry="5.5" fill="#81c784" opacity="0.85" transform="rotate(-28)"/>
+            <!-- Cánh phải -->
+            <ellipse cx="4"  cy="-3" rx="2.5" ry="5.5" fill="#81c784" opacity="0.85" transform="rotate(28)"/>
+            <!-- Vầng sáng -->
+            <circle cx="0" cy="-5" r="6" fill="rgba(76,175,80,0.15)" opacity="0"/>
+        </g>
+
+        <!-- Lá giữa -->
+        <g id="stem-leaf-mid" class="lotus-bud" opacity="0" transform="translate(34,100)">
+            <ellipse cx="0" cy="0" rx="9" ry="3.5" fill="#4caf50" opacity="0.75" transform="rotate(-30)"/>
+        </g>
+
+        <!-- Lá dưới -->
+        <g id="stem-leaf-low" class="lotus-bud" opacity="0" transform="translate(18,160)">
+            <ellipse cx="0" cy="0" rx="7" ry="3" fill="#4caf50" opacity="0.6" transform="rotate(25)"/>
+        </g>
     </svg>
 </div>
 
@@ -1115,11 +1249,16 @@
         document.getElementById('loading-screen').classList.add('hidden');
         var heroImg = document.getElementById('hero-img');
         if (heroImg) heroImg.classList.add('revealed');
+        /* Ảnh khác sẽ được reveal bằng IntersectionObserver khi scroll đến */
         setTimeout(function() {
+            /* Chỉ reveal ảnh hiện đang visible trong viewport */
             document.querySelectorAll('.img-reveal:not(#hero-img)').forEach(function(img, i) {
-                setTimeout(function() { img.classList.add('revealed'); }, i * 150);
+                var rect = img.getBoundingClientRect();
+                if (rect.top < window.innerHeight + 100) {
+                    setTimeout(function() { img.classList.add('revealed'); }, i * 120);
+                }
             });
-        }, 400);
+        }, 500);
     });
 
     /* ============ PAGE TRANSITION ============ */
@@ -1457,11 +1596,12 @@
             requestAnimationFrame(function() {
                 var winScroll = window.scrollY;
                 var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                var pct = height > 0 ? Math.min(100, winScroll / height * 100) : 0;
                 if (!isMobile) {
                     var pb = document.getElementById('parallax-bg');
                     if (pb) pb.style.transform = 'translateY(' + winScroll * 0.3 + 'px)';
                 }
-                document.getElementById('progress-bar').style.width = (winScroll / height * 100) + '%';
+                document.getElementById('progress-bar').style.width = pct + '%';
                 var header = document.getElementById('main-header');
                 if (winScroll > 60) {
                     header.style.backgroundColor = isNightMode ? 'rgba(7,15,7,0.97)' : 'rgba(255,255,255,0.85)';
@@ -1473,6 +1613,34 @@
                     header.style.boxShadow = '';
                 }
                 document.getElementById('scroll-top').classList.toggle('visible', winScroll > 300);
+
+                /* ---- LOTUS STEM: cập nhật màu gradient theo scroll ---- */
+                var stemFill = document.getElementById('lotus-stem-fill');
+                if (stemFill) {
+                    var dashOffset = 300 - (pct / 100 * 300);
+                    stemFill.style.strokeDashoffset = dashOffset;
+                    /* Thay đổi màu glow theo % */
+                    var glowColor;
+                    if (pct < 25)      glowColor = 'rgba(76,175,80,0.8)';
+                    else if (pct < 50) glowColor = 'rgba(245,158,11,0.8)';
+                    else if (pct < 75) glowColor = 'rgba(239,68,68,0.8)';
+                    else               glowColor = 'rgba(129,199,132,0.9)';
+                    stemFill.style.filter = 'drop-shadow(0 0 6px ' + glowColor + ')';
+                    /* Label % */
+                    var pctLabel = document.getElementById('stem-pct-label');
+                    if (pctLabel) pctLabel.textContent = Math.round(pct) + '%';
+                    /* Nở bông khi gần cuối */
+                    var bud = document.getElementById('stem-bud-top');
+                    if (bud) bud.classList.toggle('bloomed', pct > 15);
+                    var midLeaf = document.getElementById('stem-leaf-mid');
+                    if (midLeaf) midLeaf.classList.toggle('bloomed', pct > 40);
+                    var lowLeaf = document.getElementById('stem-leaf-low');
+                    if (lowLeaf) lowLeaf.classList.toggle('bloomed', pct > 20);
+                    /* Mid dot */
+                    var midDot = document.getElementById('stem-mid-dot');
+                    if (midDot) midDot.classList.toggle('active', pct > 45);
+                }
+
                 ticking = false;
             });
             ticking = true;
@@ -1684,6 +1852,204 @@
 .season-particle-layer { position: absolute; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
 @keyframes s-float { 0% { transform: translateY(120%) scale(0); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.3; } 100% { transform: translateY(-20px) scale(0.5); opacity: 0; } }
 </style>
+
+<script>
+/* ============ SCROLL REVEAL SYSTEM ============ */
+(function() {
+'use strict';
+var isMobile  = window.innerWidth < 768;
+var isRedMot  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var isLoaded  = false; /* Chỉ activate sau khi loading screen đóng */
+
+/* Chờ loading screen đóng */
+var ls = document.getElementById('loading-screen');
+if (ls) {
+    var lsObs = new MutationObserver(function() {
+        if (ls.classList.contains('hidden')) { onLoadingDone(); lsObs.disconnect(); }
+    });
+    lsObs.observe(ls, { attributes: true, attributeFilter: ['class'] });
+}
+
+function onLoadingDone() {
+    if (isLoaded) return; isLoaded = true;
+    if (isRedMot) return;
+    setTimeout(function() {
+        setupImageReveal();
+        setupTextReveal();
+    }, 300);
+}
+
+/* ====================================================
+   1. ẢNH: reveal khi scroll đến (IntersectionObserver)
+   ==================================================== */
+function setupImageReveal() {
+    /* Lấy tất cả ảnh chưa được reveal */
+    var imgs = document.querySelectorAll('.img-reveal:not(#hero-img):not(.revealed)');
+    if (!imgs.length) return;
+
+    var imgOpts = {
+        threshold: isMobile ? 0.05 : 0.12,
+        rootMargin: '0px 0px -30px 0px'
+    };
+
+    var imgObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (!entry.isIntersecting) return;
+            var img = entry.target;
+            /* Thêm class reveal-img để animate */
+            img.classList.add('rv-img');
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    img.classList.add('rv-in');
+                    img.classList.add('revealed'); /* existing mechanic */
+                });
+            });
+            imgObs.unobserve(img);
+        });
+    }, imgOpts);
+
+    imgs.forEach(function(img) { imgObs.observe(img); });
+
+    /* Cũng observe các ảnh trong thẻ section (không có img-reveal) */
+    document.querySelectorAll(
+        'section img:not(.img-reveal):not(#hero-img), .feature-card img, footer img'
+    ).forEach(function(img) {
+        img.classList.add('rv-img');
+        var sObs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(e) {
+                if (!e.isIntersecting) return;
+                requestAnimationFrame(function() {
+                    requestAnimationFrame(function() { img.classList.add('rv-in'); });
+                });
+                sObs.unobserve(img);
+            });
+        }, imgOpts);
+        sObs.observe(img);
+    });
+}
+
+/* ====================================================
+   2. CHỮ: reveal heading, paragraph, card khi scroll
+   ==================================================== */
+function setupTextReveal() {
+    var textOpts = {
+        threshold: isMobile ? 0.06 : 0.14,
+        rootMargin: '0px 0px -20px 0px'
+    };
+
+    var textObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (!entry.isIntersecting) return;
+            var el = entry.target;
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() { el.classList.add('rv-in'); });
+            });
+            textObs.unobserve(el);
+            el.addEventListener('transitionend', function() {
+                el.style.willChange = 'auto';
+            }, { once: true });
+        });
+    }, textOpts);
+
+    /* --- Heading h3, h4 trong main --- */
+    document.querySelectorAll('main h3, main h4').forEach(function(el, i) {
+        if (el.closest('[id="hero-title"]') || el.closest('.loading-screen')) return;
+        el.classList.add('rv-text', 'rv-d' + Math.min((i % 3) + 1, 6));
+        textObs.observe(el);
+    });
+
+    /* --- Paragraphs --- */
+    document.querySelectorAll(
+        'main p.text-gray-600, main p.text-gray-500, main p.text-sm, ' +
+        '.feature-card p, .quote-banner p, section > div > p'
+    ).forEach(function(el, i) {
+        if (el.closest('#hero-subtitle') || el.id === 'hero-subtitle') return;
+        el.classList.add('rv-text', 'rv-d' + Math.min((i % 4) + 2, 6));
+        textObs.observe(el);
+    });
+
+    /* --- Feature cards: zoom vào --- */
+    document.querySelectorAll('.feature-card').forEach(function(el, i) {
+        el.classList.add('rv-zoom', 'rv-d' + Math.min(i + 1, 6));
+        textObs.observe(el);
+    });
+
+    /* --- Flip cards --- */
+    document.querySelectorAll('.flip-card').forEach(function(el, i) {
+        el.classList.add('rv-left', 'rv-d' + Math.min(i + 1, 3));
+        textObs.observe(el);
+    });
+
+    /* --- Section eco-badge --- */
+    document.querySelectorAll('main .eco-badge:not(.pointer-events-auto)').forEach(function(el) {
+        el.classList.add('rv-text');
+        textObs.observe(el);
+    });
+
+    /* --- Quote watermark + h2 --- */
+    document.querySelectorAll('.quote-banner h2').forEach(function(el) {
+        el.classList.add('rv-zoom');
+        textObs.observe(el);
+    });
+
+    /* --- Stats grid items --- */
+    document.querySelectorAll('.gradient-bg .flex.flex-col.items-center').forEach(function(el, i) {
+        el.classList.add('rv-text', 'rv-d' + Math.min(i + 1, 6));
+        textObs.observe(el);
+    });
+
+    /* --- Section number watermarks --- */
+    document.querySelectorAll('.section-number').forEach(function(el) {
+        el.classList.add('rv-right');
+        textObs.observe(el);
+    });
+
+    /* --- Cards container sparkle-wrap --- */
+    var cardObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (!entry.isIntersecting) return;
+            var container = entry.target;
+            container.querySelectorAll('.sparkle-wrap').forEach(function(card, i) {
+                setTimeout(function() {
+                    card.classList.add('rv-in');
+                }, i * 130);
+            });
+            cardObs.unobserve(container);
+        });
+    }, { threshold: 0.05 });
+    var cc = document.getElementById('cards-container');
+    if (cc) {
+        cc.querySelectorAll('.sparkle-wrap').forEach(function(el) {
+            el.classList.add('rv-zoom');
+        });
+        cardObs.observe(cc);
+    }
+
+    /* --- Map section --- */
+    var mapSec = document.getElementById('map-section');
+    if (mapSec) {
+        var mapInner = mapSec.querySelector('.flex.flex-col');
+        if (mapInner) { mapInner.classList.add('rv-left'); textObs.observe(mapInner); }
+        var mapRight = mapSec.querySelector('.flex.flex-col.gap-4');
+        if (mapRight) { mapRight.classList.add('rv-right'); textObs.observe(mapRight); }
+    }
+
+    /* --- Cẩm nang banner nội dung --- */
+    document.querySelectorAll('section > a .max-w-2xl').forEach(function(el) {
+        el.classList.add('rv-left');
+        textObs.observe(el);
+    });
+
+    /* --- Season section content --- */
+    var seasonContent = document.querySelector('.season-content');
+    if (seasonContent) {
+        seasonContent.classList.add('rv-text');
+        textObs.observe(seasonContent);
+    }
+}
+
+})();
+</script>
 
 <script>
 /* ============ SEASON SLIDER ============ */

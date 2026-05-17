@@ -754,6 +754,37 @@
             
             /* Hero section mobile text */
             #hero-title { font-size: 2rem !important; line-height: 1.2 !important; }
+
+            /* ---- MOBILE PERFORMANCE BOOST ---- */
+            /* Giảm tải backdrop-filter (nặng trên mobile) */
+            .season-activity { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+            .liquid-glass-blob { display: none !important; }
+            body::before { display: none !important; } /* Tắt noise grain mobile */
+            
+            /* GPU compositing layers - chỉ cho những gì cần thiết */
+            .img-reveal { transform: translateZ(0); }
+            
+            /* Tắt water-ring trên mobile (quá nặng) */
+            .group:hover .card-img-ripple-ring .ring,
+            .group:active .card-img-ripple-ring .ring { animation: none !important; }
+            
+            /* Đảm bảo ảnh không vô tình bị ẩn */
+            .img-reveal { transition: opacity 0.6s ease, transform 0.6s ease !important; }
+            .img-reveal.revealed { opacity: 1 !important; transform: scale(1) !important; }
+            
+            /* Tốc độ reveal text trên mobile nhanh hơn */
+            .rv-text, .rv-zoom, .rv-left, .rv-right {
+                transition: opacity 0.4s ease, transform 0.4s ease !important;
+            }
+            .rv-d1, .rv-d2, .rv-d3, .rv-d4, .rv-d5, .rv-d6 {
+                transition-delay: 0.05s !important;
+            }
+            
+            /* Reduce blob animation cost */
+            .blob-bg { filter: blur(20px) !important; }
+            
+            /* Section containment for paint efficiency */
+            main > section { contain: layout style; }
         }
 
         /* ========== MOBILE HERO FIX ========== */
@@ -762,6 +793,24 @@
             #hero-title { font-size: 1.75rem !important; }
             .quote-watermark { font-size: 70px; }
         }
+
+        /* ========== MAP TOUCH OVERLAY ========== */
+        #map-touch-hint {
+            position: absolute; inset: 0; z-index: 400;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 1.5rem; pointer-events: all; cursor: pointer;
+            transition: opacity 0.35s ease;
+        }
+        #map-touch-hint-inner {
+            background: rgba(10,31,10,0.82); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+            color: #a5d6a7; font-size: 13px; font-weight: 700;
+            padding: 10px 22px; border-radius: 999px;
+            border: 1px solid rgba(76,175,80,0.45);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+            display: flex; align-items: center; gap: 8px;
+            pointer-events: none; user-select: none;
+        }
+        #map-touch-hint.hidden-hint { opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body class="pt-16 md:pt-24">
@@ -995,7 +1044,7 @@
         </div>
         <div id="map-container" class="grid lg:grid-cols-3 gap-5 md:gap-6 items-stretch">
             <div class="lg:col-span-2 flex flex-col gap-5 md:gap-6 h-full">
-                <div class="relative flex-grow rounded-[1.5rem] overflow-hidden shadow-2xl border border-green-200/50" style="min-height: 340px;">
+                <div id="map-wrapper" class="relative flex-grow rounded-[1.5rem] overflow-hidden shadow-2xl border border-green-200/50" style="min-height: 340px;">
                     <div id="dong-thap-map" class="absolute inset-0 w-full h-full z-10"></div>
                 </div>
                 <!-- Feature cards - stack on mobile -->
@@ -1249,16 +1298,19 @@
         document.getElementById('loading-screen').classList.add('hidden');
         var heroImg = document.getElementById('hero-img');
         if (heroImg) heroImg.classList.add('revealed');
-        /* Ảnh khác sẽ được reveal bằng IntersectionObserver khi scroll đến */
+        /* Reveal ảnh trong viewport ngay lập tức */
         setTimeout(function() {
-            /* Chỉ reveal ảnh hiện đang visible trong viewport */
             document.querySelectorAll('.img-reveal:not(#hero-img)').forEach(function(img, i) {
                 var rect = img.getBoundingClientRect();
-                if (rect.top < window.innerHeight + 100) {
-                    setTimeout(function() { img.classList.add('revealed'); }, i * 120);
+                /* Trên mobile mở rộng vùng detect (viewport + 200px) */
+                var threshold = window.innerHeight + (isMobile ? 200 : 100);
+                if (rect.top < threshold) {
+                    /* Dùng rAF để tránh layout thrashing */
+                    var delay = isMobile ? i * 60 : i * 120;
+                    setTimeout(function() { img.classList.add('revealed'); }, delay);
                 }
             });
-        }, 500);
+        }, 300);
     });
 
     /* ============ PAGE TRANSITION ============ */
@@ -1480,8 +1532,11 @@
         });
     }
 
-    /* ============ INTERSECTION OBSERVER ============ */
-    var observerOpts = { threshold: 0.1, rootMargin: '0px 0px -30px 0px' };
+    /* ============ INTERSECTION OBSERVER (AOS) ============ */
+    var observerOpts = {
+        threshold: isMobile ? 0.05 : 0.1,
+        rootMargin: isMobile ? '40px 0px 40px 0px' : '0px 0px -30px 0px'
+    };
     var observer = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
             if (entry.isIntersecting) {
@@ -1489,7 +1544,9 @@
                 var aosType = el.getAttribute('data-aos');
                 var delay = el.getAttribute('data-aos-delay');
                 var cls = aosType === 'fade-right' ? 'animate-slide-right' : aosType === 'fade-in' ? 'animate-scale-in' : 'animate-slide-up';
+                /* Trên mobile: delay nhỏ hơn để tránh cảm giác lag */
                 if (delay && !isMobile) el.style.animationDelay = delay + 'ms';
+                else if (delay && isMobile) el.style.animationDelay = Math.min(parseInt(delay), 150) + 'ms';
                 el.classList.add(cls); el.style.opacity = 1;
                 observer.unobserve(el);
             }
@@ -1681,7 +1738,8 @@
         if (mapInitialized || typeof L === 'undefined' || !document.getElementById('dong-thap-map')) return;
         mapInitialized = true;
         var initialZoom = isMobile ? 9 : 10;
-        map = L.map('dong-thap-map', { center: [10.55, 105.65], zoom: initialZoom, zoomControl: true, attributionControl: false });
+        map = L.map('dong-thap-map', { center: [10.55, 105.65], zoom: initialZoom, zoomControl: true, attributionControl: false,
+            dragging: !isMobile, tap: !isMobile, scrollWheelZoom: !isMobile });
         L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains: ['mt0','mt1','mt2','mt3'] }).addTo(map);
         var dtPolygon = [[10.95,105.25],[10.96,105.40],[10.93,105.58],[10.88,105.68],[10.82,105.76],[10.77,105.95],[10.70,106.05],[10.60,106.02],[10.50,105.90],[10.38,105.85],[10.28,105.80],[10.24,105.72],[10.22,105.62],[10.28,105.52],[10.35,105.42],[10.40,105.32],[10.52,105.25],[10.65,105.20],[10.78,105.22],[10.88,105.22],[10.95,105.25]];
         L.polygon(dtPolygon, { color:'rgba(76,175,80,0.8)', weight:2, fill:true, fillColor:'rgba(76,175,80,0.08)', fillOpacity:1, dashArray:'6,4' }).addTo(map);
@@ -1699,6 +1757,54 @@
                 legendEl.appendChild(row);
             }
         });
+
+        /* ========== MAP TOUCH FIX: chống scroll bị kẹt trên mobile ========== */
+        if (isMobile) {
+            var mapWrapper = document.getElementById('map-wrapper');
+            if (mapWrapper) {
+                /* Tạo overlay gợi ý chạm để tương tác */
+                var hint = document.createElement('div');
+                hint.id = 'map-touch-hint';
+                hint.innerHTML = '<div id="map-touch-hint-inner"><span style="font-size:16px;">👆</span> Chạm để tương tác bản đồ</div>';
+                mapWrapper.appendChild(hint);
+
+                var mapActive = false;
+                var deactivateTimer;
+
+                function activateMap() {
+                    mapActive = true;
+                    map.dragging.enable();
+                    map.tap && map.tap.enable();
+                    hint.classList.add('hidden-hint');
+                    clearTimeout(deactivateTimer);
+                    /* Tự tắt sau 5 giây không tương tác */
+                    deactivateTimer = setTimeout(deactivateMap, 5000);
+                }
+
+                function deactivateMap() {
+                    mapActive = false;
+                    map.dragging.disable();
+                    map.tap && map.tap.disable();
+                    hint.classList.remove('hidden-hint');
+                }
+
+                hint.addEventListener('click', activateMap);
+                hint.addEventListener('touchstart', function(e) { e.stopPropagation(); activateMap(); }, { passive: true });
+
+                /* Reset timer khi tương tác bản đồ */
+                document.getElementById('dong-thap-map').addEventListener('touchstart', function() {
+                    if (mapActive) {
+                        clearTimeout(deactivateTimer);
+                        deactivateTimer = setTimeout(deactivateMap, 5000);
+                    }
+                }, { passive: true });
+
+                /* Tắt bản đồ khi scroll ngoài */
+                window.addEventListener('scroll', function() {
+                    if (mapActive) { deactivateMap(); }
+                }, { passive: true });
+            }
+        }
     }
 
     var ls = document.getElementById('loading-screen');
@@ -1851,6 +1957,23 @@
 .s-particle { position: absolute; border-radius: 50%; opacity: 0; animation: s-float linear infinite; }
 .season-particle-layer { position: absolute; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
 @keyframes s-float { 0% { transform: translateY(120%) scale(0); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.3; } 100% { transform: translateY(-20px) scale(0.5); opacity: 0; } }
+
+/* ===== MOBILE PERFORMANCE & IMAGE REVEAL SAFETY ===== */
+@media (max-width: 767px) {
+    /* Đảm bảo ảnh LUÔN hiện khi có class revealed */
+    .img-reveal.revealed { opacity: 1 !important; transform: scale(1) translateY(0) !important; }
+    /* Đảm bảo rv-in luôn hiện element */
+    .rv-img.rv-in, .rv-text.rv-in, .rv-zoom.rv-in, .rv-left.rv-in, .rv-right.rv-in { opacity: 1 !important; transform: none !important; }
+    /* Content-visibility giúp browser skip rendering cho off-screen sections */
+    main > section:not(:first-child) { content-visibility: auto; contain-intrinsic-size: 0 600px; }
+    /* Giảm tải animation phức tạp trên mobile */
+    .card-img-ripple-ring { display: none !important; }
+    /* Tắt particle trên mobile thấp cấp */
+    @media (max-height: 700px) {
+        #particles .particle { display: none; }
+        #petals-container .falling-petal { display: none; }
+    }
+}
 </style>
 
 <script>
@@ -1872,11 +1995,34 @@ if (ls) {
 
 function onLoadingDone() {
     if (isLoaded) return; isLoaded = true;
-    if (isRedMot) return;
+    /* Luôn chạy setupImageReveal và setupTextReveal dù có prefers-reduced-motion
+       - Nếu isRedMot=true: không có animation nhưng vẫn hiện nội dung */
     setTimeout(function() {
         setupImageReveal();
         setupTextReveal();
     }, 300);
+
+    /* === FALLBACK AN TOÀN: sau 2.5s đảm bảo TẤT CẢ ảnh và text đều hiện ===
+       Giải quyết trường hợp IntersectionObserver không fire trên một số mobile browser */
+    setTimeout(function() {
+        /* Reveal mọi ảnh chưa hiện */
+        document.querySelectorAll('.img-reveal:not(.revealed)').forEach(function(img) {
+            img.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            img.style.opacity = '1';
+            img.style.transform = 'scale(1) translateY(0)';
+            img.classList.add('revealed');
+        });
+        /* Reveal rv-* elements chưa animate */
+        document.querySelectorAll('.rv-img:not(.rv-in), .rv-text:not(.rv-in), .rv-zoom:not(.rv-in), .rv-left:not(.rv-in), .rv-right:not(.rv-in)').forEach(function(el) {
+            el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            el.classList.add('rv-in');
+        });
+        /* Reveal [data-aos] elements chưa animate */
+        document.querySelectorAll('[data-aos]:not([style*="opacity: 1"])').forEach(function(el) {
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+        });
+    }, 2500);
 }
 
 /* ====================================================
@@ -1887,9 +2033,19 @@ function setupImageReveal() {
     var imgs = document.querySelectorAll('.img-reveal:not(#hero-img):not(.revealed)');
     if (!imgs.length) return;
 
+    /* Nếu prefers-reduced-motion: hiện ngay không animation */
+    if (isRedMot) {
+        imgs.forEach(function(img) {
+            img.style.opacity = '1';
+            img.style.transform = 'scale(1)';
+            img.classList.add('revealed');
+        });
+        return;
+    }
+
     var imgOpts = {
-        threshold: isMobile ? 0.05 : 0.12,
-        rootMargin: '0px 0px -30px 0px'
+        threshold: isMobile ? 0.02 : 0.12,
+        rootMargin: isMobile ? '50px 0px 50px 0px' : '0px 0px -30px 0px'
     };
 
     var imgObs = new IntersectionObserver(function(entries) {
@@ -1902,6 +2058,8 @@ function setupImageReveal() {
                 requestAnimationFrame(function() {
                     img.classList.add('rv-in');
                     img.classList.add('revealed'); /* existing mechanic */
+                    img.style.opacity = '1'; /* fallback trực tiếp cho mobile */
+                    img.style.transform = 'scale(1) translateY(0)';
                 });
             });
             imgObs.unobserve(img);
@@ -1909,6 +2067,23 @@ function setupImageReveal() {
     }, imgOpts);
 
     imgs.forEach(function(img) { imgObs.observe(img); });
+
+    /* Mobile: thêm scroll listener để reveal ảnh khi cuộn (fallback thêm) */
+    if (isMobile) {
+        var scrollRevealImages = function() {
+            document.querySelectorAll('.img-reveal:not(.revealed)').forEach(function(img) {
+                var rect = img.getBoundingClientRect();
+                if (rect.top < window.innerHeight + 100 && rect.bottom > -100) {
+                    img.classList.add('revealed', 'rv-in');
+                    img.style.opacity = '1';
+                    img.style.transform = 'scale(1) translateY(0)';
+                }
+            });
+        };
+        window.addEventListener('scroll', scrollRevealImages, { passive: true });
+        /* Cũng chạy ngay khi setup */
+        setTimeout(scrollRevealImages, 100);
+    }
 
     /* Cũng observe các ảnh trong thẻ section (không có img-reveal) */
     document.querySelectorAll(
@@ -1932,9 +2107,18 @@ function setupImageReveal() {
    2. CHỮ: reveal heading, paragraph, card khi scroll
    ==================================================== */
 function setupTextReveal() {
+    /* Nếu prefers-reduced-motion: hiện ngay không animation */
+    if (isRedMot) {
+        document.querySelectorAll('.rv-text, .rv-zoom, .rv-left, .rv-right').forEach(function(el) {
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+        });
+        return;
+    }
+
     var textOpts = {
-        threshold: isMobile ? 0.06 : 0.14,
-        rootMargin: '0px 0px -20px 0px'
+        threshold: isMobile ? 0.02 : 0.14,
+        rootMargin: isMobile ? '30px 0px 30px 0px' : '0px 0px -20px 0px'
     };
 
     var textObs = new IntersectionObserver(function(entries) {
